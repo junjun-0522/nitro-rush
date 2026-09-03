@@ -7,7 +7,7 @@
   function $(id) { return document.getElementById(id); }
 
   var SETTINGS_KEY = 'nitroRush.settings.v1';
-  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'item' };
+  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'item', char: 'volt', pet: 'spark' };
   try { var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); for (var k in saved) if (k in settings) settings[k] = saved[k]; } catch (e) { }
   function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { } }
 
@@ -79,6 +79,9 @@
       if (/fast/.test(qs)) { settings.quality = 'low'; applyQuality(); renderer.setPixelRatio(0.5); window.__renderSkip = 8; }
       if (/manual/.test(qs)) window.__manual = true;
       if (/speed/.test(qs)) settings.mode = 'speed';
+      var chq = /char=([a-z]+)/.exec(qs); if (chq) settings.char = chq[1];
+      var ptq = /pet=([a-z]*)/.exec(qs); if (ptq) settings.pet = ptq[1] || null;
+      if (/garage/.test(qs)) { setTimeout(openGarage, 300); }
       var on = /online=(host|join)/.exec(qs), room = /room=([A-Za-z0-9]+)/.exec(qs), nm = /name=([A-Za-z0-9]+)/.exec(qs);
       if (on) {
         window.__onlineTest = on[1];
@@ -99,7 +102,7 @@
       document.body.classList.add('autotest');
       console.log('[AUTOTEST] init ok, track=' + trackIndex + ' racers=' + settings.racers);
       window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; } };
-      if (!on) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
+      if (!on && !/garage/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
     }
   }
 
@@ -140,7 +143,9 @@
 
   // ---------------------------------------------------------------- UI
   function showScreen(name) {
-    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
+    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
+    if (name !== 'garage' && garage.kart) destroyGaragePreview();
+    $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '');
     $('hud').classList.toggle('hidden', !(name === null));
     $('vignette').classList.toggle('hidden', !(name === null));
     if (name) state = name === 'trackSelect' ? 'trackselect' : name;
@@ -155,6 +160,8 @@
     click('btnPlay', function () { startRace(trackIndex); });
     click('btnMode', function () { settings.mode = settings.mode === 'speed' ? 'item' : 'speed'; saveSettings(); showScreen('menu'); });
     click('btnOnline', function () { $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online'); });
+    click('btnGarage', function () { openGarage(); });
+    click('btnGarageBack', function () { showScreen('menu'); });
     click('btnOnlineBack', function () { showScreen('menu'); });
     click('btnCreate', function () { createRoom(); });
     click('btnJoin', function () { joinRoom($('codeInput').value); });
@@ -244,7 +251,7 @@
       if (e.code === 'Escape' || e.code === 'KeyP') {
         if (state === 'racing' || state === 'countdown' || state === 'finished') pauseRace();
         else if (state === 'paused') resumeRace();
-        else if (state === 'trackselect' || state === 'settings' || state === 'online') { audio.ui('back'); showScreen('menu'); }
+        else if (state === 'trackselect' || state === 'settings' || state === 'online' || state === 'garage') { audio.ui('back'); showScreen('menu'); }
         else if (state === 'room') { leaveRoom(); }
       }
       if (e.code === 'Enter') {
@@ -270,6 +277,9 @@
   }
 
   function aiName(i) { return AI_NAMES[i % AI_NAMES.length] + (i >= AI_NAMES.length ? ' ' + (Math.floor(i / AI_NAMES.length) + 1) : ''); }
+  function addKart(k) { scene.add(k.root); if (k.petRoot) scene.add(k.petRoot); }
+  function removeKart(k) { scene.remove(k.root); if (k.petRoot) scene.remove(k.petRoot); }
+  function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null }; }
 
   function startRace(ti, cfg) {
     audio.init();
@@ -277,7 +287,7 @@
     if (ti !== trackIndex) loadTrack(ti);
     if (!isOnline) { settings.track = ti; saveSettings(); }
     // remove old karts
-    karts.forEach(function (k) { scene.remove(k.root); });
+    karts.forEach(removeKart);
     karts = []; ais = []; playerAI = null;
     var mode = isOnline ? cfg.mode : settings.mode;
     var n = isOnline ? Math.max(cfg.players.length, cfg.racers) : Math.max(2, settings.racers);
@@ -285,9 +295,10 @@
     var band = settings.difficulty === 'easy' ? 0.6 : (settings.difficulty === 'hard' ? 1.25 : 1);
     var list = [], i, kt;
     if (!isOnline) {
-      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0 });
+      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet });
       for (i = 1; i < n; i++) {
-        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i });
+        var lk = aiLook(rng);
+        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet });
         list.push(kt);
         ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: band, seed: i }));
       }
@@ -296,13 +307,14 @@
       var isHost = online.isHost, kartById = {};
       var aiCount = n - cfg.players.length;
       for (i = 0; i < aiCount; i++) {
-        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1 });
+        var lk2 = aiLook(rng);
+        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet });
         list.push(kt); kartById[100 + i] = kt;
         if (isHost) ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: 0.7, seed: i + 1 }));
       }
       cfg.players.forEach(function (p, pi) {
         var mine = p.id === online.myId;
-        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi });
+        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null });
         list.push(pk); kartById[p.id] = pk;
         if (mine) player = pk;
       });
@@ -314,7 +326,7 @@
       var g = track.gridSlot(slot, n);
       k.maxStock = speedMode ? 2 : 1; k.gaugeMul = speedMode ? 1.5 : 1;
       k.placeAt(path, g.s, g.lat);
-      scene.add(k.root);
+      addKart(k);
       karts.push(k);
     });
     fx.clear(); items.clear(); items.setEnabled(!speedMode);
@@ -362,7 +374,7 @@
     if (online) { leaveRoom(); return; }
     if (audio.ctx) audio.ctx.resume();
     audio.stopEngine(); audio.stopMusic();
-    karts.forEach(function (k) { scene.remove(k.root); }); karts = []; ais = []; player = null;
+    karts.forEach(removeKart); karts = []; ais = []; player = null;
     fx.clear(); items.clear();
     $('countdown').classList.add('hidden'); $('finishBanner').classList.add('hidden');
     showScreen('menu');
@@ -402,6 +414,7 @@
     clock.t += dt;
     if (state === 'paused') { return; }
     track.update(dt, clock.t);
+    if (state === 'garage') { garageTick(dt); fx.update(dt); return; }
     if (state === 'menu' || state === 'trackselect' || state === 'settings' || state === 'results' || state === 'online' || state === 'room') {
       menuCamera(dt);
       items.update(dt, { karts: [], raceOn: false, clock: clock.t, player: null });
@@ -777,12 +790,16 @@
   function onlineStatus(msg, err) { var el = $('onlineStatus'); el.textContent = msg; el.style.color = err ? '#ff8a8a' : '#9be7ff'; }
   function netErrorText(e) {
     var t = (e && (e.type || e.message)) || '';
-    if (/peer-unavailable|timeout|closed/.test(t)) return '그 코드의 방을 찾을 수 없어요. 코드를 다시 확인하세요.';
+    if (/peer-unavailable/.test(t)) return '그 코드의 방이 없어요. 코드 오타이거나 방장이 방을 닫았어요 (방장 화면이 ROOM 화면에 떠 있어야 해요).';
+    if (/timeout/.test(t)) return '방은 찾았지만 P2P 직접 연결이 안 됐어요 (ICE: ' + (e.ice || '?') + '). 휴대폰 데이터·학교 와이파이처럼 직접 연결을 막는 망일 수 있어요. 둘 다 집 와이파이(PC)로 다시 시도해보세요.';
+    if (/closed/.test(t)) return '방장과의 연결이 끊겼어요.';
     if (/full/.test(t)) return '방이 가득 찼어요 (최대 8명).';
     if (/inrace/.test(t)) return '이미 레이스가 진행 중인 방이에요.';
-    if (/network|server|socket/.test(t)) return '접속 서버에 연결할 수 없어요. 인터넷 연결을 확인하세요.';
+    if (/unavailable-id/.test(t)) return '이 방 코드는 방금 사용됐어요. 다시 만들어주세요.';
+    if (/network|server|socket|browser-incompatible|ssl/.test(t)) return '접속 서버(PeerJS)에 연결할 수 없어요. 인터넷/방화벽을 확인하세요. (' + t + ')';
     return '연결 실패: ' + t;
   }
+  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet }; }
   function bindNet(net) {
     net.on('players', function () { renderRoom(); });
     net.on('lobby', function (lobby) { if (online) { online.lobby = lobby; renderRoom(); } });
@@ -790,15 +807,20 @@
     net.on('leave', function (id) { onPlayerLeave(id); });
     net.on('hostLeft', function () { leaveRoom('방장이 나갔어요.'); });
     net.on('error', function (e) { console.warn('net error', e); });
+    net.on('stage', function (s) {
+      if (s === 'signaling') onlineStatus('접속 서버에 연결 중...');
+      else if (s === 'connecting') onlineStatus('방을 찾았어요. 방장과 P2P 연결 중... (최대 20초)');
+      else if (s === 'open') onlineStatus('연결됨!');
+    });
   }
   function createRoom(forcedCode) {
     if (typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
-    var name = nickName();
+    var prof = profile();
     onlineStatus('방 만드는 중...');
     var net = new Net();
     online = { net: net, isHost: true, myId: 0, lobby: { track: trackIndex, mode: settings.mode, racers: 8 }, kartById: null, sendTimer: 0 };
     bindNet(net);
-    net.host(name, function (err, code) {
+    net.host(prof, function (err, code) {
       if (err) { onlineStatus(netErrorText(err), true); net.close(); online = null; if (window.__autotest) console.log('[AUTOTEST] host error ' + (err.type || err.message)); return; }
       net.setLobby(online.lobby);
       showScreen('room'); renderRoom();
@@ -809,12 +831,12 @@
     code = (code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (code.length < 4) { onlineStatus('4자리 방 코드를 입력하세요.', true); return; }
     if (typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
-    var name = nickName();
+    var prof = profile();
     onlineStatus('방 ' + code + ' 에 접속 중...');
     var net = new Net();
     online = { net: net, isHost: false, myId: null, lobby: null, kartById: null, sendTimer: 0 };
     bindNet(net);
-    net.join(code, name, function (err, welcome) {
+    net.join(code, prof, function (err, welcome) {
       if (err) { onlineStatus(netErrorText(err), true); net.close(); if (online && online.net === net) online = null; if (window.__autotest) console.log('[AUTOTEST] join error ' + (err.type || err.message)); return; }
       online.myId = welcome.id; online.lobby = welcome.lobby || { track: 0, mode: 'item', racers: 8 };
       showScreen('room'); renderRoom();
@@ -826,7 +848,7 @@
     if (online) { try { online.net.close(); } catch (e) { } online = null; }
     if (audio.ctx) audio.ctx.resume();
     audio.stopEngine(); audio.stopMusic();
-    karts.forEach(function (k) { scene.remove(k.root); }); karts = []; ais = []; player = null;
+    karts.forEach(removeKart); karts = []; ais = []; player = null;
     fx.clear(); items.clear(); items.setRemoteRockets([]);
     $('countdown').classList.add('hidden'); $('finishBanner').classList.add('hidden'); $('pause').classList.add('hidden');
     if (wasOnline && reason) { showScreen('online'); onlineStatus(reason, true); }
@@ -846,7 +868,8 @@
     var list = net.playerList(), html = '';
     list.forEach(function (p) {
       var col = '#' + PLAYER_COLORS[p.id % PLAYER_COLORS.length].toString(16).padStart(6, '0');
-      html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
+      var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '');
+      html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span><span class="look">' + look + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
     });
     for (var i = list.length; i < Math.max(2, lobby.racers); i++) html += '<div class="prow dim"><span class="chip" style="background:#555"></span><span>' + (i < lobby.racers ? 'AI' : '') + '</span></div>';
     $('roomPlayers').innerHTML = html;
@@ -930,8 +953,69 @@
   function onPlayerLeave(id) {
     if (!online || !online.kartById) { renderRoom(); return; }
     var k = online.kartById[id];
-    if (k) { scene.remove(k.root); karts = karts.filter(function (x) { return x !== k; }); delete online.kartById[id]; world.karts = karts; world.localKarts = karts.filter(function (x) { return !x.remote; }); $('hudPosTotal').textContent = '/' + karts.length; }
+    if (k) { removeKart(k); karts = karts.filter(function (x) { return x !== k; }); delete online.kartById[id]; world.karts = karts; world.localKarts = karts.filter(function (x) { return !x.remote; }); $('hudPosTotal').textContent = '/' + karts.length; }
     showMsg('PLAYER LEFT', 'pink');
+  }
+
+  // ---------------------------------------------------------------- garage (character & pet select)
+  var garage = { kart: null, angle: 0 };
+  function openGarage() {
+    buildGarageCards();
+    showScreen('garage');
+    rebuildGaragePreview();
+    cam.init = false;
+  }
+  function destroyGaragePreview() {
+    if (garage.kart) { removeKart(garage.kart); garage.kart = null; }
+  }
+  function rebuildGaragePreview() {
+    destroyGaragePreview();
+    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet });
+    k.placeAt(track.path, 12, 0);
+    addKart(k); garage.kart = k;
+  }
+  function statBar(label, v) {
+    var pct = U.clamp((v - 0.9) / 0.2, 0, 1) * 100;
+    return '<div class="sb"><span>' + label + '</span><i><b style="width:' + pct.toFixed(0) + '%"></b></i></div>';
+  }
+  function buildGarageCards() {
+    var ch = '', pt = '';
+    CHARS.forEach(function (c) {
+      ch += '<div class="gcard' + (c.id === settings.char ? ' sel' : '') + '" data-char="' + c.id + '"><div class="gname"><i style="background:#' + c.body.toString(16).padStart(6, '0') + '"></i>' + c.name + ' <small>' + c.kr + '</small></div><div class="gdesc">' + c.desc + '</div>' +
+        statBar('속도', c.stat.speed) + statBar('가속', c.stat.accel) + statBar('조향', c.stat.handling) + statBar('게이지', c.stat.gauge) + '</div>';
+    });
+    pt += '<div class="gcard pet' + (!settings.pet ? ' sel' : '') + '" data-pet=""><div class="gname">없음</div><div class="gdesc">펫 없이 달리기</div></div>';
+    PETS.forEach(function (p) {
+      pt += '<div class="gcard pet' + (p.id === settings.pet ? ' sel' : '') + '" data-pet="' + p.id + '"><div class="gname">' + p.name + ' <small>' + p.kr + '</small></div><div class="gdesc">' + p.desc + '</div></div>';
+    });
+    $('garageChars').innerHTML = ch; $('garagePets').innerHTML = pt;
+    $('garageChars').querySelectorAll('.gcard').forEach(function (el) {
+      el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.char = el.getAttribute('data-char'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
+    });
+    $('garagePets').querySelectorAll('.gcard').forEach(function (el) {
+      el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.pet = el.getAttribute('data-pet') || null; saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
+    });
+    var c = findChar(settings.char), p = settings.pet ? findPet(settings.pet) : null;
+    $('garageTitle').textContent = c.name + (p ? ' & ' + p.name : '');
+  }
+  function garageTick(dt) {
+    var k = garage.kart; if (!k) return;
+    track.update(dt, clock.t);
+    k.updateVisual(dt, clock.t);
+    garage.angle += dt * 0.45;
+    var a = garage.angle;
+    _v.set(k.pos.x + Math.sin(a) * 6.2, k.pos.y + 2.1, k.pos.z + Math.cos(a) * 6.2);
+    if (!cam.init) { camera.position.copy(_v); cam.look.set(k.pos.x, k.pos.y + 0.9, k.pos.z); cam.init = true; }
+    camera.position.lerp(_v, 1 - Math.exp(-4 * dt));
+    // frame the kart left of centre so it is not hidden behind the cards
+    _v2.set(k.pos.x, k.pos.y + 0.9, k.pos.z);
+    _v3.subVectors(_v2, camera.position); _v4.set(_v3.z, 0, -_v3.x).normalize();
+    _v2.addScaledVector(_v4, -1.3);
+    cam.look.lerp(_v2, 1 - Math.exp(-6 * dt));
+    camera.lookAt(cam.look);
+    cam.fov = U.damp(cam.fov, 50, 4, dt); camera.fov = cam.fov; camera.updateProjectionMatrix();
+    updateShadowCamera();
+    if (k.petRoot) { k.petRoot.visible = true; }
   }
 
   var tutorialTimer = 0;

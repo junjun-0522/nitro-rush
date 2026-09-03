@@ -5,6 +5,10 @@
   'use strict';
 
   var PREFIX = 'nitro-rush-v1-';
+  function peerOpts() {
+    var ice = (global.NITRO_CONFIG && global.NITRO_CONFIG.iceServers) || [{ urls: 'stun:stun.l.google.com:19302' }];
+    return { debug: 0, config: { iceServers: ice, sdpSemantics: 'unified-plan' } };
+  }
   var CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var MAX_PLAYERS = 8;
 
@@ -27,17 +31,18 @@
 
   Net.prototype.playerList = function () {
     var self = this;
-    return Object.keys(this.players).map(function (k) { return { id: self.players[k].id, name: self.players[k].name }; })
+    return Object.keys(this.players).map(function (k) { var p = self.players[k]; return { id: p.id, name: p.name, char: p.char || 'volt', pet: p.pet || null }; })
       .sort(function (a, b) { return a.id - b.id; });
   };
 
   // ------------------------------------------------------------ host
-  Net.prototype.host = function (name, cb, forcedCode) {
+  Net.prototype.host = function (profile, cb, forcedCode) {
     var self = this, code = forcedCode || Net.randomCode();
     this.isHost = true; this.myId = 0; this.nextId = 1; this.code = code; this.state = 'lobby';
-    this.players = { 0: { id: 0, name: name } };
+    this.players = { 0: { id: 0, name: profile.name, char: profile.char, pet: profile.pet } };
     var done = false;
-    var peer = this.peer = new Peer(PREFIX + code.toLowerCase(), { debug: 0 });
+    this._emit('stage', 'signaling');
+    var peer = this.peer = new Peer(PREFIX + code.toLowerCase(), peerOpts());
     peer.on('open', function () { if (!done) { done = true; cb(null, code); } });
     peer.on('error', function (err) { if (!done) { done = true; cb(err); } else self._emit('error', err); });
     peer.on('connection', function (conn) { self._accept(conn); });
@@ -62,7 +67,7 @@
       }
       var id = this.nextId++;
       conn.playerId = id; this.conns[id] = conn;
-      this.players[id] = { id: id, name: String(msg.name || 'PLAYER').slice(0, 12) };
+      this.players[id] = { id: id, name: String(msg.name || 'PLAYER').slice(0, 12), char: msg.char || 'volt', pet: msg.pet || null };
       conn.send({ t: 'welcome', id: id, players: this.playerList(), lobby: this.lobby, h: performance.now() });
       this.broadcast({ t: 'lobby', players: this.playerList(), lobby: this.lobby }, id);
       this._emit('players', this.playerList());
@@ -90,16 +95,22 @@
   };
 
   // ------------------------------------------------------------ client
-  Net.prototype.join = function (code, name, cb) {
+  Net.prototype.join = function (code, profile, cb) {
     var self = this, done = false;
     this.isHost = false; this.code = code; this.state = 'joining';
     function fail(err) { if (!done) { done = true; cb(err || new Error('failed')); } }
-    var peer = this.peer = new Peer({ debug: 0 });
+    this._emit('stage', 'signaling');
+    var peer = this.peer = new Peer(peerOpts());
     peer.on('error', function (err) { if (!done) fail(err); else self._emit('error', err); });
     peer.on('open', function () {
+      self._emit('stage', 'connecting');
       var conn = self.conn = peer.connect(PREFIX + code.toLowerCase(), { reliable: true, serialization: 'json' });
-      var timer = setTimeout(function () { fail(new Error('timeout')); }, 12000);
-      conn.on('open', function () { conn.send({ t: 'hello', name: name }); });
+      var timer = setTimeout(function () {
+        var ice = 'unknown';
+        try { ice = conn.peerConnection ? conn.peerConnection.iceConnectionState : 'no-pc'; } catch (e) { }
+        var err = new Error('timeout'); err.type = 'timeout'; err.ice = ice; fail(err);
+      }, 20000);
+      conn.on('open', function () { self._emit('stage', 'open'); conn.send({ t: 'hello', name: profile.name, char: profile.char, pet: profile.pet }); });
       conn.on('data', function (msg) {
         if (!msg || typeof msg !== 'object') return;
         if (msg.t === 'welcome') {

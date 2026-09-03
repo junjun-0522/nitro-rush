@@ -26,7 +26,7 @@
   var _geo = {};
   function G(key, make) { return _geo[key] || (_geo[key] = make()); }
 
-  function buildKartMesh(color, accent, isPlayer, variant) {
+  function buildKartMesh(color, accent, isPlayer, variant, charId) {
     var root = new THREE.Group();
     var body = new THREE.Group(); root.add(body);
     var paint = new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.25 });
@@ -73,9 +73,9 @@
     add(G('tail', function () { return new THREE.BoxGeometry(0.7, 0.08, 0.05); }), tailMat, 0, 0.72, -1.27);
     // seat + driver
     add(G('seat', function () { return new THREE.BoxGeometry(0.62, 0.55, 0.22); }), dark, 0, 0.9, -0.55);
-    add(G('torso', function () { return new THREE.BoxGeometry(0.5, 0.45, 0.35); }), acc, 0, 0.98, -0.35);
-    var head = add(G('head', function () { return new THREE.SphereGeometry(0.26, 12, 10); }), paint, 0, 1.4, -0.35);
-    add(G('visor', function () { return new THREE.BoxGeometry(0.34, 0.12, 0.2); }), visor, 0, 1.4, -0.15);
+    var driver = buildDriver(charId, accent);
+    driver.group.position.set(0, 1.2, -0.35); body.add(driver.group);
+    var head = driver.group;
     add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, -0.28, 0.95, 0.0);
     add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, 0.28, 0.95, 0.0);
     var wheelRing = add(G('swheel', function () { return new THREE.TorusGeometry(0.17, 0.035, 6, 14); }), dark, 0, 1.0, 0.28);
@@ -132,7 +132,16 @@
     this.remote = !!opts.remote; this.netId = opts.netId !== undefined ? opts.netId : -1;
     this.netTarget = null; this.netTime = 0; this.netInit = false;
     this.color = opts.color; this.accent = opts.accent;
-    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index);
+    this.charId = opts.char || 'volt'; this.petId = opts.pet || null;
+    this.charDef = findChar(this.charId);
+    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index, this.charId);
+    // stat multipliers: character + pet perk
+    var st = { speed: 1, accel: 1, handling: 1, gauge: 1, boostDur: 1 }, cs = this.charDef.stat, k;
+    for (k in cs) st[k] *= cs[k];
+    this.pet = this.petId ? buildPet(this.petId) : null;
+    if (this.pet) { for (k in this.pet.def.perk) st[k] *= this.pet.def.perk[k]; this.petRoot = this.pet.root; this.petPos = new THREE.Vector3(); this.petInit = false; }
+    else this.petRoot = null;
+    this.statMul = st; this.mass = this.charDef.mass || 1;
     this.root = this.mesh.root;
     this.pos = new THREE.Vector3(); this.vel = new THREE.Vector3();
     this.yaw = 0; this.hint = -1; this.proj = {};
@@ -184,7 +193,7 @@
 
   /** feed the boost gauge; a full gauge becomes a stored boost (up to maxStock) */
   Kart.prototype.addGauge = function (v) {
-    this.boostGauge += v * this.gaugeMul;
+    this.boostGauge += v * this.gaugeMul * this.statMul.gauge;
     while (this.boostGauge >= 1 && this.boostStock < this.maxStock) {
       this.boostGauge -= 1; this.boostStock++;
       this.events.push({ type: 'stock', stock: this.boostStock });
@@ -194,7 +203,7 @@
 
   Kart.prototype.applyBoost = function (mul, dur, kind) {
     if (this.boostTime > 0 && this.boostMul > mul) { this.boostTime = Math.max(this.boostTime, dur); return; }
-    this.boostMul = mul; this.boostTime = dur; this.boostKind = kind || '';
+    this.boostMul = mul; this.boostTime = dur * this.statMul.boostDur; this.boostKind = kind || '';
     this.events.push({ type: 'boost', kind: kind, mul: mul });
   };
 
@@ -305,7 +314,7 @@
     if (inp.respawn && this.respawnCooldown <= 0 && raceOn) { this.respawn(path, track); return; }
 
     var idx = this.idx, halfW = path.W[idx] / 2;
-    var maxS = P.maxSpeed * this.speedScale;
+    var maxS = P.maxSpeed * this.speedScale * this.statMul.speed;
     if (this.stunTime > 0) maxS *= 0.55;
     if (this.offroad) maxS *= P.dirtSpeed;
     if (this.boostTime > 0) maxS *= this.boostMul;
@@ -322,7 +331,7 @@
       if (thr > 0) {
         if (vf < maxS) {
           var ratio = Math.max(0, vf / maxS);
-          var a = P.accel * thr * (1.2 - 0.9 * ratio * ratio) * (this.boostTime > 0 ? 2.0 : 1);
+          var a = P.accel * thr * (1.2 - 0.9 * ratio * ratio) * (this.boostTime > 0 ? 2.0 : 1) * this.statMul.accel;
           if (this.offroad) a *= 0.8;
           vf += a * dt; accVis = a;
           if (vf > maxS) vf = maxS;
@@ -381,6 +390,7 @@
     if (spinning) yawRate = this.spinDir * 9.5 * Math.min(1, this.spinTime / 1.3 + 0.2);
     else if (this.drifting) yawRate = this.driftDir * (P.driftYaw + steer * this.driftDir * P.driftSteerYaw) * Math.max(0.62, speedFac);
     else yawRate = steer * P.steerRate * speedFac;
+    if (!spinning) yawRate *= this.statMul.handling;
     if (vf < -0.5 && !spinning) yawRate = -yawRate;
     if (this.airborne) yawRate *= 0.25;
     this.yaw += yawRate * dt;
@@ -562,6 +572,20 @@
     root.scale.x = U.damp(root.scale.x, sScale, 8, dt); root.scale.y = root.scale.x; root.scale.z = root.scale.x;
     // invuln blink
     root.visible = !(this.invulnTime > 0 && this.spinTime <= 0 && Math.floor(t * 14) % 2 === 0 && !this.finished);
+    // pet: hovers beside the kart with a soft lag, bobbing and banking
+    if (this.petRoot) {
+      this.rightVec(_tmp2);
+      _tmp.copy(this.pos).addScaledVector(_tmp2, -2.0).addScaledVector(_fwd, -0.3);
+      _tmp.y += 1.5 + Math.sin(t * 3 + this.index) * 0.15;
+      if (!this.petInit) { this.petPos.copy(_tmp); this.petInit = true; }
+      else this.petPos.lerp(_tmp, 1 - Math.exp(-5 * dt));
+      this.petRoot.position.copy(this.petPos);
+      var pyaw = this.yaw + (this.drifting ? this.driftDir * 0.3 : 0);
+      this.petRoot.rotation.set(0, pyaw, 0);
+      this.petRoot.rotation.z = U.clamp(-latAcc * 0.003, -0.35, 0.35);
+      this.petRoot.visible = root.visible;
+      if (this.pet.animate) this.pet.animate(dt, t, this.speed);
+    }
   };
 
   /** world-space rear wheel contact position (i=0 left, 1 right) */

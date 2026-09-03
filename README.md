@@ -8,6 +8,9 @@
 
 외부 에셋 없음. Three.js / PeerJS는 `js/vendor/`에 포함.
 
+## 캐릭터 · 펫
+메인 메뉴 → **GARAGE**에서 8명의 캐릭터(능력치 차이)와 6종 펫(작은 보너스, 레이스 중 옆에서 날아다님) 선택.
+
 ## 조작
 W/↑ 가속 · S/↓ 브레이크/후진 · A/D ←/→ 조향 · Space+←→ 드리프트 · Shift 부스터 · E 아이템 · R 복귀 · Esc 일시정지
 
@@ -17,7 +20,7 @@ W/↑ 가속 · S/↓ 브레이크/후진 · A/D ←/→ 조향 · Space+←→ 
 3. 친구는 같은 게임 파일을 열고 → ONLINE MULTIPLAYER → 코드 입력 → 참가
 4. 방장이 트랙/모드/인원 설정 후 Start
 
-연결은 브라우저끼리 직접(WebRTC, PeerJS 공개 시그널링 서버 사용). 학교/회사망처럼 P2P를 막는 네트워크에서는 연결이 안 될 수 있음.
+연결은 브라우저끼리 직접(WebRTC, PeerJS 공개 시그널링 서버 사용). 휴대폰 데이터·학교/회사망처럼 P2P 직접 연결을 막는 네트워크에서는 "P2P 연결 실패"가 뜰 수 있음 → `js/config.js`의 `iceServers`에 TURN 서버(예: metered.ca 무료 플랜)를 추가하면 해결됨.
 
 ## 자동 테스트 (개발용)
 `node tools/harness.js "http://127.0.0.1:8765/index.html?autotest&norender&steps=4&track=0" 70`

@@ -22,12 +22,14 @@
   /* ---------- screens ---------- */
   .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
   .screen.dim{background:radial-gradient(ellipse at center, rgba(5,8,18,0.35), rgba(5,8,18,0.85))}
-  .title{font-family:var(--display);font-size:clamp(56px,11vw,140px);line-height:0.9;letter-spacing:-0.02em;font-style:italic;text-transform:uppercase;
+  .title{font-family:var(--display);font-size:clamp(48px,9vw,110px);line-height:0.9;letter-spacing:-0.02em;font-style:italic;text-transform:uppercase;
     display:flex;gap:0.18em;filter:drop-shadow(0 8px 0 rgba(0,0,0,0.35)) drop-shadow(0 0 30px rgba(47,224,255,0.35))}
   .title .t1{color:var(--yellow);-webkit-text-stroke:2px #3a2a00}
   .title .t2{color:var(--pink);-webkit-text-stroke:2px #3a0014}
   .subtitle{font-family:var(--display);font-size:clamp(14px,2vw,22px);letter-spacing:0.5em;color:var(--cyan);text-transform:uppercase;margin-top:-6px}
-  .menu-buttons{display:flex;flex-direction:column;gap:12px;margin-top:20px;min-width:min(360px,80vw)}
+  .menu-buttons{display:flex;flex-direction:column;gap:8px;margin-top:12px;min-width:min(360px,80vw)}
+  .menu-buttons .btn:not(.big){padding:9px 28px;font-size:clamp(14px,1.9vw,20px)}
+  .menu-buttons .btn.big{padding:14px 40px}
   .btn{font-family:var(--display);font-style:italic;text-transform:uppercase;letter-spacing:0.08em;font-size:clamp(16px,2.2vw,24px);
     padding:14px 34px;border:2px solid var(--border);border-radius:14px;color:#fff;background:linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.04));
     cursor:pointer;transition:transform .12s,background .12s,border-color .12s,box-shadow .12s;backdrop-filter:blur(8px);position:relative;overflow:hidden}
@@ -37,7 +39,7 @@
   .btn.small{font-size:14px;padding:10px 22px}
   .menu-track{font-size:14px;letter-spacing:0.2em;color:rgba(255,255,255,0.7);text-transform:uppercase}
   .menu-track b{color:var(--yellow)}
-  .hint{position:absolute;bottom:18px;left:0;right:0;font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;padding:0 20px}
+  .hint{position:absolute;bottom:10px;left:0;right:0;font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;padding:0 20px}
   .hint kbd{font-family:var(--body);background:rgba(255,255,255,0.12);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:#fff;margin-right:4px}
   h2.head{font-family:var(--display);font-style:italic;text-transform:uppercase;font-size:clamp(28px,5vw,54px);letter-spacing:0.02em;color:#fff;text-shadow:0 4px 0 rgba(0,0,0,0.4),0 0 30px rgba(255,47,109,0.35)}
 
@@ -142,6 +144,27 @@
   .room-opt select option{color:#000}
   #btnRoomStart{width:100%;margin-top:10px}
   .room-wait{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6}
+  .room-players .look{font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.05em}
+  .screen.garage{justify-content:flex-end;align-items:stretch;flex-direction:row;padding:0}
+  .garage-panel{width:min(520px,60vw);height:100%;overflow:auto;background:linear-gradient(90deg,rgba(8,12,24,0.2),rgba(8,12,24,0.85) 20%);padding:26px 26px 26px 40px;display:flex;flex-direction:column;gap:10px;text-align:left}
+  .garage-panel h2.head{font-size:clamp(26px,3.6vw,40px)}
+  .gsec{font-family:var(--display);font-style:italic;letter-spacing:0.25em;font-size:13px;color:var(--cyan);margin-top:6px}
+  .gsec small{font-family:var(--body);font-style:normal;letter-spacing:0;color:rgba(255,255,255,0.55);margin-left:8px;font-size:11px}
+  .gcards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .gcards.pets{grid-template-columns:repeat(3,1fr)}
+  .gcard{background:rgba(255,255,255,0.06);border:2px solid var(--border);border-radius:12px;padding:8px 10px;cursor:pointer;transition:border-color .12s,transform .12s,background .12s;font-family:var(--body)}
+  .gcard:hover{border-color:var(--cyan);transform:translateY(-2px)}
+  .gcard.sel{border-color:var(--yellow);background:rgba(255,230,0,0.12);box-shadow:0 0 0 2px rgba(255,230,0,0.25)}
+  .gcard .gname{font-family:var(--display);font-style:italic;font-size:15px;display:flex;align-items:center;gap:6px}
+  .gcard .gname i{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .gcard .gname small{font-family:var(--body);font-style:normal;font-size:11px;color:rgba(255,255,255,0.6)}
+  .gcard .gdesc{font-size:11px;color:rgba(255,255,255,0.7);margin:3px 0 5px;line-height:1.4}
+  .gcard .sb{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px}
+  .gcard .sb span{width:34px}
+  .gcard .sb i{flex:1;height:5px;background:rgba(0,0,0,0.4);border-radius:3px;overflow:hidden}
+  .gcard .sb b{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));border-radius:3px}
+  .gcard.pet{padding:8px 10px}
+  #btnGarageBack{margin-top:8px;align-self:flex-end}
   .room-wait .wait{margin-top:10px;color:var(--cyan)}
   .dots::after{content:'...';animation:blink 1s infinite}
   .btn.mode b{color:var(--cyan)}
@@ -228,6 +251,7 @@
     <div class="menu-buttons">
       <button id="btnPlay" class="btn big">▶ Play</button>
       <button id="btnOnline" class="btn online">🌐 Online Multiplayer<small>친구와 방 코드로 함께 달리기</small></button>
+      <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>캐릭터 · 펫 선택</small></button>
       <button id="btnMode" class="btn mode">Mode: <b id="menuMode">ITEM RACE</b><small id="menuModeDesc"></small></button>
       <button id="btnTrack" class="btn">Track Select</button>
       <button id="btnSettings" class="btn">Settings</button>
@@ -298,6 +322,18 @@
   <div id="msg"></div>
   <div id="countdown" class="hidden"></div>
   <div id="finishBanner" class="hidden">FINISH!<small id="finishSub"></small></div>
+
+  <!-- GARAGE -->
+  <div id="garage" class="screen garage hidden">
+    <div class="garage-panel">
+      <h2 class="head" id="garageTitle">VOLT</h2>
+      <div class="gsec">CHARACTER</div>
+      <div id="garageChars" class="gcards"></div>
+      <div class="gsec">PET <small>레이스 중 옆에서 날아다녀요</small></div>
+      <div id="garagePets" class="gcards pets"></div>
+      <button id="btnGarageBack" class="btn big">OK</button>
+    </div>
+  </div>
 
   <!-- ONLINE -->
   <div id="online" class="screen dim hidden">
@@ -373,10 +409,12 @@
 
 <script src="js/vendor/three.min.js"></script>
 <script src="js/vendor/peerjs.min.js"></script>
+<script src="js/config.js"></script>
 <script src="js/util.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/path.js"></script>
 <script src="js/tracks.js"></script>
+<script src="js/chars.js"></script>
 <script src="js/kart.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/items.js"></script>
