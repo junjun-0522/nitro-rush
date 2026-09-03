@@ -1,4 +1,5 @@
 /* NITRO RUSH - network config
+   기본 연결 방식은 relayUrl(WebSocket 릴레이)이며 NAT/방화벽과 무관하게 붙습니다. 아래 TURN 설정은 P2P 모드에서만 쓰입니다.
    P2P 직접 연결이 막히는 망(휴대폰 데이터, 학교/회사 와이파이, 일부 공유기)에서도 접속되려면
    TURN(중계) 서버가 필요합니다. 무료 계정으로 받을 수 있는 곳: https://www.metered.ca/stun-turn (Open Relay)
 
@@ -8,6 +9,9 @@
      { urls: 'turn:global.relay.metered.ca:443?transport=tcp', username: '...', credential: '...' }
 */
 window.NITRO_CONFIG = {
+  /* 릴레이 서버(relay/ 폴더의 Cloudflare Worker) 주소. 비워 두면 PeerJS P2P를 씁니다.
+     배포 후: 'wss://nitro-rush-relay.<계정>.workers.dev'   테스트: URL에 ?relay=ws://127.0.0.1:8787 */
+  relayUrl: 'wss://nitro-rush-relay.nitro-rush-relay.workers.dev',
   stunServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },

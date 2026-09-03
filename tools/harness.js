@@ -6,7 +6,7 @@ const CH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const [,, url, durS, shotsArg, keysArg, evalArg] = process.argv;
 const dur = parseFloat(durS || '10');
 const port = 9333 + Math.floor(Math.random() * 500);
-const prof = `/private/tmp/claude-501/-Users-iwonjun/f626be45-d4c7-4c2a-a1a0-8108e5b79814/scratchpad/prof_${port}`;
+const prof = `${process.env.HARNESS_PROF_DIR || require('os').tmpdir()}/nitro_prof_${port}`;
 const gpuFlags = process.env.GPU ? ['--ignore-gpu-blocklist'] : ['--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
 const chrome = spawn(CH, ['--headless=new'].concat(gpuFlags).concat(['--no-sandbox', '--no-first-run', '--mute-audio', '--autoplay-policy=no-user-gesture-required',
   `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, '--window-size=1100,700', 'about:blank']), { stdio: 'ignore' });

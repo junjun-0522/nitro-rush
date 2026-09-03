@@ -1,0 +1,14 @@
+{
+  "name": "nitro-rush-relay",
+  "private": true,
+  "version": "1.0.0",
+  "description": "WebSocket relay for NITRO RUSH online rooms (Cloudflare Workers + Durable Objects)",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy",
+    "login": "wrangler login"
+  },
+  "devDependencies": {
+    "wrangler": "^4.128.0"
+  }
+}

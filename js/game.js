@@ -171,8 +171,11 @@
     click('btnOnline', function () {
       $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online');
       var el = $('turnStatus');
-      var show = function () { var ok = !!window.NITRO_TURN_OK; el.textContent = ok ? '중계(TURN) 서버: 설정됨 — 휴대폰 데이터/학교망에서도 접속 가능' : '중계(TURN) 서버: 없음 — 같은 집 와이파이/일반 가정망끼리만 연결돼요. js/config.js 참고'; el.style.color = ok ? '#9be7ff' : '#ffb86b'; };
-      if (window.NITRO_ICE) show(); else if (window.NITRO_ICE_READY) window.NITRO_ICE_READY.then(show, show); else show();
+      var show = function () {
+        if (Net.transport() === 'relay') { el.textContent = '연결 방식: 릴레이 서버 — 휴대폰 데이터/학교 와이파이에서도 접속 가능'; el.style.color = '#9be7ff'; return; }
+        var ok = !!window.NITRO_TURN_OK; el.textContent = ok ? '연결 방식: P2P + 중계(TURN) 서버 — 휴대폰 데이터/학교망에서도 접속 가능' : '연결 방식: P2P 직접 연결 — 같은 집 와이파이/일반 가정망끼리만 연결돼요. js/config.js 참고'; el.style.color = ok ? '#9be7ff' : '#ffb86b';
+      };
+      if (Net.transport() === 'relay' || window.NITRO_ICE) show(); else if (window.NITRO_ICE_READY) window.NITRO_ICE_READY.then(show, show); else show();
     });
     click('btnGarage', function () { openGarage(); });
     click('btnGarageBack', function () { showScreen('menu'); });
@@ -811,7 +814,9 @@
   function onlineStatus(msg, err) { var el = $('onlineStatus'); el.textContent = msg; el.style.color = err ? '#ff8a8a' : '#9be7ff'; }
   function netErrorText(e) {
     var t = (e && (e.type || e.message)) || '';
-    if (/peer-unavailable/.test(t)) return '그 코드의 방이 없어요. 코드 오타이거나 방장이 방을 닫았어요 (방장 화면이 ROOM 화면에 떠 있어야 해요).';
+    if (/peer-unavailable|noroom/.test(t)) return '그 코드의 방이 없어요. 코드 오타이거나 방장이 방을 닫았어요 (방장 화면이 ROOM 화면에 떠 있어야 해요).';
+    if (/taken/.test(t)) return '이 방 코드는 이미 사용 중이에요. 다시 만들어주세요.';
+    if (/server-timeout|^server$|relay-closed/.test(t)) return '릴레이 서버에 연결할 수 없어요. 인터넷/방화벽을 확인하고 다시 시도하세요. (' + t + ')';
     if (/timeout/.test(t)) return '방은 찾았지만 P2P 직접 연결이 안 됐어요 (ICE: ' + (e.ice || '?') + '). 휴대폰 데이터·학교 와이파이처럼 직접 연결을 막는 망일 수 있어요. 둘 다 집 와이파이(PC)로 다시 시도해보세요.';
     if (/closed/.test(t)) return '방장과의 연결이 끊겼어요.';
     if (/full/.test(t)) return '방이 가득 찼어요 (최대 8명).';
@@ -829,13 +834,14 @@
     net.on('hostLeft', function () { leaveRoom('방장이 나갔어요.'); });
     net.on('error', function (e) { console.warn('net error', e); });
     net.on('stage', function (s) {
-      if (s === 'signaling') onlineStatus('접속 서버에 연결 중...');
-      else if (s === 'connecting') onlineStatus('방을 찾았어요. 방장과 P2P 연결 중... (최대 20초)');
+      var relay = Net.transport() === 'relay';
+      if (s === 'signaling') onlineStatus(relay ? '릴레이 서버에 연결 중...' : '접속 서버에 연결 중...');
+      else if (s === 'connecting') onlineStatus(relay ? '방을 확인하는 중...' : '방을 찾았어요. 방장과 P2P 연결 중... (최대 20초)');
       else if (s === 'open') onlineStatus('연결됨!');
     });
   }
   function createRoom(forcedCode) {
-    if (typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
+    if (Net.transport() === 'p2p' && typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
     var prof = profile();
     onlineStatus('방 만드는 중...');
     var net = new Net();
@@ -851,7 +857,7 @@
   function joinRoom(code) {
     code = (code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (code.length < 4) { onlineStatus('4자리 방 코드를 입력하세요.', true); return; }
-    if (typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
+    if (Net.transport() === 'p2p' && typeof Peer === 'undefined') { onlineStatus('PeerJS 라이브러리를 불러오지 못했어요.', true); return; }
     var prof = profile();
     onlineStatus('방 ' + code + ' 에 접속 중...');
     var net = new Net();

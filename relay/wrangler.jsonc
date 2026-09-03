@@ -1,0 +1,21 @@
+// NITRO RUSH relay — Cloudflare Worker + Durable Object (one object per room code)
+// local:  npx wrangler@4 dev --port 8787
+// deploy: npx wrangler@4 deploy        (needs `npx wrangler@4 login` once)
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nitro-rush-relay",
+  "main": "src/index.js",
+  "compatibility_date": "2025-09-01",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "vars": {
+    // browsers send Origin on WebSocket upgrades; anything else is refused (403)
+    "ALLOWED_ORIGINS": "https://junjun-0522.github.io,http://127.0.0.1:8765,http://localhost:8765"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ROOM", "class_name": "Room" }]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Room"] }
+  ]
+}
