@@ -1,5 +1,7 @@
 # NITRO RUSH — 브라우저 아케이드 카트 레이싱
 
+**플레이:** https://junjun-0522.github.io/nitro-rush/
+
 ## 실행
 - `index.html` 더블클릭 (Chrome 권장) 또는
 - `python3 -m http.server 8765` 실행 후 http://127.0.0.1:8765/index.html
