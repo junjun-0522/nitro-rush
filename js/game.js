@@ -307,10 +307,10 @@
       var isHost = online.isHost, kartById = {};
       var aiCount = n - cfg.players.length;
       for (i = 0; i < aiCount; i++) {
-        var lk2 = aiLook(rng);
+        var lk2 = aiLook(rng), sk = difficultySkill(rng); // consume the shared rng identically on every peer
         kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet });
         list.push(kt); kartById[100 + i] = kt;
-        if (isHost) ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: 0.7, seed: i + 1 }));
+        if (isHost) ais.push(new AIDriver(kt, { skill: sk, band: 0.7, seed: i + 1 }));
       }
       cfg.players.forEach(function (p, pi) {
         var mine = p.id === online.myId;
