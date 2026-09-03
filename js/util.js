@@ -109,6 +109,32 @@
         grain(g, w, h, rng, 5000, 0.25);
       });
     },
+    rock: function () {
+      return U.canvasTexture('rock', 256, function (g, w, h) {
+        var rng = U.rng(71);
+        g.fillStyle = '#c8804a'; g.fillRect(0, 0, w, h);
+        var y = 0;
+        while (y < h) { var bh = rng.range(6, 22); var c = ['#c8804a', '#b86a3c', '#d9945c', '#a85a34', '#e0a068'][rng.int(0, 4)]; g.fillStyle = c; g.fillRect(0, y, w, bh); y += bh; }
+        grain(g, w, h, rng, 5000, 0.22);
+      });
+    },
+    snow: function () {
+      return U.canvasTexture('snow', 256, function (g, w, h) {
+        var rng = U.rng(81);
+        g.fillStyle = '#f4f8ff'; g.fillRect(0, 0, w, h);
+        for (var i = 0; i < 4000; i++) { var v = rng.int(-14, 6); g.fillStyle = 'rgba(' + (230 + v) + ',' + (238 + v) + ',255,0.5)'; g.fillRect(rng() * w, rng() * h, rng.range(1, 4), rng.range(1, 4)); }
+      });
+    },
+    ice: function () {
+      return U.canvasTexture('ice', 256, function (g, w, h) {
+        var rng = U.rng(91);
+        g.fillStyle = '#aebfd6'; g.fillRect(0, 0, w, h);
+        grain(g, w, h, rng, 4000, 0.18, true);
+        g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 1.5;
+        for (var i = 0; i < 28; i++) { g.beginPath(); var x = rng() * w, y = rng() * h; g.moveTo(x, y); for (var k = 0; k < 4; k++) { x += rng.range(-30, 30); y += rng.range(-30, 30); g.lineTo(x, y); } g.stroke(); }
+        g.fillStyle = 'rgba(255,255,255,0.12)'; for (i = 0; i < 12; i++) { g.beginPath(); g.arc(rng() * w, rng() * h, rng.range(8, 30), 0, 7); g.fill(); }
+      });
+    },
     concrete: function () {
       return U.canvasTexture('concrete', 256, function (g, w, h) {
         var rng = U.rng(51);

@@ -8,6 +8,9 @@
 
 외부 에셋 없음. Three.js / PeerJS는 `js/vendor/`에 포함.
 
+## 트랙
+AZURE COAST(입문) · NEON METROPOLIS(고수) · SUNSET CANYON(중급, 협곡 다리·점프) · FROST PEAK(고수, 빙판·얼음 동굴)
+
 ## 캐릭터 · 펫
 메인 메뉴 → **GARAGE**에서 8명의 캐릭터(능력치 차이)와 6종 펫(작은 보너스, 레이스 중 옆에서 날아다님) 선택.
 

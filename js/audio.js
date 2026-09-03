@@ -254,7 +254,9 @@
   // A tiny step-sequencer: bass + arp + hats. Two moods.
   var MOODS = {
     coast: { bpm: 128, root: 0, prog: [[0, 4, 7, 11], [5, 9, 12, 16], [7, 11, 14, 17], [2, 5, 9, 12]], lead: 'square', bass: 'triangle', base: 110 },
-    neon: { bpm: 140, root: 0, prog: [[0, 3, 7, 10], [8, 12, 15, 19], [5, 8, 12, 15], [3, 7, 10, 14]], lead: 'sawtooth', bass: 'square', base: 82.4 }
+    neon: { bpm: 140, root: 0, prog: [[0, 3, 7, 10], [8, 12, 15, 19], [5, 8, 12, 15], [3, 7, 10, 14]], lead: 'sawtooth', bass: 'square', base: 82.4 },
+    canyon: { bpm: 118, root: 0, prog: [[0, 4, 7, 10], [5, 9, 12, 15], [7, 11, 14, 17], [3, 7, 10, 14]], lead: 'triangle', bass: 'sawtooth', base: 98 },
+    frost: { bpm: 134, root: 0, prog: [[0, 3, 7, 12], [8, 12, 15, 19], [5, 8, 12, 15], [7, 10, 14, 19]], lead: 'sine', bass: 'triangle', base: 130.8 }
   };
 
   AudioSys.prototype.startMusic = function (mood) {

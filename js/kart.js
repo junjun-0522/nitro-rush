@@ -402,6 +402,7 @@
     this.forward(_fwd); this.rightVec(_right);
     var vf2 = _tmp.dot(_fwd), vl2 = _tmp.dot(_right);
     var grip = this.airborne ? P.gripAir : (this.drifting ? P.gripDrift : (this.offroad ? P.gripDirt : P.gripNormal));
+    if (!this.airborne && !this.offroad) grip *= (world.track.theme.gripMul || 1);
     vl2 *= Math.exp(-grip * dt);
     if (this.drifting && !this.airborne) {
       // keep momentum through the slide

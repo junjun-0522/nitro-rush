@@ -57,8 +57,8 @@
       // right = up x tangent  (outward on a CCW loop)
       R[j] = new THREE.Vector3().crossVectors(UP, T[j]).normalize();
     }
-    var gain = opts.bankGain === undefined ? 33 : opts.bankGain;
-    var maxB = opts.maxBank === undefined ? 0.22 : opts.maxBank;
+    var gain = opts.bankGain === undefined ? 30 : opts.bankGain;
+    var maxB = opts.maxBank === undefined ? 0.16 : opts.maxBank;
     for (j = 0; j < N; j++) {
       var tPrev = T[(j + N - 1) % N], tNext = T[(j + 1) % N];
       _v1.subVectors(tNext, tPrev).multiplyScalar(1 / (2 * this.ds));
@@ -79,6 +79,10 @@
       r.multiplyScalar(Math.cos(B[j])).addScaledVector(up0, Math.sin(B[j])).normalize();
       R[j] = r;
       U[j] = new THREE.Vector3().crossVectors(T[j], r).normalize();
+      // banking lifts the outer edge only: keep the inner edge on the base height so the road
+      // never sinks below the surrounding ground
+      if (P[j].y < 0.05) P[j].y = 0.05;
+      P[j].y += (W[j] / 2) * Math.abs(Math.sin(B[j]));
     }
 
     this.P = P; this.T = T; this.R = R; this.U = U; this.W = W; this.bank = B; this.tParam = Tt;

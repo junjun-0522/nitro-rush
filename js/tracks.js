@@ -47,8 +47,64 @@
         sun: 0x9fb4ff, sunInt: 0.75, hemi: [0x5a48b8, 0x101024], hemiInt: 0.8,
         road: 'asphaltNight', rail: 0x1a1a2a, railEm: 0x00e5ff, ground: 'concrete'
       }
+    },
+    {
+      id: 'canyon', name: 'SUNSET CANYON', tag: 'ADVANCED', mood: 'canyon', laps: 3,
+      desc: '석양의 붉은 협곡. 긴 고속 직선, 연속 헤어핀 스위치백, 협곡을 가로지르는 다리와 점프.',
+      pts: [[-343.9,-34.5,0],[-343.9,25.5,0],[-343.9,85.5,0],[-340.5,107.1,0],[-330.5,126.6,0.3],[-315,142.1,1.6],[-295.5,152.1,3.6],[-273.9,155.5,4.8],[-217.1,155.5,5],[-160.3,155.5,5],[-103.4,155.5,5],[-46.6,155.5,5],[10.2,155.5,5],[67,155.5,5],[123.9,155.5,5],[180.7,155.5,5],[237.5,155.5,4.7],[256.7,151.7,3.2],[272.9,140.9,1],[283.7,124.6,0],[287.5,105.5,0],[287.5,25.5,0],[283.4,7.3,0],[271.7,-7.3,0],[254.9,-15.4,0],[236.2,-15.4,0],[219.3,-7.3,0],[207.7,7.3,0],[203.5,25.5,0],[203.5,95.5,0],[199.4,113.7,0],[187.7,128.3,0],[170.9,136.4,0],[152.2,136.4,0],[135.3,128.3,0],[123.7,113.7,0],[119.5,95.5,0],[119.5,50.5,0],[119.5,5.5,1.3],[116.2,-13.3,5.8],[106.7,-29.9,10.5],[92,-42.1,12],[77.4,-54.4,12],[67.8,-71,12],[64.5,-89.8,12],[64.5,-166.4,12],[61.6,-184.9,12],[53.1,-201.6,12],[39.8,-214.9,12],[23.1,-223.4,12],[4.5,-226.4,12],[-50.5,-226.4,12],[-105.5,-226.4,11],[-122.4,-222.6,6.7],[-136.1,-212.1,1.8],[-168.3,-173.8,0],[-182,-163.2,0],[-198.9,-159.5,0],[-278.9,-159.5,0],[-299,-156.3,0],[-317.1,-147.1,0],[-331.5,-132.7,0],[-340.7,-114.6,0],[-343.9,-94.5,0]],
+      width: 22, narrow: [[0.41, 0.47, 18], [0.51, 0.56, 18]],
+      zones: [
+        { a: 0.41, b: 0.465, side: 1, extra: 20, kind: 'dirt' },
+        { a: 0.51, b: 0.56, side: -1, extra: 20, kind: 'dirt' },
+        { a: 0.81, b: 0.85, side: 1, extra: 16, kind: 'dirt' }
+      ],
+      ramps: [{ a: 0.30, b: 0.315, h: 2.0 }, { a: 0.795, b: 0.81, h: 2.2 }],
+      tunnels: [{ a: 0.17, b: 0.24 }],
+      boostPads: [{ s: 0.44, lat: 18 }, { s: 0.535, lat: -18 }, { s: 0.12, lat: 0 }, { s: 0.70, lat: 0 }, { s: 0.83, lat: 12 }, { s: 0.97, lat: 0 }],
+      itemRows: [0.03, 0.10, 0.20, 0.28, 0.35, 0.48, 0.58, 0.70, 0.80, 0.90],
+      theme: {
+        sky: [0x4a2a7a, 0xffa64a], fog: 0xf0b07a, fogNear: 220, fogFar: 820,
+        sun: 0xffd2a0, sunInt: 1.3, sunDir: [-0.8, 0.45, -0.4], hemi: [0xffc9a0, 0x8a5a3a], hemiInt: 0.7, exposure: 1.0,
+        road: 'asphalt', roadTint: 0xd9c2a8, rail: 0xff8c42, railEm: 0x000000, ground: 'sand', skirt: 'dirt',
+        tunnel: 0x9a6a45, tunnelLight: 0xffe0b0, portal: 0x8a5a3a, portalEm: 0x000000, pillar: 0xb07a50, gate: 0xffffff, gateEm: 0x000000,
+        time: 'SUNSET', stars: false, seed: 555, preview: ['rgba(255,160,80,0.5)', '#5a4636', '#ffd9a0']
+      }
+    },
+    {
+      id: 'frost', name: 'FROST PEAK', tag: 'EXPERT', mood: 'frost', laps: 3,
+      desc: '눈 덮인 산길. 22m 오르막과 빙판 내리막 에스, 얼음 동굴 터널, 미끄러운 노면.',
+      pts: [[-284.9,-92.8,0],[-284.9,-38.7,0],[-284.9,15.3,0],[-284.9,69.4,0],[-284.9,123.5,0],[-284.9,177.5,0.3],[-281.1,196.7,0.9],[-270.3,212.9,2],[-254,223.7,3.4],[-234.9,227.5,5.2],[-189.9,227.5,7.4],[-144.9,227.5,10],[-124,220.6,12.8],[-111.4,202.6,15.3],[-112,180.6,17.4],[-132.5,124.2,19.1],[-133.2,102.2,20.4],[-120.5,84.1,21.3],[-99.6,77.2,21.8],[-40.3,77.2,22],[19,77.2,22],[78.4,77.2,22],[137.7,77.2,22],[197,77.2,22],[256.4,77.2,22],[273.6,73.8,22],[288.2,64,22],[298,49.4,22],[301.4,32.2,22],[301.4,-27.8,22],[296.3,-46.8,22],[282.4,-60.7,22],[263.4,-65.8,21.9],[244.4,-60.7,21.4],[230.5,-46.8,20.3],[225.4,-27.8,18.6],[225.4,22.2,16.3],[220.3,41.2,13.5],[206.4,55.1,10.6],[187.4,60.2,8.1],[168.4,55.1,6.3],[154.5,41.2,4.9],[149.4,22.2,4.2],[149.4,-24.5,4],[149.4,-71.1,3.7],[149.4,-117.8,3.1],[145.6,-136.9,2],[134.7,-153.2,0.9],[118.5,-164,0.3],[99.4,-167.8,0],[49.4,-167.8,0],[-0.6,-167.8,0],[-50.6,-167.8,0],[-100.6,-167.8,0],[-120.6,-173.2,0],[-135.3,-187.8,0],[-149.9,-202.4,0],[-169.9,-207.8,0],[-229.9,-207.8,0],[-250.9,-203.6,0],[-268.8,-191.7,0],[-280.7,-173.8,0],[-284.9,-152.8,0]],
+      width: 20, narrow: [[0.51, 0.56, 16]],
+      zones: [
+        { a: 0.215, b: 0.25, side: 1, extra: 16, kind: 'dirt' },
+        { a: 0.515, b: 0.55, side: 1, extra: 18, kind: 'dirt' },
+        { a: 0.595, b: 0.63, side: -1, extra: 16, kind: 'dirt' }
+      ],
+      ramps: [{ a: 0.47, b: 0.485, h: 2.2 }, { a: 0.70, b: 0.715, h: 1.8 }],
+      tunnels: [{ a: 0.36, b: 0.44 }, { a: 0.80, b: 0.85 }],
+      boostPads: [{ s: 0.235, lat: 14 }, { s: 0.53, lat: 14 }, { s: 0.61, lat: -14 }, { s: 0.40, lat: 0 }, { s: 0.82, lat: 0 }, { s: 0.04, lat: 0 }],
+      itemRows: [0.04, 0.10, 0.19, 0.31, 0.42, 0.57, 0.66, 0.78, 0.92],
+      theme: {
+        sky: [0x6fb4ff, 0xe8f4ff], fog: 0xdbeeff, fogNear: 200, fogFar: 760,
+        sun: 0xffffff, sunInt: 1.4, sunDir: [0.4, 1, -0.6], hemi: [0xd8ecff, 0x9fb3c8], hemiInt: 0.8, exposure: 1.05,
+        road: 'ice', roadTint: 0xffffff, rail: 0xdde8f5, railEm: 0x000000, ground: 'snow', skirt: 'snow',
+        tunnel: 0xbfe0ff, tunnelLight: 0xa0f0ff, portal: 0x9fd0ff, portalEm: 0x3399ff, pillar: 0x9fb3c8, gate: 0xffffff, gateEm: 0x000000,
+        time: 'DAY', stars: false, seed: 999, gripMul: 0.86, preview: ['rgba(160,220,255,0.6)', '#8fa8c0', '#ffffff']
+      }
     }
   ];
+
+  // fill theme defaults (older two tracks used mood-based choices)
+  function themeDefaults(th, mood) {
+    var neon = mood === 'neon';
+    var d = { tunnel: neon ? 0x151a2e : 0x8d8f9b, tunnelLight: neon ? 0xff3fd6 : 0xfff3b0, portal: neon ? 0x00e5ff : 0xff6b6b, portalEm: neon ? 0x00e5ff : 0x000000,
+      pillar: neon ? 0x1d1f33 : 0x9aa4b2, gate: neon ? 0x2a2a44 : 0xffffff, gateEm: neon ? 0x00e5ff : 0x000000, skirt: th.ground === 'grass' ? 'grass' : 'concrete',
+      stars: neon, time: neon ? 'NIGHT' : 'DAY', sunDir: neon ? [0.35, 1, 0.45] : [-0.5, 1, -0.7], exposure: neon ? 1.15 : 1.05, seed: neon ? 777 : 333, gripMul: 1, roadTint: 0xffffff,
+      preview: neon ? ['rgba(143,92,255,0.5)', '#1b1d33', '#00e5ff'] : ['rgba(47,224,255,0.4)', '#3d4049', '#ffe66d'] };
+    for (var k in d) if (th[k] === undefined) th[k] = d[k];
+    th.mood = mood;
+  }
+  TRACKS.forEach(function (t) { themeDefaults(t.theme, t.mood); });
 
   // ------------------------------------------------------------- helpers
   function mergeGeoms(list) {
@@ -238,9 +294,19 @@
     });
   };
 
-  /** ground height (world y) at station idx, lateral lat */
+  /** ground height (world y) at station idx, lateral lat (shoulders beyond the road edge are flat) */
   Track.prototype.groundY = function (idx, lat, right, center) {
-    return center.y + lat * right.y + this.hExtra[idx];
+    var hw = this.path.W[idx] / 2, lc = lat < -hw ? -hw : (lat > hw ? hw : lat);
+    return center.y + lc * right.y + this.hExtra[idx];
+  };
+
+  /** world position of the drivable surface at station j, lateral lat */
+  Track.prototype.surfacePoint = function (j, lat, out) {
+    var path = this.path, hw = path.W[j] / 2, lc = lat < -hw ? -hw : (lat > hw ? hw : lat), ex = lat - lc;
+    out.copy(path.P[j]).addScaledVector(path.R[j], lc);
+    if (ex !== 0) { var r = path.R[j], len = Math.hypot(r.x, r.z) || 1; out.x += r.x / len * ex; out.z += r.z / len * ex; }
+    out.y += this.hExtra[j];
+    return out;
   };
 
   Track.prototype.surfaceAt = function (idx, lat) {
@@ -266,9 +332,7 @@
     var minLat = this.minLat, maxLat = this.maxLat, hExtra = this.hExtra;
 
     function edge(latFn) {
-      return function (j, out) {
-        out.copy(path.P[j]).addScaledVector(path.R[j], latFn(j)); out.y += hExtra[j];
-      };
+      return function (j, out) { self.surfacePoint(j, latFn(j), out); };
     }
     var half = function (j) { return path.W[j] / 2; };
 
@@ -276,7 +340,7 @@
     var roadTex = tex[th.road](); roadTex.repeat.set(1, 1);
     var road = new THREE.Mesh(
       stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 10),
-      new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.9, metalness: 0.05 })
+      new THREE.MeshStandardMaterial({ map: roadTex, color: th.roadTint, roughness: th.road === 'ice' ? 0.35 : 0.9, metalness: th.road === 'ice' ? 0.2 : 0.05 })
     );
     road.receiveShadow = true; g.add(road);
 
@@ -309,7 +373,7 @@
 
     // guard rails
     var railMat = new THREE.MeshStandardMaterial({ color: th.rail, roughness: 0.4, metalness: 0.5, emissive: th.railEm, emissiveIntensity: th.railEm ? 0.9 : 0, side: THREE.DoubleSide });
-    function railEdge(latFn, h) { return function (j, out) { out.copy(path.P[j]).addScaledVector(path.R[j], latFn(j)); out.y += hExtra[j] + h; }; }
+    function railEdge(latFn, h) { return function (j, out) { self.surfacePoint(j, latFn(j), out); out.y += h; }; }
     var rl = stripGeom(path, railEdge(function (j) { return minLat[j] - 0.7; }, 0.35), railEdge(function (j) { return minLat[j] - 0.7; }, 0.95), 4);
     var rr = stripGeom(path, railEdge(function (j) { return maxLat[j] + 0.7; }, 0.35), railEdge(function (j) { return maxLat[j] + 0.7; }, 0.95), 4);
     var rails = new THREE.Mesh(mergeGeoms([rl, rr]), railMat); rails.castShadow = true; g.add(rails);
@@ -320,7 +384,7 @@
     var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(1, 1, 1), pi = 0;
     for (j = 0; j < N; j += 8) {
       [minLat[j] - 0.7, maxLat[j] + 0.7].forEach(function (lat) {
-        tmp.copy(path.P[j]).addScaledVector(path.R[j], lat); tmp.y += hExtra[j] + 0.5;
+        self.surfacePoint(j, lat, tmp); tmp.y += 0.5;
         m4.compose(tmp, q, sc); posts.setMatrixAt(pi++, m4);
       });
     }
@@ -328,9 +392,9 @@
 
     // skirts (embankment) & pillars for elevated parts
     var groundY = -0.3;
-    var skirtMat = new THREE.MeshStandardMaterial({ map: tex[th.ground === 'grass' ? 'grass' : 'concrete'](), roughness: 1, side: THREE.DoubleSide });
-    var skirtL = stripGeom(path, railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { out.copy(path.P[j]).addScaledVector(path.R[j], minLat[j] - 1.2 - Math.min(6, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.6)); out.y = groundY; }, 6);
-    var skirtR = stripGeom(path, railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { out.copy(path.P[j]).addScaledVector(path.R[j], maxLat[j] + 1.2 + Math.min(6, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.6)); out.y = groundY; }, 6);
+    var skirtMat = new THREE.MeshStandardMaterial({ map: tex[th.skirt](), roughness: 1, side: THREE.DoubleSide });
+    var skirtL = stripGeom(path, railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { self.surfacePoint(j, minLat[j] - 1.2 - Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
+    var skirtR = stripGeom(path, railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { self.surfacePoint(j, maxLat[j] + 1.2 + Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
     var skirt = new THREE.Mesh(mergeGeoms([skirtL, skirtR]), skirtMat); skirt.receiveShadow = true; g.add(skirt);
     // under-deck & pillars where high
     var pillarGeo = new THREE.CylinderGeometry(1.2, 1.5, 1, 10);
@@ -348,14 +412,14 @@
       }
     }
     if (pillars.length) {
-      var pm = new THREE.Mesh(mergeGeoms(pillars), new THREE.MeshStandardMaterial({ color: th.mood === 'neon' ? 0x1d1f33 : 0x9aa4b2, roughness: 0.8 }));
+      var pm = new THREE.Mesh(mergeGeoms(pillars), new THREE.MeshStandardMaterial({ color: th.pillar, roughness: 0.8 }));
       pm.castShadow = true; g.add(pm);
     }
 
     // tunnels
-    var tunMat = new THREE.MeshStandardMaterial({ color: th.mood === 'neon' ? 0x151a2e : 0x8d8f9b, roughness: 0.9, side: THREE.DoubleSide });
+    var tunMat = new THREE.MeshStandardMaterial({ color: th.tunnel, roughness: 0.9, side: THREE.DoubleSide });
     var tunGeos = [], lightGeos = [];
-    var stripMat = new THREE.MeshBasicMaterial({ color: th.mood === 'neon' ? 0xff3fd6 : 0xfff3b0 });
+    var stripMat = new THREE.MeshBasicMaterial({ color: th.tunnelLight });
     this.tunnels.forEach(function (t) {
       tunGeos.push(archGeom(path, t.a, t.b, function (j) { return maxLat[j] + 3.5; }, 10, 0));
       // light ring strips every ~14 stations
@@ -365,7 +429,7 @@
       // portal frames
       [t.a, t.b].forEach(function (j) {
         var jj = j % N;
-        var frame = new THREE.Mesh(archGeom(path, jj - 2 + N, jj + 2 + N, function (k) { return maxLat[k % N] + 4.4; }, 10, 0), new THREE.MeshStandardMaterial({ color: th.mood === 'neon' ? 0x00e5ff : 0xff6b6b, emissive: th.mood === 'neon' ? 0x00e5ff : 0x000000, emissiveIntensity: 0.8, side: THREE.DoubleSide }));
+        var frame = new THREE.Mesh(archGeom(path, jj - 2 + N, jj + 2 + N, function (k) { return maxLat[k % N] + 4.4; }, 10, 0), new THREE.MeshStandardMaterial({ color: th.portal, emissive: th.portalEm, emissiveIntensity: 0.8, side: THREE.DoubleSide }));
         g.add(frame);
       });
     });
@@ -376,7 +440,7 @@
     var checker = tex.checker(); checker.repeat.set(6, 1);
     var line = new THREE.Mesh(stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 1, [0, 3]), new THREE.MeshBasicMaterial({ map: checker }));
     line.position.y = 0.04; g.add(line);
-    var gateMat = new THREE.MeshStandardMaterial({ color: th.mood === 'neon' ? 0x2a2a44 : 0xffffff, emissive: th.mood === 'neon' ? 0x00e5ff : 0x000000, emissiveIntensity: 0.6 });
+    var gateMat = new THREE.MeshStandardMaterial({ color: th.gate, emissive: th.gateEm, emissiveIntensity: 0.6 });
     var gateH = 9, gw = path.W[0] + 6;
     [-gw / 2, gw / 2].forEach(function (lat) {
       var post = new THREE.Mesh(new THREE.BoxGeometry(1, gateH, 1), gateMat);
@@ -394,7 +458,7 @@
     var padTex = U.canvasTexture('pad', 64, function (c, w, h) {
       c.fillStyle = '#1b6cff'; c.fillRect(0, 0, w, h);
       c.fillStyle = '#7dfcff';
-      for (var i = 0; i < 3; i++) { var y = i * 20 + 4; c.beginPath(); c.moveTo(8, y); c.lineTo(32, y + 12); c.lineTo(56, y); c.lineTo(56, y + 6); c.lineTo(32, y + 18); c.lineTo(8, y + 6); c.fill(); }
+      for (var i = 0; i < 3; i++) { var y = i * 20 + 22; c.beginPath(); c.moveTo(8, y); c.lineTo(32, y - 12); c.lineTo(56, y); c.lineTo(56, y - 6); c.lineTo(32, y - 18); c.lineTo(8, y - 6); c.fill(); }
     }, { clamp: true });
     var padMat = this.padMat = new THREE.MeshBasicMaterial({ map: padTex, transparent: true, opacity: 0.95 });
     var padGeo = new THREE.PlaneGeometry(1, 1);
@@ -454,11 +518,11 @@
 
   Track.prototype._buildScenery = function () {
     var th = this.theme, g = this.group;
-    var rng = U.rng(th.mood === 'neon' ? 777 : 333);
-    g.add(skyDome(th.sky[0], th.sky[1], th.mood === 'neon'));
+    var rng = U.rng(th.seed);
+    g.add(skyDome(th.sky[0], th.sky[1], th.stars));
     var groundY = -0.3;
-    if (th.mood === 'coast') this._sceneryCoast(rng, this.envelope, null, groundY);
-    else this._sceneryNeon(rng, this.envelope, null, groundY);
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost }[th.mood] || this._sceneryCoast;
+    fn.call(this, rng, this.envelope, null, groundY);
   };
 
   function fanGeom(radiusFn, segments, y, inner) {
@@ -708,6 +772,127 @@
     // neon pulse on rails
     var railEmTarget = 0.9;
     this.animated.push(function (dt, t) { self.padMat.opacity = 0.75 + Math.sin(t * 6) * 0.2; });
+  };
+
+  // ---------------------------------------------------------- canyon (sunset desert)
+  Track.prototype._sceneryCanyon = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this;
+    var sandTex = tex.sand(); sandTex.repeat.set(140, 140);
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(3400, 3400), new THREE.MeshStandardMaterial({ map: sandTex, color: 0xe0a060, roughness: 1 }));
+    ground.rotation.x = -Math.PI / 2; ground.position.y = groundY; ground.receiveShadow = true; g.add(ground);
+    // mesas: layered sandstone blocks, big ones far out, a few inside the loop
+    var mesas = [], tries = 0, count = 0;
+    while (count < 70 && tries++ < 4000) {
+      var a = rng() * Math.PI * 2, tr = envelope(a);
+      var inside = rng() < 0.3;
+      var r = inside ? rng.range(0, Math.max(0, tr - 60)) : rng.range(tr + 40, tr + 320);
+      var w = rng.range(18, 90), d = rng.range(18, 90), h = inside ? rng.range(10, 30) : rng.range(15, 70);
+      var x = Math.cos(a) * r, z = Math.sin(a) * r;
+      if (self.distToPath(x, z) < 30 + Math.max(w, d) * 0.7) continue;
+      var geo = boxWithUV(w, h, d, 12); geo.translate(x, h / 2 + groundY, z);
+      mesas.push(geo);
+      // stepped top
+      if (rng() < 0.6) { var g2 = boxWithUV(w * 0.6, h * 0.35, d * 0.6, 12); g2.translate(x + rng.range(-w * 0.1, w * 0.1), h + h * 0.175 + groundY, z); mesas.push(g2); }
+      count++;
+    }
+    if (mesas.length) { var mm = new THREE.Mesh(mergeGeoms(mesas), new THREE.MeshStandardMaterial({ map: tex.rock(), roughness: 1 })); mm.castShadow = true; mm.receiveShadow = true; g.add(mm); }
+    // boulders near the road
+    var rockGeo = new THREE.DodecahedronGeometry(1, 0);
+    var spots = [];
+    for (var j = 0; j < path.N; j += 9) {
+      if (this.tunnelMask[j]) continue;
+      if (rng() < 0.5) { var side = rng() < 0.5 ? -1 : 1; spots.push({ j: j, lat: side > 0 ? this.maxLat[j] + rng.range(4, 14) : this.minLat[j] - rng.range(4, 14), s: rng.range(0.8, 3.2), rot: rng() * 6.28 }); }
+    }
+    var rocks = new THREE.InstancedMesh(rockGeo, new THREE.MeshStandardMaterial({ color: 0xb5734a, roughness: 1, flatShading: true }), spots.length);
+    var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), tmp = new THREE.Vector3(), e = new THREE.Euler();
+    spots.forEach(function (sp, i) {
+      self.surfacePoint(sp.j, sp.lat, tmp); tmp.y = groundY + sp.s * 0.5;
+      e.set(rng() * 0.5, sp.rot, 0); q.setFromEuler(e); sc.set(sp.s, sp.s * 0.7, sp.s);
+      m4.compose(tmp, q, sc); rocks.setMatrixAt(i, m4);
+    });
+    rocks.castShadow = true; g.add(rocks);
+    // cacti
+    var trunkGeo = new THREE.CylinderGeometry(0.35, 0.45, 5, 7); trunkGeo.translate(0, 2.5, 0);
+    var armGeo = mergeGeoms([new THREE.CylinderGeometry(0.22, 0.25, 1.4, 6).translate(1.0, 3.6, 0), new THREE.CylinderGeometry(0.22, 0.25, 1.2, 6).rotateZ(Math.PI / 2).translate(0.6, 2.9, 0), new THREE.CylinderGeometry(0.22, 0.25, 1.2, 6).translate(-0.9, 3.0, 0), new THREE.CylinderGeometry(0.22, 0.25, 1.0, 6).rotateZ(Math.PI / 2).translate(-0.5, 2.4, 0)]);
+    var cs = [];
+    for (j = 0; j < path.N; j += 12) { if (this.tunnelMask[j]) continue; if (rng() < 0.4) { var sd = rng() < 0.5 ? -1 : 1; cs.push({ j: j, lat: sd > 0 ? this.maxLat[j] + rng.range(5, 18) : this.minLat[j] - rng.range(5, 18), s: rng.range(0.7, 1.4), rot: rng() * 6.28 }); } }
+    var cactMat = new THREE.MeshStandardMaterial({ color: 0x3f9a4a, roughness: 0.9 });
+    var trunks = new THREE.InstancedMesh(trunkGeo, cactMat, cs.length), arms = new THREE.InstancedMesh(armGeo, cactMat, cs.length);
+    cs.forEach(function (c, i) { self.surfacePoint(c.j, c.lat, tmp); tmp.y = groundY; e.set(0, c.rot, 0); q.setFromEuler(e); sc.set(c.s, c.s, c.s); m4.compose(tmp, q, sc); trunks.setMatrixAt(i, m4); arms.setMatrixAt(i, m4); });
+    trunks.castShadow = arms.castShadow = true; g.add(trunks); g.add(arms);
+    // low sun and haze
+    var sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffb060, transparent: true, fog: false }));
+    sun.position.set(-1000, 170, -520); sun.scale.set(420, 420, 1); g.add(sun);
+    var halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xff8a40, transparent: true, opacity: 0.35, fog: false, blending: THREE.AdditiveBlending }));
+    halo.position.copy(sun.position); halo.scale.set(1100, 700, 1); g.add(halo);
+    // circling birds (tiny sprites)
+    for (var b = 0; b < 3; b++) {
+      var bird = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0x2a1a10, transparent: true }));
+      bird.scale.set(3, 1.2, 1); g.add(bird);
+      (function (bs, ph) { self.animated.push(function (dt, t) { bs.position.set(Math.cos(t * 0.25 + ph) * 160, 70 + Math.sin(t * 0.5 + ph) * 8, Math.sin(t * 0.25 + ph) * 160); }); })(bird, b * 2.1);
+    }
+  };
+
+  // ---------------------------------------------------------- frost (snowy peak)
+  Track.prototype._sceneryFrost = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this;
+    var snowTex = tex.snow(); snowTex.repeat.set(120, 120);
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(3400, 3400), new THREE.MeshStandardMaterial({ map: snowTex, roughness: 0.95 }));
+    ground.rotation.x = -Math.PI / 2; ground.position.y = groundY; ground.receiveShadow = true; g.add(ground);
+    // distant mountains
+    var mountMat = new THREE.MeshStandardMaterial({ color: 0xe6f0ff, roughness: 1, flatShading: true });
+    var mounts = [];
+    for (var i = 0; i < 18; i++) {
+      var a = i / 18 * Math.PI * 2 + rng.range(-0.1, 0.1), r = envelope(a) + rng.range(200, 380);
+      var rad = rng.range(120, 260), h = rng.range(160, 340);
+      var cg = new THREE.ConeGeometry(rad, h, 7); cg.translate(Math.cos(a) * r, h / 2 + groundY, Math.sin(a) * r);
+      mounts.push(cg);
+    }
+    g.add(new THREE.Mesh(mergeGeoms(mounts), mountMat));
+    // pine forest
+    var trunkGeo = new THREE.CylinderGeometry(0.25, 0.35, 3, 6); trunkGeo.translate(0, 1.5, 0);
+    var folGeo = mergeGeoms([new THREE.ConeGeometry(2.4, 4.5, 8).translate(0, 4, 0), new THREE.ConeGeometry(1.8, 3.8, 8).translate(0, 6.4, 0), new THREE.ConeGeometry(1.1, 3.0, 8).translate(0, 8.4, 0)]);
+    var spots = [], tries = 0;
+    for (var j = 0; j < path.N; j += 6) {
+      if (this.tunnelMask[j]) continue;
+      if (rng() < 0.55) { var side = rng() < 0.5 ? -1 : 1; spots.push({ j: j, lat: side > 0 ? this.maxLat[j] + rng.range(5, 20) : this.minLat[j] - rng.range(5, 20), s: rng.range(0.7, 1.5), rot: rng() * 6.28, j2: true }); }
+    }
+    while (spots.length < 420 && tries++ < 6000) {
+      var aa = rng() * Math.PI * 2, tr = envelope(aa), rr = rng() < 0.4 ? rng.range(0, Math.max(0, tr - 40)) : rng.range(tr + 25, tr + 200);
+      var x = Math.cos(aa) * rr, z = Math.sin(aa) * rr;
+      if (self.distToPath(x, z) < 22) continue;
+      spots.push({ x: x, z: z, s: rng.range(0.7, 1.6), rot: rng() * 6.28 });
+    }
+    var trunks = new THREE.InstancedMesh(trunkGeo, new THREE.MeshStandardMaterial({ color: 0x5a3b22, roughness: 1 }), spots.length);
+    var fol = new THREE.InstancedMesh(folGeo, new THREE.MeshStandardMaterial({ color: 0x2e7d4f, roughness: 0.9 }), spots.length);
+    var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), tmp = new THREE.Vector3(), e = new THREE.Euler();
+    spots.forEach(function (sp, i) {
+      if (sp.j2) { self.surfacePoint(sp.j, sp.lat, tmp); tmp.y = groundY; } else tmp.set(sp.x, groundY, sp.z);
+      e.set(0, sp.rot, 0); q.setFromEuler(e); sc.set(sp.s, sp.s, sp.s);
+      m4.compose(tmp, q, sc); trunks.setMatrixAt(i, m4); fol.setMatrixAt(i, m4);
+    });
+    trunks.castShadow = fol.castShadow = true; g.add(trunks); g.add(fol);
+    // snow caps on the foliage (small white cones)
+    var capGeo = new THREE.ConeGeometry(1.2, 1.2, 8); capGeo.translate(0, 9.3, 0);
+    var caps = new THREE.InstancedMesh(capGeo, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), spots.length);
+    spots.forEach(function (sp, i) { fol.getMatrixAt(i, m4); caps.setMatrixAt(i, m4); });
+    g.add(caps);
+    // ice crystals glowing near the road
+    var cryGeo = new THREE.OctahedronGeometry(1, 0); cryGeo.translate(0, 1.2, 0);
+    var cspots = [];
+    for (j = 0; j < path.N; j += 20) { if (this.tunnelMask[j]) continue; if (rng() < 0.6) { var sd = rng() < 0.5 ? -1 : 1; cspots.push({ j: j, lat: sd > 0 ? this.maxLat[j] + rng.range(3, 7) : this.minLat[j] - rng.range(3, 7), s: rng.range(0.8, 2.2), rot: rng() * 6.28 }); } }
+    var cry = new THREE.InstancedMesh(cryGeo, new THREE.MeshStandardMaterial({ color: 0xbfe8ff, emissive: 0x66ccff, emissiveIntensity: 0.6, roughness: 0.1, metalness: 0.4, transparent: true, opacity: 0.85 }), cspots.length);
+    cspots.forEach(function (c, i) { self.surfacePoint(c.j, c.lat, tmp); tmp.y = groundY; e.set(0, c.rot, 0.2); q.setFromEuler(e); sc.set(c.s, c.s * 1.6, c.s); m4.compose(tmp, q, sc); cry.setMatrixAt(i, m4); });
+    g.add(cry);
+    // pale sun + gentle snowfall sprites around the track centre
+    var sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffffff, transparent: true, fog: false }));
+    sun.position.set(500, 700, -700); sun.scale.set(220, 220, 1); g.add(sun);
+    var flakeMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false });
+    var flakes = [];
+    for (var f = 0; f < 60; f++) { var fl = new THREE.Sprite(flakeMat); fl.scale.set(0.5, 0.5, 1); fl.position.set(rng.range(-500, 500), rng.range(5, 60), rng.range(-500, 500)); fl.userData.v = rng.range(1.5, 3.5); fl.userData.ph = rng() * 6.28; g.add(fl); flakes.push(fl); }
+    this.animated.push(function (dt, t) {
+      for (var i = 0; i < flakes.length; i++) { var fl = flakes[i]; fl.position.y -= fl.userData.v * dt; fl.position.x += Math.sin(t + fl.userData.ph) * dt * 2; if (fl.position.y < 0) fl.position.y = 60; }
+    });
   };
 
   Track.prototype.update = function (dt, t) {

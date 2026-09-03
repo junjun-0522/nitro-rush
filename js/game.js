@@ -134,8 +134,8 @@
     scene.background = new THREE.Color(th.sky[1]);
     sun.color.setHex(th.sun); sun.intensity = th.sunInt;
     hemi.color.setHex(th.hemi[0]); hemi.groundColor.setHex(th.hemi[1]); hemi.intensity = th.hemiInt;
-    sunDir.set(th.mood === 'neon' ? 0.35 : -0.5, 1, th.mood === 'neon' ? 0.45 : -0.7).normalize();
-    renderer.toneMappingExposure = th.mood === 'neon' ? 1.15 : 1.05;
+    sunDir.set(th.sunDir[0], th.sunDir[1], th.sunDir[2]).normalize();
+    renderer.toneMappingExposure = th.exposure;
     buildMinimap();
     $('menuTrackName').textContent = TRACKS[i].name;
     fx.clear();
@@ -210,7 +210,7 @@
       var name = document.createElement('div'); name.className = 'name';
       name.innerHTML = def.name + ' <span class="tag ' + (def.tag === 'EXPERT' ? 'expert' : '') + '">' + def.tag + '</span>';
       var desc = document.createElement('div'); desc.className = 'desc'; desc.textContent = def.desc;
-      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = def.laps + ' LAPS · ' + (def.mood === 'neon' ? 'NIGHT' : 'DAY');
+      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = def.laps + ' LAPS · ' + def.theme.time;
       card.appendChild(name); card.appendChild(desc); card.appendChild(meta);
       card.addEventListener('click', function () {
         audio.init(); audio.ui('click');
@@ -234,9 +234,10 @@
     g.clearRect(0, 0, cv.width, cv.height);
     g.lineCap = 'round'; g.lineJoin = 'round';
     function path() { g.beginPath(); sp.forEach(function (p, i) { var x = p.x * sc + ox, y = p.z * sc + oy; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); g.closePath(); }
-    path(); g.strokeStyle = def.mood === 'neon' ? 'rgba(143,92,255,0.5)' : 'rgba(47,224,255,0.4)'; g.lineWidth = 14; g.stroke();
-    path(); g.strokeStyle = def.mood === 'neon' ? '#1b1d33' : '#3d4049'; g.lineWidth = 9; g.stroke();
-    path(); g.strokeStyle = def.mood === 'neon' ? '#00e5ff' : '#ffe66d'; g.lineWidth = 1.2; g.setLineDash([4, 6]); g.stroke(); g.setLineDash([]);
+    var pc = def.theme.preview;
+    path(); g.strokeStyle = pc[0]; g.lineWidth = 14; g.stroke();
+    path(); g.strokeStyle = pc[1]; g.lineWidth = 9; g.stroke();
+    path(); g.strokeStyle = pc[2]; g.lineWidth = 1.2; g.setLineDash([4, 6]); g.stroke(); g.setLineDash([]);
     g.fillStyle = '#fff'; g.fillRect(sp[0].x * sc + ox - 3, sp[0].z * sc + oy - 6, 6, 12);
   }
 
