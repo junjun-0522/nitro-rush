@@ -304,7 +304,7 @@
       </svg>
       <div class="val" id="hudSpeed">0</div><div class="unit">KM/H</div>
     </div>
-    <div class="hud-boost">
+    <div class="hud-boost" id="hudBoost">
       <div class="ready" id="boostReady">SHIFT · BOOST READY</div>
       <div class="label"><span>BOOST <span class="pips" id="boostPips"></span></span><span id="boostPct">0%</span></div>
       <div class="bar" id="boostBar"><div class="fill" id="boostFill"></div></div>
@@ -314,7 +314,8 @@
     <div id="tutorial" class="hidden">
       <div class="trow"><kbd>Space</kbd> + <kbd>←</kbd><kbd>→</kbd><span>코너에서 드리프트</span></div>
       <div class="trow"><span class="tier"><i class="c1"></i><i class="c2"></i><i class="c3"></i></span><span>오래 유지할수록 강한 부스터 (파랑 → 주황 → 보라)</span></div>
-      <div class="trow"><kbd>Shift</kbd><span>게이지가 차면 부스터 발동</span></div>
+      <div class="trow" id="tutShift"><kbd>Shift</kbd><span>게이지가 차면 부스터 발동</span></div>
+      <div class="trow" id="tutItem"><kbd>E</kbd><span>아이템 사용 (뒤처질수록 강한 아이템)</span></div>
     </div>
     <canvas id="minimap" width="220" height="220"></canvas>
     <div id="wrongWay" class="hidden">WRONG WAY!</div>

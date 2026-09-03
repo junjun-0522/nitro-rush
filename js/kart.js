@@ -356,7 +356,7 @@
     if (this.drifting) {
       var end = !inp.drift || vf < 6 || !control;
       if (end) {
-        if (this.driftTier > 0 && control) {
+        if (this.driftTier > 0 && control && this.gaugeMul > 0) {
           var b = P.driftBoost[this.driftTier - 1];
           this.applyBoost(b[0], b[1], 'drift');
           this.addGauge(P.driftGaugeGain[this.driftTier - 1]);

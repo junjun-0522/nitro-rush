@@ -7,7 +7,15 @@
   function $(id) { return document.getElementById(id); }
 
   var SETTINGS_KEY = 'nitroRush.settings.v1';
-  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'item', char: 'volt', pet: 'spark' };
+  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark' };
+  var MODES = {
+    mixed: { label: 'ITEM + SPEED', desc: '아이템 + 드리프트 부스터 (부스터 1개 저장)', items: true, gauge: true, stock: 1, gaugeMul: 1 },
+    speed: { label: 'SPEED RACE', desc: '아이템 없음 · 드리프트로 부스터 충전 · 부스터 2개 저장', items: false, gauge: true, stock: 2, gaugeMul: 1.5 },
+    item: { label: 'ITEM RACE', desc: '아이템만 · 부스터 게이지 없음 (부스트 패드는 유지)', items: true, gauge: false, stock: 0, gaugeMul: 0 }
+  };
+  var MODE_ORDER = ['mixed', 'speed', 'item'];
+  function modeInfo(m) { return MODES[m] || MODES.mixed; }
+  function nextMode(m) { return MODE_ORDER[(MODE_ORDER.indexOf(m) + 1) % MODE_ORDER.length]; }
   try { var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); for (var k in saved) if (k in settings) settings[k] = saved[k]; } catch (e) { }
   function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { } }
 
@@ -79,6 +87,7 @@
       if (/fast/.test(qs)) { settings.quality = 'low'; applyQuality(); renderer.setPixelRatio(0.5); window.__renderSkip = 8; }
       if (/manual/.test(qs)) window.__manual = true;
       if (/speed/.test(qs)) settings.mode = 'speed';
+      var mq = /mode=(mixed|speed|item)/.exec(qs); if (mq) settings.mode = mq[1];
       var chq = /char=([a-z]+)/.exec(qs); if (chq) settings.char = chq[1];
       var ptq = /pet=([a-z]*)/.exec(qs); if (ptq) settings.pet = ptq[1] || null;
       if (/garage/.test(qs)) { setTimeout(openGarage, 300); }
@@ -150,15 +159,15 @@
     $('vignette').classList.toggle('hidden', !(name === null));
     if (name) state = name === 'trackSelect' ? 'trackselect' : name;
     $('menuRacers').textContent = settings.racers;
-    $('menuMode').textContent = settings.mode === 'speed' ? 'SPEED RACE' : 'ITEM RACE';
-    $('menuModeDesc').textContent = settings.mode === 'speed' ? '아이템 없음 · 드리프트로 부스터 충전 · 부스터 2개 저장' : '아이템 박스 · 로켓 · 트랩 · 실드 · 라이트닝';
+    $('menuMode').textContent = modeInfo(settings.mode).label;
+    $('menuModeDesc').textContent = modeInfo(settings.mode).desc;
   }
 
   function bindUI() {
     function click(id, fn) { $(id).addEventListener('click', function () { audio.init(); audio.ui('click'); fn(); }); }
     document.querySelectorAll('.btn').forEach(function (b) { b.addEventListener('mouseenter', function () { if (audio.ctx) audio.ui('hover'); }); });
     click('btnPlay', function () { startRace(trackIndex); });
-    click('btnMode', function () { settings.mode = settings.mode === 'speed' ? 'item' : 'speed'; saveSettings(); showScreen('menu'); });
+    click('btnMode', function () { settings.mode = nextMode(settings.mode); saveSettings(); showScreen('menu'); });
     click('btnOnline', function () { $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online'); });
     click('btnGarage', function () { openGarage(); });
     click('btnGarageBack', function () { showScreen('menu'); });
@@ -169,7 +178,7 @@
     click('btnRoomStart', function () { hostStartRace(); });
     click('btnRoomTrackPrev', function () { hostLobbyChange({ track: (online.lobby.track + TRACKS.length - 1) % TRACKS.length }); });
     click('btnRoomTrackNext', function () { hostLobbyChange({ track: (online.lobby.track + 1) % TRACKS.length }); });
-    click('btnRoomMode', function () { hostLobbyChange({ mode: online.lobby.mode === 'speed' ? 'item' : 'speed' }); });
+    click('btnRoomMode', function () { hostLobbyChange({ mode: nextMode(online.lobby.mode) }); });
     $('roomRacers').addEventListener('change', function () { hostLobbyChange({ racers: parseInt(this.value, 10) }); });
     $('codeInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(this.value); });
     $('nickInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('codeInput').focus(); });
@@ -322,22 +331,25 @@
       online.kartById = kartById; online.sendTimer = 0; online.cfg = cfg; online.startAt = cfg.startAt;
       if (online.net.state !== undefined) online.net.state = 'racing';
     }
-    var path = track.path, speedMode = mode === 'speed';
+    var path = track.path, mi = modeInfo(mode);
     list.forEach(function (k, slot) {
       var g = track.gridSlot(slot, n);
-      k.maxStock = speedMode ? 2 : 1; k.gaugeMul = speedMode ? 1.5 : 1;
+      k.maxStock = mi.stock; k.gaugeMul = mi.gaugeMul;
       k.placeAt(path, g.s, g.lat);
       addKart(k);
       karts.push(k);
     });
-    fx.clear(); items.clear(); items.setEnabled(!speedMode);
-    $('hudItem').classList.toggle('hidden', speedMode);
-    $('hudMode').textContent = speedMode ? 'SPEED RACE' : 'ITEM RACE';
-    buildPips(speedMode ? 2 : 1);
+    fx.clear(); items.clear(); items.setEnabled(mi.items);
+    $('hudItem').classList.toggle('hidden', !mi.items);
+    $('hudBoost').classList.toggle('hidden', !mi.gauge);
+    $('tutShift').classList.toggle('hidden', !mi.gauge);
+    $('tutItem').classList.toggle('hidden', !mi.items);
+    $('hudMode').textContent = mi.label;
+    buildPips(mi.stock);
     showTutorial();
     race.time = 0; race.raceOn = false; race.countdown = 3.8; race.cdShown = -1; race.finishedAt = null; race.allDoneAt = null; race.results = null;
     cam.init = false; cam.fov = 72;
-    world = { path: path, track: track, karts: karts, player: player, items: items, itemsOn: !speedMode, raceOn: false, time: 0, clock: 0, playerProgress: 0, onPlayerHit: onPlayerHit, onPlayerItem: onPlayerItem,
+    world = { path: path, track: track, karts: karts, player: player, items: items, itemsOn: mi.items, raceOn: false, time: 0, clock: 0, playerProgress: 0, onPlayerHit: onPlayerHit, onPlayerItem: onPlayerItem,
       net: isOnline ? online.net : null, localKarts: isOnline ? karts.filter(function (k) { return !k.remote; }) : null, sendEvent: isOnline ? sendNetEvent : null };
     if (isOnline) race.countdown = Math.max(0.5, (cfg.startAt - online.net.now()) / 1000);
     race.firstFinishAt = null;
@@ -434,6 +446,7 @@
       if (race.countdown <= 0) {
         state = 'racing'; race.raceOn = true; race.time = 0;
         karts.forEach(function (k) { k.lapStart = 0; });
+        if (window.__autotest) race._camLog = 6;
         var cd2 = $('countdown'); cd2.classList.add('go'); cd2.innerHTML = '<span>GO!</span>'; audio.countdown(0);
         setTimeout(function () { if (state !== 'countdown') $('countdown').classList.add('hidden'); }, 1000);
       }
@@ -514,6 +527,7 @@
     continuousFX(dt);
     computeRanks();
     if (!background) updateCamera(dt);
+    if (race._camLog > 0) { race._camLog--; console.log('[AUTOTEST] camdist after GO: ' + camDist(player.pos).toFixed(1) + 'm fov=' + cam.fov.toFixed(0)); }
     for (i = 0; i < karts.length; i++) karts[i].updateVisual(dt, clock.t);
     if (!background) { updateShadowCamera(); updateHUD(dt); }
     fx.update(dt);
@@ -701,6 +715,7 @@
       _v.set(k.pos.x + Math.sin(a) * 7.5, k.pos.y + 3.0, k.pos.z + Math.cos(a) * 7.5);
       if (!cam.init) { camera.position.copy(_v); cam.look.copy(k.pos); cam.init = true; }
       camera.position.lerp(_v, 1 - Math.exp(-3 * dt));
+      cam.pos.copy(camera.position); // so the chase camera takes over from here at GO instead of jumping
       k.forward(_v3);
       cam.look.lerp(_v2.copy(k.pos).addScaledVector(_v3, 4).setY(k.pos.y + 1), 1 - Math.exp(-5 * dt));
       camera.lookAt(cam.look);
@@ -875,8 +890,8 @@
     for (var i = list.length; i < Math.max(2, lobby.racers); i++) html += '<div class="prow dim"><span class="chip" style="background:#555"></span><span>' + (i < lobby.racers ? 'AI' : '') + '</span></div>';
     $('roomPlayers').innerHTML = html;
     $('roomTrack').textContent = TRACKS[lobby.track].name;
-    $('roomTrackC').textContent = TRACKS[lobby.track].name + ' · ' + (lobby.mode === 'speed' ? 'SPEED' : 'ITEM') + ' · ' + lobby.racers + ' racers';
-    $('roomMode').textContent = lobby.mode === 'speed' ? 'SPEED RACE' : 'ITEM RACE';
+    $('roomTrackC').textContent = TRACKS[lobby.track].name + ' · ' + modeInfo(lobby.mode).label + ' · ' + lobby.racers + ' racers';
+    $('roomMode').textContent = modeInfo(lobby.mode).label;
     $('roomRacers').value = String(lobby.racers);
     $('roomHostControls').classList.toggle('hidden', !online.isHost);
     $('roomWait').classList.toggle('hidden', online.isHost);

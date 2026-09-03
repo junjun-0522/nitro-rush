@@ -99,14 +99,16 @@
   };
 
   /** random item weighted by rank position (0 = leader, 1 = last) */
+  /** rank-weighted: leaders get defensive items, the back of the pack gets catch-up firepower */
   ItemManager.prototype.randomItem = function (r) {
-    var w = {
-      speed: 25 + 25 * r,
-      shield: 18 + 6 * (1 - r),
-      rocket: r < 0.05 ? 3 : 15 + 22 * r,
-      trap: 6 + 26 * (1 - r),
-      lightning: r < 0.35 ? 2 : 6 + 26 * r
-    };
+    // weights at the front (r=0), the middle (r=0.5) and the back (r=1)
+    var front = { speed: 12, shield: 42, rocket: 4, trap: 42, lightning: 0 };
+    var mid = { speed: 30, shield: 18, rocket: 30, trap: 12, lightning: 10 };
+    var back = { speed: 30, shield: 4, rocket: 30, trap: 0, lightning: 36 };
+    var w = {}, k;
+    for (k in mid) {
+      w[k] = r < 0.5 ? front[k] + (mid[k] - front[k]) * (r / 0.5) : mid[k] + (back[k] - mid[k]) * ((r - 0.5) / 0.5);
+    }
     var total = 0, k; for (k in w) total += w[k];
     var x = Math.random() * total;
     for (k in w) { x -= w[k]; if (x <= 0) return k; }
