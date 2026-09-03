@@ -6,8 +6,14 @@
 
   var PREFIX = 'nitro-rush-v1-';
   function peerOpts() {
-    var ice = (global.NITRO_CONFIG && global.NITRO_CONFIG.iceServers) || [{ urls: 'stun:stun.l.google.com:19302' }];
+    var ice = global.NITRO_ICE || (global.NITRO_CONFIG && global.NITRO_CONFIG.stunServers) || [{ urls: 'stun:stun.l.google.com:19302' }];
     return { debug: 0, config: { iceServers: ice, sdpSemantics: 'unified-plan' } };
+  }
+  /** wait (briefly) for the TURN credential fetch so the first connection already uses the relay */
+  function whenIceReady(fn) {
+    if (global.NITRO_ICE || !global.NITRO_ICE_READY) { fn(); return; }
+    var fired = false, go = function () { if (!fired) { fired = true; fn(); } };
+    global.NITRO_ICE_READY.then(go, go); setTimeout(go, 4000);
   }
   var CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var MAX_PLAYERS = 8;
@@ -37,6 +43,10 @@
 
   // ------------------------------------------------------------ host
   Net.prototype.host = function (profile, cb, forcedCode) {
+    var self = this;
+    whenIceReady(function () { self._host(profile, cb, forcedCode); });
+  };
+  Net.prototype._host = function (profile, cb, forcedCode) {
     var self = this, code = forcedCode || Net.randomCode();
     this.isHost = true; this.myId = 0; this.nextId = 1; this.code = code; this.state = 'lobby';
     this.players = { 0: { id: 0, name: profile.name, char: profile.char, pet: profile.pet } };
@@ -96,6 +106,10 @@
 
   // ------------------------------------------------------------ client
   Net.prototype.join = function (code, profile, cb) {
+    var self = this;
+    whenIceReady(function () { self._join(code, profile, cb); });
+  };
+  Net.prototype._join = function (code, profile, cb) {
     var self = this, done = false;
     this.isHost = false; this.code = code; this.state = 'joining';
     function fail(err) { if (!done) { done = true; cb(err || new Error('failed')); } }

@@ -1,19 +1,21 @@
 <!DOCTYPE html><html><body><pre id="o">testing...</pre><script>
 (async function(){
   var cfgs = {
-    google: [{urls:'stun:stun.l.google.com:19302'}],
-    openrelay80: [{urls:'turn:openrelay.metered.ca:80', username:'openrelayproject', credential:'openrelayproject'}],
-    openrelay443tcp: [{urls:'turn:openrelay.metered.ca:443?transport=tcp', username:'openrelayproject', credential:'openrelayproject'}],
-    openrelays443: [{urls:'turns:openrelay.metered.ca:443', username:'openrelayproject', credential:'openrelayproject'}]
+    freestun_udp: [{urls:'turn:freestun.net:3478', username:'free', credential:'free'}],
+    freestun_tcp: [{urls:'turn:freestun.net:3478?transport=tcp', username:'free', credential:'free'}],
+    freestun_tls: [{urls:'turns:freestun.net:5349', username:'free', credential:'free'}],
+    anyfirewall: [{urls:'turn:turn.anyfirewall.com:443?transport=tcp', username:'webrtc', credential:'webrtc'}],
+    openrelay_new: [{urls:'turn:a.relay.metered.ca:80', username:'openrelayproject', credential:'openrelayproject'}],
+    expressturn: [{urls:'turn:relay1.expressturn.com:3478', username:'efree', credential:'efree'}]
   };
   for (var name in cfgs) {
     var types = {};
     await new Promise(function(res){
-      var pc = new RTCPeerConnection({ iceServers: cfgs[name], iceTransportPolicy: name === 'google' ? 'all' : 'relay' });
+      var pc = new RTCPeerConnection({ iceServers: cfgs[name], iceTransportPolicy: 'relay' });
       pc.createDataChannel('x');
       pc.onicecandidate = function(e){ if (e.candidate) { var t = /typ (\w+)/.exec(e.candidate.candidate); if (t) types[t[1]] = (types[t[1]]||0)+1; } };
       pc.onicegatheringstatechange = function(){ if (pc.iceGatheringState === 'complete') { res(); } };
-      setTimeout(res, 9000);
+      setTimeout(res, 8000);
       pc.createOffer().then(function(o){ return pc.setLocalDescription(o); });
     });
     console.log('[TURN] ' + name + ' -> ' + JSON.stringify(types));

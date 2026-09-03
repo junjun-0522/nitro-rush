@@ -168,7 +168,12 @@
     document.querySelectorAll('.btn').forEach(function (b) { b.addEventListener('mouseenter', function () { if (audio.ctx) audio.ui('hover'); }); });
     click('btnPlay', function () { startRace(trackIndex); });
     click('btnMode', function () { settings.mode = nextMode(settings.mode); saveSettings(); showScreen('menu'); });
-    click('btnOnline', function () { $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online'); });
+    click('btnOnline', function () {
+      $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online');
+      var el = $('turnStatus');
+      var show = function () { var ok = !!window.NITRO_TURN_OK; el.textContent = ok ? '중계(TURN) 서버: 설정됨 — 휴대폰 데이터/학교망에서도 접속 가능' : '중계(TURN) 서버: 없음 — 같은 집 와이파이/일반 가정망끼리만 연결돼요. js/config.js 참고'; el.style.color = ok ? '#9be7ff' : '#ffb86b'; };
+      if (window.NITRO_ICE) show(); else if (window.NITRO_ICE_READY) window.NITRO_ICE_READY.then(show, show); else show();
+    });
     click('btnGarage', function () { openGarage(); });
     click('btnGarageBack', function () { showScreen('menu'); });
     click('btnOnlineBack', function () { showScreen('menu'); });
