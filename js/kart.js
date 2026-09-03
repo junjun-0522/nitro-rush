@@ -11,7 +11,7 @@
     driftMinSpeed: 10, driftYaw: 1.45, driftSteerYaw: 0.85, driftSpeedLoss: 0.1,
     driftTierTimes: [0.8, 1.8, 2.9],
     driftBoost: [[1.14, 0.9], [1.22, 1.4], [1.32, 2.0]],
-    driftGaugeGain: [0.22, 0.4, 0.6],
+    driftGaugeGain: [0.38, 0.62, 0.9],
     gaugeBoost: [1.38, 2.4],
     padBoost: [1.25, 1.3],
     itemBoost: [1.48, 2.6],
@@ -361,7 +361,7 @@
           this.applyBoost(b[0], b[1], 'drift');
           this.addGauge(P.driftGaugeGain[this.driftTier - 1]);
           ev.push({ type: 'driftBoost', tier: this.driftTier }); this.stats.driftBoosts++;
-        } else if (control) this.addGauge(this.driftCharge * 0.12);
+        } else if (control) this.addGauge(this.driftCharge * 0.22);
         this.drifting = false; this.driftCharge = 0; this.driftTier = 0;
         ev.push({ type: 'driftEnd' });
       } else {
@@ -370,7 +370,7 @@
         for (var t = 0; t < 3; t++) if (this.driftCharge >= P.driftTierTimes[t]) tier = t + 1;
         if (tier > this.driftTier) { this.driftTier = tier; ev.push({ type: 'driftTier', tier: tier }); }
         // little charge trickles into the gauge continuously
-        this.addGauge(dt * 0.03);
+        this.addGauge(dt * 0.12);
       }
     }
 
