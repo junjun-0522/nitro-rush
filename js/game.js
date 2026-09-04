@@ -18,6 +18,7 @@
   function nextMode(m) { return MODE_ORDER[(MODE_ORDER.indexOf(m) + 1) % MODE_ORDER.length]; }
   try { var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); for (var k in saved) if (k in settings) settings[k] = saved[k]; } catch (e) { }
   function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { } }
+  Progress.load(); Account.load();
 
   var AI_NAMES = ['BLAZE', 'VORTEX', 'PIXEL', 'MANGO', 'COMET', 'ZIPPY', 'NOVA', 'BOLT', 'JUNO', 'REX', 'KIWI', 'TURBO', 'ECHO', 'FLASH', 'GIZMO', 'HAZEL', 'IRIS', 'JET', 'KOBE', 'LUNA', 'MILO', 'NEO', 'OZZY', 'PEPPER', 'QUILL', 'ROXY', 'SKYE', 'TANK', 'ULA', 'VIPER', 'WREN', 'XENO', 'YUKI', 'ZANE', 'ASTRO', 'BEAN', 'CHILI', 'DASH', 'EMBER', 'FROST', 'GUST', 'HOPPER', 'INKY', 'JOLT', 'KARMA', 'LOOP', 'MOCHA', 'NIMBUS', 'ORBIT', 'PUNCH', 'QUARK', 'RIFF', 'SONIC', 'TWIST', 'UMBRA', 'VELVET', 'WISP'];
   var AI_COLORS = [0xff3b3b, 0x3b8bff, 0x2ecc71, 0xff8c00, 0x9b59b6, 0x1abc9c, 0xe84393, 0x95a5a6, 0x00cec9, 0xd35400, 0x6c5ce7, 0xc0392b, 0x2980b9, 0x27ae60, 0x8e44ad, 0xf39c12, 0x16a085, 0x7f8c8d, 0xff6b6b, 0x48dbfb];
@@ -76,10 +77,14 @@
     bindUI(); bindInput(); applyQuality();
     window.addEventListener('resize', resize); resize();
     loadTrack(trackIndex);
+    Progress.onChange(function () { refreshProfileUI(); Account.push(); });
+    Account.onChange(function () { refreshProfileUI(); if (state === 'account') renderAccount(); });
     showScreen('menu');
     $('loading').classList.add('hidden');
     requestAnimationFrame(loop);
     var qs = location.search;
+    if (/resetprofile/.test(qs)) Progress.reset();
+    if (Account.loggedIn() && !/nosync/.test(qs)) Account.sync();
     if (/autotest/.test(qs)) {
       window.__autotest = true;
       var m = /track=(\d+)/.exec(qs); if (m) { var want = parseInt(m[1], 10) % TRACKS.length; if (want !== trackIndex) loadTrack(want); }
@@ -91,7 +96,10 @@
       var chq = /char=([a-z]+)/.exec(qs); if (chq) settings.char = chq[1];
       var ptq = /pet=([a-z]*)/.exec(qs); if (ptq) settings.pet = ptq[1] || null;
       var ktq = /kart=([a-z0-9]+)/.exec(qs); if (ktq) settings.kart = ktq[1];
+      var xq = /[?&]xp=(\d+)/.exec(qs); if (xq) { Progress.p.xp = parseInt(xq[1], 10); Progress.checkUnlocks(); Progress.save(true); }
+      var sq = /[?&]skin=([a-z]+)/.exec(qs); if (sq) { if (Progress.p.unlocked.indexOf(sq[1]) < 0) Progress.p.unlocked.push(sq[1]); Progress.p.skin = sq[1]; Progress.save(true); }
       if (/garage/.test(qs)) { setTimeout(openGarage, 300); }
+      if (/accscreen/.test(qs)) { setTimeout(openAccount, 300); }
       var on = /online=(host|join)/.exec(qs), room = /room=([A-Za-z0-9]+)/.exec(qs), nm = /name=([A-Za-z0-9]+)/.exec(qs);
       if (on) {
         window.__onlineTest = on[1];
@@ -111,8 +119,8 @@
       var st = /steps=(\d+)/.exec(qs); if (st) { window.__steps = parseInt(st[1], 10); window.__timerLoop = true; }
       document.body.classList.add('autotest');
       console.log('[AUTOTEST] init ok, track=' + trackIndex + ' racers=' + settings.racers);
-      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; } };
-      if (!on && !/garage/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
+      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; }, get progress() { return Progress.p; }, get award() { return race.award; }, get account() { return { user: Account.user, status: Account.status }; } };
+      if (!on && !/garage/.test(qs) && !/accscreen/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
     }
   }
 
@@ -153,9 +161,10 @@
 
   // ---------------------------------------------------------------- UI
   function showScreen(name) {
-    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
+    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage', 'account'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
     if (name !== 'garage' && garage.kart) destroyGaragePreview();
-    $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '') + ' · ' + findKart(settings.kart).name;
+    $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '') + ' · ' + findKart(settings.kart).name + ' · ' + findSkin(Progress.p.skin).name;
+    refreshProfileUI();
     $('hud').classList.toggle('hidden', !(name === null));
     $('vignette').classList.toggle('hidden', !(name === null));
     if (name) state = name === 'trackSelect' ? 'trackselect' : name;
@@ -179,6 +188,14 @@
       if (Net.transport() === 'relay' || window.NITRO_ICE) show(); else if (window.NITRO_ICE_READY) window.NITRO_ICE_READY.then(show, show); else show();
     });
     click('btnGarage', function () { openGarage(); });
+    click('btnAccount', function () { openAccount(); });
+    click('btnAccBack', function () { showScreen('menu'); });
+    click('btnAccLogin', function () { doAuth('login'); });
+    click('btnAccRegister', function () { doAuth('register'); });
+    click('btnAccLogout', function () { Account.logout(); accMsg('로그아웃했어요. 기록은 이 기기에 계속 남아요.'); renderAccount(); });
+    click('btnAccSync', function () { accMsg('동기화 중...'); Account.sync().then(function (j) { accMsg(j ? '동기화 완료!' : Account.errText('network'), !j); renderAccount(); }); });
+    $('accPw').addEventListener('keydown', function (e) { if (e.key === 'Enter') doAuth('login'); });
+    $('accId').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('accPw').focus(); });
     click('btnGarageBack', function () { showScreen('menu'); });
     click('btnOnlineBack', function () { showScreen('menu'); });
     click('btnCreate', function () { createRoom(); });
@@ -229,7 +246,12 @@
       name.innerHTML = def.name + ' <span class="tag ' + (def.tag === 'EXPERT' ? 'expert' : '') + '">' + def.tag + '</span>';
       var desc = document.createElement('div'); desc.className = 'desc'; desc.textContent = def.desc;
       var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = def.laps + ' LAPS · ' + def.theme.time;
-      card.appendChild(name); card.appendChild(desc); card.appendChild(meta);
+      var pr = document.createElement('div'); pr.className = 'pr';
+      var rec = Progress.record(def.id, settings.mode);
+      pr.innerHTML = rec && (rec.race || rec.lap)
+        ? 'MY RECORD <b>' + (rec.race ? U.fmtTime(rec.race) : '--:--.---') + '</b> · BEST LAP <b>' + (rec.lap ? U.fmtTime(rec.lap) : '--:--.---') + '</b> <small>' + modeInfo(settings.mode).label + '</small>'
+        : '<span class="dim">아직 기록 없음 · ' + modeInfo(settings.mode).label + '</span>';
+      card.appendChild(name); card.appendChild(desc); card.appendChild(meta); card.appendChild(pr);
       card.addEventListener('click', function () {
         audio.init(); audio.ui('click');
         wrap.querySelectorAll('.card').forEach(function (c) { c.classList.remove('selected'); });
@@ -270,7 +292,7 @@
       if (e.code === 'Escape' || e.code === 'KeyP') {
         if (state === 'racing' || state === 'countdown' || state === 'finished') pauseRace();
         else if (state === 'paused') resumeRace();
-        else if (state === 'trackselect' || state === 'settings' || state === 'online' || state === 'garage') { audio.ui('back'); showScreen('menu'); }
+        else if (state === 'trackselect' || state === 'settings' || state === 'online' || state === 'garage' || state === 'account') { audio.ui('back'); showScreen('menu'); }
         else if (state === 'room') { leaveRoom(); }
       }
       if (e.code === 'Enter') {
@@ -298,7 +320,7 @@
   function aiName(i) { return AI_NAMES[i % AI_NAMES.length] + (i >= AI_NAMES.length ? ' ' + (Math.floor(i / AI_NAMES.length) + 1) : ''); }
   function addKart(k) { scene.add(k.root); if (k.petRoot) scene.add(k.petRoot); }
   function removeKart(k) { scene.remove(k.root); if (k.petRoot) scene.remove(k.petRoot); }
-  function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null, kart: rng.pick(KARTS).id }; }
+  function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null, kart: rng.pick(KARTS).id, skin: rng() < 0.3 ? rng.pick(SKINS.slice(1)).id : null }; }
 
   function startRace(ti, cfg) {
     audio.init();
@@ -314,10 +336,10 @@
     var band = settings.difficulty === 'easy' ? 0.6 : (settings.difficulty === 'hard' ? 1.25 : 1);
     var list = [], i, kt;
     if (!isOnline) {
-      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart });
+      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin });
       for (i = 1; i < n; i++) {
         var lk = aiLook(rng);
-        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart });
+        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart, skin: lk.skin });
         list.push(kt);
         ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: band, seed: i }));
       }
@@ -327,13 +349,13 @@
       var aiCount = n - cfg.players.length;
       for (i = 0; i < aiCount; i++) {
         var lk2 = aiLook(rng), sk = difficultySkill(rng); // consume the shared rng identically on every peer
-        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet, kart: lk2.kart });
+        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet, kart: lk2.kart, skin: lk2.skin });
         list.push(kt); kartById[100 + i] = kt;
         if (isHost) ais.push(new AIDriver(kt, { skill: sk, band: 0.7, seed: i + 1 }));
       }
       cfg.players.forEach(function (p, pi) {
         var mine = p.id === online.myId;
-        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro' });
+        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro', skin: p.skin || 'classic' });
         list.push(pk); kartById[p.id] = pk;
         if (mine) player = pk;
       });
@@ -357,6 +379,7 @@
     buildPips(mi.stock);
     showTutorial();
     race.time = 0; race.raceOn = false; race.countdown = 3.8; race.cdShown = -1; race.finishedAt = null; race.allDoneAt = null; race.results = null;
+    race.maxDrifts = 0; race.award = null;
     cam.init = false; cam.fov = 72;
     world = { path: path, track: track, karts: karts, player: player, items: items, itemsOn: mi.items, raceOn: false, time: 0, clock: 0, playerProgress: 0, onPlayerHit: onPlayerHit, onPlayerItem: onPlayerItem,
       net: isOnline ? online.net : null, localKarts: isOnline ? karts.filter(function (k) { return !k.remote; }) : null, sendEvent: isOnline ? sendNetEvent : null };
@@ -437,7 +460,7 @@
     if (state === 'paused') { return; }
     track.update(dt, clock.t);
     if (state === 'garage') { garageTick(dt); fx.update(dt); return; }
-    if (state === 'menu' || state === 'trackselect' || state === 'settings' || state === 'results' || state === 'online' || state === 'room') {
+    if (state === 'menu' || state === 'trackselect' || state === 'settings' || state === 'results' || state === 'online' || state === 'room' || state === 'account') {
       menuCamera(dt);
       items.update(dt, { karts: [], raceOn: false, clock: clock.t, player: null });
       if (state === 'results' && player) { stepRace(dt, true); }
@@ -598,7 +621,7 @@
         var x = ev[e];
         switch (x.type) {
           case 'driftTier':
-            if (isP) { audio.driftTier(x.tier); if (x.tier === 2) showMsg('DRIFT LV.2', 'orange'); else if (x.tier === 3) showMsg('MAX CHARGE!', 'purple'); }
+            if (isP) { audio.driftTier(x.tier); if (x.tier === 2) showMsg('DRIFT LV.2', 'orange'); else if (x.tier === 3) { showMsg('MAX CHARGE!', 'purple'); race.maxDrifts++; } }
             break;
           case 'stock':
             if (isP) { audio.shield(); showMsg('BOOST READY · SHIFT', 'yellow'); }
@@ -826,7 +849,7 @@
     if (/network|server|socket|browser-incompatible|ssl/.test(t)) return '접속 서버(PeerJS)에 연결할 수 없어요. 인터넷/방화벽을 확인하세요. (' + t + ')';
     return '연결 실패: ' + t;
   }
-  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet, kart: settings.kart }; }
+  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin }; }
   function bindNet(net) {
     net.on('players', function () { renderRoom(); });
     net.on('lobby', function (lobby) { if (online) { online.lobby = lobby; renderRoom(); } });
@@ -896,7 +919,7 @@
     var list = net.playerList(), html = '';
     list.forEach(function (p) {
       var col = '#' + PLAYER_COLORS[p.id % PLAYER_COLORS.length].toString(16).padStart(6, '0');
-      var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '') + ' · ' + findKart(p.kart || 'nitro').name;
+      var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '') + ' · ' + findKart(p.kart || 'nitro').name + (p.skin && p.skin !== 'classic' ? ' · ' + findSkin(p.skin).name : '');
       html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span><span class="look">' + look + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
     });
     for (var i = list.length; i < Math.max(2, lobby.racers); i++) html += '<div class="prow dim"><span class="chip" style="background:#555"></span><span>' + (i < lobby.racers ? 'AI' : '') + '</span></div>';
@@ -998,7 +1021,7 @@
   }
   function rebuildGaragePreview() {
     destroyGaragePreview();
-    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart });
+    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin });
     k.placeAt(track.path, 12, 0);
     addKart(k); garage.kart = k;
   }
@@ -1007,7 +1030,17 @@
     return '<div class="sb"><span>' + label + '</span><i><b style="width:' + pct.toFixed(0) + '%"></b></i></div>';
   }
   function buildGarageCards() {
-    var ch = '', pt = '', kt = '';
+    var ch = '', pt = '', kt = '', sk = '', nUn = 0;
+    SKINS.forEach(function (s) {
+      var un = Progress.isUnlocked(s.id), info = Progress.unlockInfo(s);
+      if (un) nUn++;
+      sk += '<div class="gcard skin' + (s.id === Progress.p.skin ? ' sel' : '') + (un ? '' : ' locked') + '" data-skin="' + s.id + '">' +
+        '<div class="swatch" style="background-image:url(' + skinPreview(s) + ')">' + (un ? '' : '<span class="lock">🔒</span>') + '</div>' +
+        '<div class="gname">' + s.name + ' <small>' + s.kr + '</small></div>' +
+        '<div class="gdesc">' + (un ? s.desc : '해금 조건: ' + info.text + (info.cur ? ' <b>(' + info.cur + ')</b>' : '')) + '</div>' +
+        (un ? '' : '<div class="sb"><span>진행</span><i><b style="width:' + Math.round(info.pct * 100) + '%"></b></i></div>') + '</div>';
+    });
+    $('garageSkinCount').textContent = '보유 ' + nUn + ' / ' + SKINS.length + ' · 레이스로 XP를 모아 해금';
     KARTS.forEach(function (k) {
       kt += '<div class="gcard kart' + (k.id === settings.kart ? ' sel' : '') + '" data-kart="' + k.id + '"><div class="gname">' + k.name + ' <small>' + k.kr + '</small></div><div class="gdesc">' + k.desc + '</div>' +
         statBar('속도', k.stat.speed) + statBar('가속', k.stat.accel) + statBar('조향', k.stat.handling) + statBar('무게', 0.9 + (k.mass - 0.85) / 0.65 * 0.2) + '</div>';
@@ -1020,7 +1053,15 @@
     PETS.forEach(function (p) {
       pt += '<div class="gcard pet' + (p.id === settings.pet ? ' sel' : '') + '" data-pet="' + p.id + '"><div class="gname">' + p.name + ' <small>' + p.kr + '</small></div><div class="gdesc">' + p.desc + '</div></div>';
     });
-    $('garageChars').innerHTML = ch; $('garagePets').innerHTML = pt; $('garageKarts').innerHTML = kt;
+    $('garageChars').innerHTML = ch; $('garagePets').innerHTML = pt; $('garageKarts').innerHTML = kt; $('garageSkins').innerHTML = sk;
+    $('garageSkins').querySelectorAll('.gcard').forEach(function (el) {
+      el.addEventListener('click', function () {
+        audio.init();
+        var id = el.getAttribute('data-skin');
+        if (!Progress.isUnlocked(id)) { audio.ui('back'); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); return; }
+        audio.ui('click'); Progress.setSkin(id); buildGarageCards(); rebuildGaragePreview();
+      });
+    });
     $('garageKarts').querySelectorAll('.gcard').forEach(function (el) {
       el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.kart = el.getAttribute('data-kart'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
     });
@@ -1031,7 +1072,68 @@
       el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.pet = el.getAttribute('data-pet') || null; saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
     });
     var c = findChar(settings.char), p = settings.pet ? findPet(settings.pet) : null;
-    $('garageTitle').textContent = findKart(settings.kart).name + ' · ' + c.name + (p ? ' & ' + p.name : '');
+    $('garageTitle').textContent = findSkin(Progress.p.skin).name + ' ' + findKart(settings.kart).name + ' · ' + c.name + (p ? ' & ' + p.name : '');
+    var li = Progress.levelInfo();
+    $('garageLv').textContent = 'LV ' + li.level + ' ' + Progress.title(li.level) + ' · ' + (li.max ? 'MAX' : li.cur + ' / ' + li.need + ' XP');
+  }
+
+  // ---------------------------------------------------------------- profile / account UI
+  function refreshProfileUI() {
+    var li = Progress.levelInfo();
+    $('profName').textContent = Account.loggedIn() ? Account.user : (settings.nick || 'GUEST');
+    $('profLv').textContent = 'LV ' + li.level; $('profTitle').textContent = Progress.title(li.level);
+    $('profBar').style.width = (li.pct * 100).toFixed(1) + '%';
+    $('profXp').textContent = li.max ? 'MAX LEVEL' : li.cur + ' / ' + li.need + ' XP';
+    $('profCloud').textContent = Account.loggedIn() ? (Account.status === 'error' ? '☁ 동기화 실패 · 계정 화면에서 다시 시도' : Account.status === 'syncing' ? '☁ 동기화 중...' : '☁ 클라우드 저장 켜짐') : '이 기기에만 저장 중 · 계정을 만들면 어디서든 이어서 달릴 수 있어요';
+    $('menuAccount').textContent = Account.loggedIn() ? Account.user : '로그인 / 계정 만들기';
+    $('profSkins').textContent = Progress.p.unlocked.length + '/' + SKINS.length;
+    $('profWins').textContent = Progress.p.wins; $('profRaces').textContent = Progress.p.races;
+  }
+  function accMsg(t, err) { var el = $('accStatus'); el.textContent = t; el.style.color = err ? '#ff8a8a' : '#9be7ff'; }
+  function openAccount() { accMsg(''); renderAccount(); showScreen('account'); if (!Account.loggedIn()) setTimeout(function () { $('accId').focus(); }, 50); }
+  function renderAccount() {
+    var logged = Account.loggedIn();
+    $('accForm').classList.toggle('hidden', logged); $('accInfo').classList.toggle('hidden', !logged);
+    if (!Account.available()) accMsg('계정 서버 주소가 설정되지 않았어요 (js/config.js 의 relayUrl / accountUrl).', true);
+    if (!logged) return;
+    var li = Progress.levelInfo(), p = Progress.p;
+    $('accName').textContent = Account.user;
+    $('accSummary').textContent = 'LV ' + li.level + ' ' + Progress.title(li.level) + ' · ' + p.xp + ' XP · 레이스 ' + p.races + ' · 우승 ' + p.wins + ' · 스킨 ' + p.unlocked.length + '/' + SKINS.length;
+    $('accSyncState').textContent = Account.busy ? '동기화 중...' : Account.status === 'error' ? '마지막 동기화 실패 — 인터넷을 확인하고 다시 시도해주세요' : (Account.lastSync ? '클라우드에 저장됨 · ' + new Date(Account.lastSync).toLocaleTimeString() : '아직 동기화 전');
+  }
+  function doAuth(kind) {
+    if (Account.busy) return;
+    var u = ($('accId').value || '').trim(), pw = $('accPw').value || '';
+    if (u.length < 2) { accMsg(Account.errText('bad-user'), true); return; }
+    if (pw.length < 4) { accMsg(Account.errText('bad-pass'), true); return; }
+    accMsg(kind === 'login' ? '로그인 중...' : '계정 만드는 중...');
+    (kind === 'login' ? Account.login(u, pw) : Account.register(u, pw)).then(function (j) {
+      $('accPw').value = '';
+      if (!settings.nick) { settings.nick = j.user.slice(0, 12); saveSettings(); }
+      accMsg(kind === 'login' ? '로그인 완료! 기록을 합쳤어요.' : '계정 생성 완료! 이제 어느 기기에서든 이어서 달릴 수 있어요.');
+      renderAccount(); refreshProfileUI();
+      if (window.__autotest) console.log('[AUTOTEST] auth ok ' + kind + ' user=' + j.user + ' xp=' + Progress.p.xp);
+    }, function (e) { accMsg(Account.errText(e.error), true); if (window.__autotest) console.log('[AUTOTEST] auth fail ' + kind + ' ' + e.error); });
+  }
+
+  // ---------------------------------------------------------------- XP award (results screen)
+  function awardRace() {
+    var realPlayers = online ? karts.filter(function (k) { return k.netId >= 0 && k.netId < 100; }).length : 1;
+    var def = TRACKS[trackIndex], mode = online && online.cfg ? online.cfg.mode : settings.mode;
+    return Progress.award({ trackId: def.id, trackTag: def.tag, mode: mode, rank: player.rank, n: karts.length, finished: player.finished, laps: player.lapsCompleted,
+      lapTimes: player.lapTimes, raceTime: player.finishTime, maxDrifts: race.maxDrifts || 0, online: realPlayers, difficulty: online ? 'normal' : settings.difficulty });
+  }
+  function renderAward(a) {
+    var html = '<div class="xphead"><span>XP 획득</span><b>+' + a.total + '</b></div>';
+    a.rows.forEach(function (r) { html += '<div class="xprow' + (r.mult ? ' mult' : '') + '"><span>' + r.label + '</span><b>' + (r.xp >= 0 ? '+' : '') + r.xp + '</b></div>'; });
+    var li = a.after;
+    html += '<div class="xplvl"><span>' + (a.levelUp ? 'LEVEL UP! LV ' + a.before.level + ' → <b>LV ' + li.level + '</b>' : 'LV ' + li.level + ' ' + Progress.title(li.level)) + '</span><div class="bar"><i id="xpBarFill" style="width:' + (a.levelUp ? 0 : a.before.pct * 100).toFixed(1) + '%"></i></div><small>' + (li.max ? 'MAX' : li.cur + ' / ' + li.need + ' XP') + '</small></div>';
+    if (a.record.race || a.record.lap) html += '<div class="xpnote rec">★ NEW RECORD! ' + (a.record.race ? '레이스 ' + U.fmtTime(a.record.raceTime) : '랩 ' + U.fmtTime(a.record.lapTime)) + '</div>';
+    a.unlocked.forEach(function (s) { html += '<div class="xpnote unlock"><i style="background-image:url(' + skinPreview(s) + ')"></i><div><div>NEW SKIN 해금! <b>' + s.name + '</b></div><small>' + s.kr + ' · 가라지에서 장착</small></div></div>'; });
+    html += '<div class="xpcloud">' + (Account.loggedIn() ? '☁ ' + Account.user + ' 계정에 저장' : '이 기기에 저장됨 · 메뉴의 계정에서 로그인하면 클라우드에 보관돼요') + '</div>';
+    $('resultsXp').innerHTML = html;
+    setTimeout(function () { var f = $('xpBarFill'); if (f) f.style.width = (li.pct * 100).toFixed(1) + '%'; }, 80);
+    if (a.levelUp) { audio.ui('click'); }
   }
   function garageTick(dt) {
     var k = garage.kart; if (!k) return;
@@ -1197,6 +1299,8 @@
     var pr = player.rank;
     $('resultsTitle').textContent = pr === 1 ? 'VICTORY!' : (pr <= 3 ? 'PODIUM!' : 'FINISH!');
     $('resultsSub').textContent = TRACKS[trackIndex].name + ' · ' + U.ordinal(pr) + ' of ' + karts.length + ' · ' + (player.finished ? U.fmtTime(player.finishTime) : 'DNF');
+    if (!race.award) { race.award = awardRace(); if (window.__autotest) console.log('[AUTOTEST] XP +' + race.award.total + ' lv ' + race.award.before.level + '->' + race.award.after.level + ' unlocked=' + race.award.unlocked.map(function (s) { return s.id; }).join(',') + ' record=' + JSON.stringify(race.award.record)); }
+    renderAward(race.award);
     if (online && online.net.state !== undefined) online.net.state = 'lobby';
     $('btnNext').textContent = 'Next Track: ' + TRACKS[(trackIndex + 1) % TRACKS.length].name;
     $('finishBanner').classList.add('hidden');

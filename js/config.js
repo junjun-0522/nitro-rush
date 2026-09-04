@@ -12,6 +12,8 @@ window.NITRO_CONFIG = {
   /* 릴레이 서버(relay/ 폴더의 Cloudflare Worker) 주소. 비워 두면 PeerJS P2P를 씁니다.
      배포 후: 'wss://nitro-rush-relay.<계정>.workers.dev'   테스트: URL에 ?relay=ws://127.0.0.1:8787 */
   relayUrl: 'wss://nitro-rush-relay.nitro-rush-relay.workers.dev',
+  /* 계정/클라우드 세이브 API 주소. 비워 두면 relayUrl 의 https 주소(/api/...)를 그대로 씁니다. */
+  accountUrl: '',
   stunServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },

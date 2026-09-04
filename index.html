@@ -165,6 +165,73 @@
   .gcard .sb b{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));border-radius:3px}
   .gcard.pet{padding:8px 10px}
   #btnGarageBack{margin-top:8px;align-self:flex-end}
+  .glv{font-family:var(--body);font-size:12px;letter-spacing:0.15em;color:var(--yellow);margin-top:-6px}
+  .gcards.skins{grid-template-columns:repeat(3,1fr)}
+  .gcard.skin{padding:6px 8px 8px}
+  .gcard.skin .swatch{height:44px;border-radius:8px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.18);margin-bottom:5px;position:relative;image-rendering:auto}
+  .gcard.skin .swatch .lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);border-radius:8px;font-size:18px}
+  .gcard.skin.locked{opacity:0.72;cursor:not-allowed}
+  .gcard.skin.locked:hover{border-color:rgba(255,255,255,0.3);transform:none}
+  .gcard.skin .gname{font-size:13px}
+  .gcard.skin .gdesc b{color:var(--yellow);font-weight:600}
+  .gcard.shake{animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* profile bar (main menu) + account screen */
+  .prof{display:flex;align-items:center;gap:14px;background:var(--panel);border:2px solid var(--border);border-radius:14px;padding:8px 16px;min-width:min(420px,88vw);backdrop-filter:blur(8px);text-align:left;margin-top:-6px}
+  .prof .lv{font-family:var(--display);font-style:italic;font-size:22px;color:var(--yellow);text-shadow:0 3px 0 rgba(0,0,0,0.4);white-space:nowrap}
+  .prof .lv small{display:block;font-family:var(--body);font-style:normal;font-size:10px;letter-spacing:0.25em;color:var(--cyan);margin-top:-3px}
+  .prof .mid{flex:1;min-width:0}
+  .prof .nm{font-family:var(--display);font-style:italic;font-size:15px;display:flex;justify-content:space-between;gap:10px}
+  .prof .nm span{font-family:var(--body);font-style:normal;font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.05em}
+  .prof .bar{height:8px;background:rgba(0,0,0,0.45);border:1px solid var(--border);border-radius:5px;overflow:hidden;margin:4px 0 3px}
+  .prof .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));box-shadow:0 0 10px var(--cyan);transition:width .6s ease-out}
+  .prof .cl{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prof .st{font-size:11px;color:rgba(255,255,255,0.75);text-align:right;line-height:1.5;white-space:nowrap}
+  .prof .st b{color:var(--yellow)}
+  .acc-box{background:var(--panel);border:2px solid var(--border);border-radius:18px;padding:22px 26px;width:min(560px,94vw);text-align:left;backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:12px}
+  .acc-box label{font-size:12px;letter-spacing:0.2em;color:rgba(255,255,255,0.7)}
+  .acc-box input{font-family:var(--body);font-size:18px;background:rgba(255,255,255,0.1);border:2px solid var(--border);color:#fff;border-radius:10px;padding:9px 14px;width:100%}
+  .acc-box input:focus{outline:none;border-color:var(--cyan)}
+  .acc-box .row{display:flex;gap:10px;flex-wrap:wrap}
+  .acc-box .status{min-height:20px;font-size:14px;color:#9be7ff}
+  .acc-box .help{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6}
+  .acc-box .help b{color:var(--yellow)}
+  .acc-box .who{font-family:var(--display);font-style:italic;font-size:28px;color:var(--yellow);text-shadow:0 3px 0 rgba(0,0,0,0.4)}
+  .acc-box .sum{font-size:13px;color:rgba(255,255,255,0.8)}
+  .acc-box .sync{font-size:12px;color:var(--cyan)}
+
+  /* XP box on results */
+  .xpbox{background:var(--panel);border:2px solid rgba(255,230,0,0.35);border-radius:16px;padding:12px 16px;flex:1 1 320px;max-width:420px;text-align:left;backdrop-filter:blur(12px);font-size:13px;display:flex;flex-direction:column;gap:4px}
+  .xpbox .xphead{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-style:italic;letter-spacing:0.15em}
+  .xpbox .xphead b{font-size:30px;color:var(--yellow);text-shadow:0 3px 0 rgba(0,0,0,0.4),0 0 20px rgba(255,230,0,0.4)}
+  .xpbox .xprow{display:flex;justify-content:space-between;color:rgba(255,255,255,0.8);padding:1px 0}
+  .xpbox .xprow b{color:var(--cyan);font-variant-numeric:tabular-nums}
+  .xpbox .xprow.mult{color:var(--cyan);opacity:0.9}
+  .xpbox .xplvl{margin-top:6px;font-family:var(--display);font-style:italic;letter-spacing:0.08em;font-size:14px}
+  .xpbox .xplvl b{color:var(--yellow)}
+  .xpbox .xplvl .bar{height:10px;background:rgba(0,0,0,0.45);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:4px 0 2px}
+  .xpbox .xplvl .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));box-shadow:0 0 12px var(--cyan);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .xpbox .xplvl small{font-family:var(--body);font-style:normal;font-size:11px;color:rgba(255,255,255,0.6)}
+  .xpbox .xpnote{margin-top:6px;padding:8px 12px;border-radius:10px;font-family:var(--display);font-style:italic;letter-spacing:0.05em;display:flex;align-items:center;gap:10px}
+  .xpbox .xpnote.rec{background:rgba(255,230,0,0.15);color:var(--yellow)}
+  .xpbox .xpnote.unlock{background:rgba(47,224,255,0.15);color:#fff;animation:tutIn .5s ease-out}
+  .xpbox .xpnote.unlock b{color:var(--cyan)}
+  .xpbox .xpnote.unlock small{font-family:var(--body);font-style:normal;color:rgba(255,255,255,0.7);display:block;font-size:11px;margin-top:2px}
+  .xpbox .xpnote i{width:44px;height:26px;border-radius:6px;background-size:cover;border:1px solid rgba(255,255,255,0.3);flex:none}
+  .xpbox .xpcloud{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px}
+  .card .pr{font-size:12px;color:rgba(255,255,255,0.8);margin-top:6px;letter-spacing:0.05em;font-variant-numeric:tabular-nums}
+  .card .pr b{color:var(--yellow)} .card .pr small{color:rgba(255,255,255,0.5)} .card .pr .dim{color:rgba(255,255,255,0.45)}
+  .prof .btn.acc{padding:6px 12px;font-size:12px;line-height:1.2;white-space:nowrap;text-align:center}
+  .prof .btn.acc b{color:var(--cyan);display:block;font-weight:700;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+  .prof .btn.acc small{display:block;font-family:var(--body);font-style:normal;font-size:9px;letter-spacing:0.05em;text-transform:none;color:rgba(255,255,255,0.65)}
+  #menu{gap:12px}
+  @media (max-width:760px){ .prof .st{display:none} }
+  @media (max-height:780px){
+    #menu .title{font-size:clamp(40px,7vw,78px)} #menu .subtitle{font-size:14px}
+    .menu-buttons{gap:5px;margin-top:4px} .menu-buttons .btn:not(.big){padding:6px 22px;font-size:clamp(13px,1.7vw,17px)} .menu-buttons .btn.big{padding:10px 32px;font-size:clamp(20px,3vw,30px)}
+    .btn.mode small,.btn.online small{font-size:10px;margin-top:0} .prof{padding:6px 14px;margin-top:-2px}
+  }
   .room-wait .wait{margin-top:10px;color:var(--cyan)}
   .dots::after{content:'...';animation:blink 1s infinite}
   .btn.mode b{color:var(--cyan)}
@@ -208,7 +275,11 @@
   #vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45) 100%)}
 
   /* results */
-  .results-box{background:var(--panel);border:2px solid var(--border);border-radius:20px;padding:22px 26px;min-width:min(620px,94vw);max-height:70vh;overflow:auto;backdrop-filter:blur(12px);text-align:left}
+  .results-box{background:var(--panel);border:2px solid var(--border);border-radius:20px;padding:16px 22px;flex:1 1 460px;max-width:640px;max-height:52vh;overflow:auto;backdrop-filter:blur(12px);text-align:left}
+  #results{gap:10px;overflow:auto;justify-content:flex-start;padding-top:16px}
+  #results > *{flex-shrink:0}
+  .results-wrap{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:min(1080px,96vw)}
+  #results .results-title{font-size:clamp(32px,6vw,60px)}
   .results-box .rrow{display:grid;grid-template-columns:44px 16px 1fr 120px 110px;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:15px;font-variant-numeric:tabular-nums}
   .results-box .rrow.head{font-size:11px;letter-spacing:0.2em;color:rgba(255,255,255,0.5);text-transform:uppercase}
   .results-box .rrow.me{background:rgba(255,230,0,0.18);color:var(--yellow);font-weight:700;box-shadow:inset 0 0 0 1px rgba(255,230,0,0.4)}
@@ -248,10 +319,20 @@
   <div id="menu" class="screen dim hidden">
     <div class="title"><span class="t1">NITRO</span><span class="t2">RUSH</span></div>
     <div class="subtitle">Arcade Kart Racing</div>
+    <div class="prof" id="menuProf">
+      <div class="lv"><span id="profLv">LV 1</span><small id="profTitle">NEWBIE</small></div>
+      <div class="mid">
+        <div class="nm"><span id="profName" style="font-family:var(--display);font-style:italic;font-size:15px;color:#fff">GUEST</span><span id="profXp">0 / 300 XP</span></div>
+        <div class="bar"><i id="profBar" style="width:0%"></i></div>
+        <div class="cl" id="profCloud"></div>
+      </div>
+      <div class="st">스킨 <b id="profSkins">1/16</b><br>우승 <b id="profWins">0</b> · 레이스 <b id="profRaces">0</b></div>
+      <button id="btnAccount" class="btn small acc"><b id="menuAccount">로그인 / 계정 만들기</b><small>클라우드 세이브</small></button>
+    </div>
     <div class="menu-buttons">
       <button id="btnPlay" class="btn big">▶ Play</button>
       <button id="btnOnline" class="btn online">🌐 Online Multiplayer<small>친구와 방 코드로 함께 달리기</small></button>
-      <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>카트 · 캐릭터 · 펫 선택</small></button>
+      <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>스킨 · 카트 · 캐릭터 · 펫 선택</small></button>
       <button id="btnMode" class="btn mode">Mode: <b id="menuMode">ITEM RACE</b><small id="menuModeDesc"></small></button>
       <button id="btnTrack" class="btn">Track Select</button>
       <button id="btnSettings" class="btn">Settings</button>
@@ -328,6 +409,9 @@
   <div id="garage" class="screen garage hidden">
     <div class="garage-panel">
       <h2 class="head" id="garageTitle">VOLT</h2>
+      <div class="glv" id="garageLv">LV 1</div>
+      <div class="gsec">SKIN · INVENTORY <small id="garageSkinCount">보유 1 / 16</small></div>
+      <div id="garageSkins" class="gcards skins"></div>
       <div class="gsec">KART <small>차체마다 성능이 달라요</small></div>
       <div id="garageKarts" class="gcards"></div>
       <div class="gsec">CHARACTER</div>
@@ -336,6 +420,29 @@
       <div id="garagePets" class="gcards pets"></div>
       <button id="btnGarageBack" class="btn big">OK</button>
     </div>
+  </div>
+
+  <!-- ACCOUNT -->
+  <div id="account" class="screen dim hidden">
+    <h2 class="head">Account</h2>
+    <div class="acc-box">
+      <div id="accForm">
+        <label>아이디</label>
+        <input id="accId" maxlength="16" placeholder="2~16자 (한글/영문/숫자/_)" autocomplete="username">
+        <label style="display:block;margin-top:8px">비밀번호</label>
+        <input id="accPw" type="password" maxlength="64" placeholder="4자 이상" autocomplete="current-password">
+        <div class="row" style="margin-top:12px"><button id="btnAccLogin" class="btn big">로그인</button><button id="btnAccRegister" class="btn">계정 만들기</button></div>
+      </div>
+      <div id="accInfo" class="hidden">
+        <div class="who" id="accName">-</div>
+        <div class="sum" id="accSummary"></div>
+        <div class="sync" id="accSyncState"></div>
+        <div class="row" style="margin-top:10px"><button id="btnAccSync" class="btn small">지금 동기화</button><button id="btnAccLogout" class="btn small">로그아웃</button></div>
+      </div>
+      <div id="accStatus" class="status"></div>
+      <div class="help">XP·레벨·해금한 스킨·트랙별 <b>개인 기록</b>이 계정에 저장돼요. 다른 PC나 폰에서 로그인하면 기록이 <b>합쳐져서</b> 이어집니다. 이메일 없이 아이디와 비밀번호만 있으면 돼요. (비밀번호를 잊으면 찾을 수 없으니 기억해 두세요)</div>
+    </div>
+    <button id="btnAccBack" class="btn">Back</button>
   </div>
 
   <!-- ONLINE -->
@@ -395,7 +502,7 @@
   <div id="results" class="screen dim hidden">
     <div class="results-title" id="resultsTitle">FINISH!</div>
     <div class="results-sub" id="resultsSub"></div>
-    <div class="results-box" id="resultsList"></div>
+    <div class="results-wrap"><div class="results-box" id="resultsList"></div><div class="xpbox" id="resultsXp"></div></div>
     <div class="btn-row">
       <button id="btnRetry" class="btn big">Play Again</button>
       <button id="btnNext" class="btn">Next Track</button>
@@ -420,6 +527,9 @@
 <script src="js/tracks.js"></script>
 <script src="js/chars.js"></script>
 <script src="js/karts.js"></script>
+<script src="js/skins.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/account.js"></script>
 <script src="js/kart.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/items.js"></script>

@@ -12,7 +12,11 @@
      keepalive       : "~ping" -> "~pong" (auto-answered, not billed)
    Close codes: 4404 no such room, 4409 code taken, 4013 room full,
                 4000 host left, 4001 kicked
+   /api/*  : account + cloud save endpoints (see account.js)
    ============================================================ */
+
+import { Account, handleApi } from './account.js';
+export { Account };
 
 const MAX_SOCKETS = 16;          // app-level limit is 8 players; keep headroom for retries
 const MAX_MSG = 64 * 1024;       // bytes
@@ -24,6 +28,7 @@ export default {
     if (url.pathname === '/' || url.pathname === '/health') {
       return new Response('nitro-rush relay ok\n', { headers: { 'content-type': 'text/plain', 'access-control-allow-origin': '*' } });
     }
+    if (url.pathname.startsWith('/api/')) return handleApi(req, env);
     const m = /^\/r\/([A-Za-z0-9]{4,8})$/.exec(url.pathname);
     if (!m) return new Response('not found', { status: 404 });
     if ((req.headers.get('Upgrade') || '').toLowerCase() !== 'websocket') return new Response('expected websocket', { status: 426 });

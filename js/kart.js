@@ -26,12 +26,22 @@
   var _geo = {};
   function G(key, make) { return _geo[key] || (_geo[key] = make()); }
 
-  function buildKartMesh(color, accent, isPlayer, variant, charId, kartId) {
+  function buildKartMesh(color, accent, isPlayer, variant, charId, kartId, skinId) {
     var def = findKart(kartId);
+    var skin = skinId ? findSkin(skinId) : null;
+    if (skin) { color = skin.color; accent = skin.accent; }
     var root = new THREE.Group();
     var body = new THREE.Group(); root.add(body);
     var paint = new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.25 });
     var acc = new THREE.MeshStandardMaterial({ color: accent, roughness: 0.4, metalness: 0.2 });
+    if (skin) {
+      var tex = skinTexture(skin);
+      if (tex) { paint.map = tex; paint.color.setHex(0xffffff); }
+      if (skin.metal !== undefined) paint.metalness = skin.metal;
+      if (skin.rough !== undefined) paint.roughness = skin.rough;
+      if (skin.emissive) { paint.emissive = new THREE.Color(skin.emissive); paint.emissiveIntensity = skin.emissiveI || 0.3; }
+    }
+    var glowColor = skin && skin.glow ? skin.glow : accent;
     var dark = new THREE.MeshStandardMaterial({ color: 0x1d1f26, roughness: 0.7, metalness: 0.3 });
     var chrome = new THREE.MeshStandardMaterial({ color: 0xd9dde6, roughness: 0.2, metalness: 0.9 });
     var rubber = new THREE.MeshStandardMaterial({ color: 0x15161a, roughness: 0.95 });
@@ -41,7 +51,7 @@
     var tailMat = new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff2020, emissiveIntensity: 1.0 });
     var mats = {
       paint: paint, acc: acc, dark: dark, chrome: chrome, rubber: rubber, skin: skin, glass: glass, lamp: lampMat, tail: tailMat,
-      glow: new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.9, roughness: 0.3 }),
+      glow: new THREE.MeshStandardMaterial({ color: glowColor, emissive: glowColor, emissiveIntensity: 0.9, roughness: 0.3 }),
       wood: new THREE.MeshStandardMaterial({ color: 0x8a5a2b, roughness: 0.85 }),
       green: new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: 0.6, metalness: 0.2 }),
       red: new THREE.MeshStandardMaterial({ color: 0xb5342c, roughness: 0.6 }),
@@ -67,7 +77,7 @@
     wheelRing.rotation.x = -1.1;
     // stripes for the player / decoration for AI (standard tub only); every player kart gets the flag antenna
     if (isPlayer) {
-      if (def.stripes) {
+      if (def.stripes && !(skin && (skin.stripes === false || skin.pattern))) {
         add(G('stripe', function () { return new THREE.BoxGeometry(0.28, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0, 0.77, 0.15);
         add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0.3, 0.77, 0.15);
         add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), -0.3, 0.77, 0.15);
@@ -107,10 +117,10 @@
     var shield = new THREE.Mesh(G('shield', function () { return new THREE.SphereGeometry(1.9, 18, 14); }), new THREE.MeshStandardMaterial({ color: 0x66ccff, emissive: 0x2288ff, emissiveIntensity: 0.6, transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0.3, depthWrite: false, side: THREE.DoubleSide }));
     shield.position.y = 0.8; shield.visible = false; root.add(shield);
     // underglow sprite (adds pop)
-    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: U.tex.particle(), color: accent, transparent: true, opacity: def.hover ? 0.6 : 0.35, depthWrite: false, blending: THREE.AdditiveBlending }));
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: U.tex.particle(), color: glowColor, transparent: true, opacity: def.hover ? 0.6 : 0.35, depthWrite: false, blending: THREE.AdditiveBlending }));
     glow.scale.set(4, 2.2, 1); glow.position.y = 0.15; root.add(glow);
 
-    return { root: root, body: body, wheels: wheels, pivots: pivots, flames: flames, shield: shield, glow: glow, exhausts: exhausts, paint: paint, head: head, wheelR: wd.r || 0.33, hover: !!def.hover, def: def };
+    return { root: root, body: body, wheels: wheels, pivots: pivots, flames: flames, shield: shield, glow: glow, exhausts: exhausts, paint: paint, head: head, wheelR: wd.r || 0.33, hover: !!def.hover, def: def, skin: skin, color: color, accent: accent };
   }
 
   // ------------------------------------------------------------ Kart
@@ -121,7 +131,9 @@
     this.color = opts.color; this.accent = opts.accent;
     this.charId = opts.char || 'volt'; this.petId = opts.pet || null; this.kartId = opts.kart || 'nitro';
     this.charDef = findChar(this.charId); this.kartDef = findKart(this.kartId);
-    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index, this.charId, this.kartId);
+    this.skinId = opts.skin || null;
+    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index, this.charId, this.kartId, this.skinId);
+    this.color = this.mesh.color; this.accent = this.mesh.accent;
     // stat multipliers: kart body x character + pet perk
     var st = { speed: 1, accel: 1, handling: 1, gauge: 1, boostDur: 1 }, cs = this.charDef.stat, ks = this.kartDef.stat, k;
     for (k in cs) st[k] *= cs[k];

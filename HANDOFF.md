@@ -1,4 +1,4 @@
-# NITRO RUSH — 작업 인수인계 (2026-09-03, 릴레이 서버 반영)
+# NITRO RUSH — 작업 인수인계 (2026-09-05, 계정/XP/스킨 반영)
 
 브라우저용 카트라이더풍 3D 아케이드 레이싱. 로컬 `~/nitro-rush`, GitHub `junjun-0522/nitro-rush`, 배포 **https://junjun-0522.github.io/nitro-rush/** (main에 push하면 ~1분 내 반영).
 
@@ -9,6 +9,9 @@
 - 드리프트(Space+←→, 3단계 부스터), 자동 게이지 충전(속도 비례), 순위별 아이템 확률(선두=실드/트랩, 후미=라이트닝/로켓/스피드)
 - 온라인: **WebSocket 릴레이(Cloudflare Worker, relay/)** 기본 + PeerJS/WebRTC P2P 폴백. 스타 토폴로지, 방 코드 4자리, 최대 8명, AI로 채움. 호스트가 AI/로켓 시뮬 + 20Hz 상태 방송, 각 피어는 자기 카트 시뮬.
 - AI 7대(설정에서 최대 57대), 러버밴딩, 헤드리스 자동 테스트 하네스 포함
+- **프로그레션(2026-09-05)**: `js/progress.js` — localStorage `nitroRush.profile.v1` 에 XP/레벨(최대 50, `xpForLevel(L)=300·(L-1)^1.4`)/카운터(races·finishes·wins·podiums·online·maxDrifts·laps·trackWins·trackPodiums)/트랙·모드별 개인기록(records[trackId][mode]={lap,race,date}, ms)/해금 스킨/선택 스킨. `Progress.award(ctx)` 가 결과 화면에서 1회 호출(race.award 가드) → XP 내역·레벨업·신기록·새 해금 반환, `renderAward` 가 `#resultsXp` 에 표시. 트랙 선택 카드에 현재 모드의 MY RECORD 표시.
+- **스킨 16종** `js/skins.js` (classic 기본 + 레벨/우승/완주/온라인/MAX드리프트/서울 우승/전 트랙 포디움 해금). 스킨 = paint/accent 색 + 캔버스 패턴(stripes/flames/camo/carbon/galaxy/petals/neon/pixel/taeguk/hex) + metal/rough/emissive/glow. `buildKartMesh(..., skinId)` 가 적용, `Kart.skinId`, 온라인 hello/players 에 `skin` 포함, AI 는 aiLook 에서 30% 확률로 랜덤 스킨(공유 RNG 소비 순서 유지!). GARAGE 맨 위 SKIN · INVENTORY 카드(잠김 카드는 해금 조건+진행 바, 클릭 시 흔들림).
+- **계정/클라우드 세이브** `js/account.js` + `relay/src/account.js`: 릴레이 Worker 의 `/api/register|login|profile|logout`, 사용자명별 Durable Object `Account`(SQLite, PBKDF2-SHA256 100k, 토큰 48hex, 로그인 12회/10분 제한, 프로필 32KB 제한, Origin 허용목록). 서버·클라이언트 모두 같은 병합 규칙(카운터 max, 기록 min, 해금 합집합, 스킨은 최신 updatedAt). 세션은 `nitroRush.account.v1`. 메인 메뉴 프로필 바(레벨·XP 바·계정 버튼) → Account 화면(아이디 2~16자 한글/영문/숫자/_, 비번 4자+). 로그인/가입 시 로컬 프로필을 보내 병합된 결과를 받고, 이후 `Progress.onChange → Account.push()`(0.8s 디바운스), 시작 시 `Account.sync()`. 비밀번호 찾기 없음.
 
 ## 온라인 연결 방식 (2026-09-03 교체 완료): WebSocket 릴레이 서버
 - 친구 접속 실패(NAT/P2P 불가)를 TURN 대신 **릴레이 서버**로 해결. 양쪽 다 서버로 나가는 연결만 맺으므로 휴대폰 데이터·학교 와이파이에서도 붙음.
@@ -28,10 +31,12 @@
   - 2인 온라인 테스트: `OUT=/some/dir tools/online_test.sh 70` → `$OUT/online_summary.txt` (기본 relay). `EXTRA="&net=p2p"`로 PeerJS 경로, `EXTRA="&relay=ws://127.0.0.1:8787"`로 로컬 릴레이 테스트
 - GPU 스크린샷(정적 화면만 게임 시간이 안 흐름): `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --ignore-gpu-blocklist --no-sandbox --mute-audio --user-data-dir=./p --window-size=1280,800 --timeout=7000 --screenshot=./x.png "URL"`
 - 헤드리스에서 rAF는 사실상 안 돌아감 → 논리 테스트는 반드시 `steps=N`(타이머 루프). CDP 스크린샷은 WebGL이 안 찍힘 → CLI 방식만.
-- 배포: `git add -A && git commit && git push origin main` (커밋 서명은 Co-Authored-By: Claude 형식 유지)
+- 계정 API 테스트: `node tools/account_api_test.js http://127.0.0.1:8787` (또는 프로덕션 URL) — 가입/로그인/병합/토큰 회전/로그아웃/속도 제한 23개 체크. 브라우저 쪽은 URL `?autotest&accscreen&account=http://127.0.0.1:8787&resetprofile&xp=1000&nosync` 로 열고 하네스 eval 에서 `Account.register(...)` 호출(하네스 eval 은 Promise 를 기다림, `SHOT_AFTER=파일 SHOT_AFTER_MS=2500` 로 eval 뒤 스크린샷).
+- 프로그레션 테스트 파라미터: `resetprofile`(프로필 초기화) `xp=N` `skin=id`(강제 해금+장착) `nosync`(시작 동기화 생략). `__dbg.progress / __dbg.award / __dbg.account` 노출. 결과 화면 도달 시 `[AUTOTEST] XP +N lv a->b unlocked=... record=...` 로그.
+- 배포: `git add -A && git commit && git push origin main` (커밋 서명은 Co-Authored-By: Claude 형식 유지). 릴레이/계정 서버는 `cd relay && npx wrangler@4 deploy` 별도 배포 (DO 마이그레이션 v1 Room, v2 Account).
 
 ## 코드 구조 (`js/`)
-config(relayUrl/ICE/TURN) · karts(카트 차체) · util(텍스처·RNG) · audio(Web Audio SFX/BGM) · path(스플라인, 뱅크) · tracks(트랙 정의·도로·경관) · chars(캐릭터·펫) · kart(메시·물리·원격 보간) · fx(파티클·스키드) · items · ai · net(릴레이 WS 또는 PeerJS) · game(상태·UI·HUD·온라인 통합)
+config(relayUrl/accountUrl/ICE/TURN) · karts(카트 차체) · skins(스킨·패턴) · progress(XP·기록·해금) · account(클라우드 세이브 클라이언트) · util(텍스처·RNG) · audio(Web Audio SFX/BGM) · path(스플라인, 뱅크) · tracks(트랙 정의·도로·경관) · chars(캐릭터·펫) · kart(메시·물리·원격 보간) · fx(파티클·스키드) · items · ai · net(릴레이 WS 또는 PeerJS) · game(상태·UI·HUD·온라인 통합)
 
 ## 꼭 알아야 할 규약/함정
 - three.js에서 +Z를 볼 때 +X는 **왼쪽**. 코드의 `right = up × T`는 실제로 왼쪽이며 전체가 그 규약으로 일관됨. 사람 입력만 `steer = left - right`로 뒤집혀 있음. 건드리지 말 것.
@@ -44,4 +49,4 @@ config(relayUrl/ICE/TURN) · karts(카트 차체) · util(텍스처·RNG) · aud
 - 정적 스크린샷: `tools/shot.sh "http://127.0.0.1:8765/tools/track_view.html?track=4&s=0.2&h=3.5&back=10[&yaw=0.3][&kart=hover&char=kiki][&x=&y=&z=&lx=&ly=&lz=]" out.png` (GPU 렌더, 게임 루프 없음). 카트 외형/트랙 장식 확인용. Chrome이 PNG를 쓰고 안 죽으므로 스크립트가 파일 생기면 kill함.
 
 ## 다음에 할 만한 것
-실제 친구 테스트(릴레이) → 서울 트랙 실주행 피드백(코너 난이도·장식 밀도) → 결과 화면 지연(rtt) 표시 → 카메라/조작감 피드백 반영 → 결과 화면 리플레이/기록 저장 → 모바일 터치 조작 → 추가 트랙/캐릭터
+실제 친구 테스트(릴레이·계정 동기화) → 스킨 해금 밸런스(레벨 커브·XP 양) 실플레이 피드백 → 서울 트랙 실주행 피드백(코너 난이도·장식 밀도) → 결과 화면 지연(rtt) 표시 → 카메라/조작감 피드백 반영 → 결과 화면 리플레이/기록 저장 → 모바일 터치 조작 → 추가 트랙/캐릭터
