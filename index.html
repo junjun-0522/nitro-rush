@@ -251,7 +251,7 @@
     <div class="menu-buttons">
       <button id="btnPlay" class="btn big">▶ Play</button>
       <button id="btnOnline" class="btn online">🌐 Online Multiplayer<small>친구와 방 코드로 함께 달리기</small></button>
-      <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>캐릭터 · 펫 선택</small></button>
+      <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>카트 · 캐릭터 · 펫 선택</small></button>
       <button id="btnMode" class="btn mode">Mode: <b id="menuMode">ITEM RACE</b><small id="menuModeDesc"></small></button>
       <button id="btnTrack" class="btn">Track Select</button>
       <button id="btnSettings" class="btn">Settings</button>
@@ -328,6 +328,8 @@
   <div id="garage" class="screen garage hidden">
     <div class="garage-panel">
       <h2 class="head" id="garageTitle">VOLT</h2>
+      <div class="gsec">KART <small>차체마다 성능이 달라요</small></div>
+      <div id="garageKarts" class="gcards"></div>
       <div class="gsec">CHARACTER</div>
       <div id="garageChars" class="gcards"></div>
       <div class="gsec">PET <small>레이스 중 옆에서 날아다녀요</small></div>
@@ -417,6 +419,7 @@
 <script src="js/path.js"></script>
 <script src="js/tracks.js"></script>
 <script src="js/chars.js"></script>
+<script src="js/karts.js"></script>
 <script src="js/kart.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/items.js"></script>

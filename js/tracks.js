@@ -91,6 +91,27 @@
         tunnel: 0xbfe0ff, tunnelLight: 0xa0f0ff, portal: 0x9fd0ff, portalEm: 0x3399ff, pillar: 0x9fb3c8, gate: 0xffffff, gateEm: 0x000000,
         time: 'DAY', stars: false, seed: 999, gripMul: 0.86, preview: ['rgba(160,220,255,0.6)', '#8fa8c0', '#ffffff']
       }
+    },
+    {
+      id: 'seoul', name: 'SEOUL BLOSSOM', tag: 'INTERMEDIATE', mood: 'seoul', laps: 3,
+      desc: '벚꽃 핀 봄날의 서울. 광화문 광장에서 출발해 한강 대교, 롯데타워 시케인, 잠수교, 남산 터널을 지나 N서울타워를 돌고 벚꽃 내리막으로.',
+      pts: [[0,0,0],[0,28,0],[0,56,0],[0,84,0],[0,112,0],[0.5,128,0],[5,143.3,0],[13.7,156.6,0],[25.9,166.9,0],[40.5,173.3,0],[68.4,175.2,1],[96.4,175.2,6.2],[124.4,175.1,8],[152.4,175.1,8],[180.4,175,8],[208.4,175,8],[236.4,174.9,8],[264.4,174.8,5.9],[292.4,174.8,0.8],[308.4,174.6,0],[323.6,170.2,0],[335.9,160.2,0],[343.4,146.1,0],[344.9,118.3,0],[344.8,94.8,0],[347.9,79.2,0],[357.1,66.3,0],[368.9,55.5,0],[375.8,41.2,0],[376.7,13.3,0],[376.6,-14.7,0],[376.4,-37.7,0],[374.8,-53.6,0],[370.2,-68.9,0],[366.9,-84.5,0],[366.3,-112.5,0],[366.1,-140.5,0],[365.8,-156.5,0],[359.6,-171.1,0],[346.9,-180.5,0.1],[319.5,-185.7,1.5],[291.9,-190.3,1.5],[264.2,-194.9,1.5],[236.6,-199.5,1.5],[209,-204.1,1.5],[181.4,-208.7,1.5],[165.7,-212,1.2],[151.9,-219.8,0],[141.6,-232,0.9],[131.2,-257.9,5.5],[121.3,-284.1,10.5],[115.3,-298.9,11.9],[104.8,-310.8,12.7],[90.1,-316.8,15.4],[74.3,-315.7,18.4],[60.6,-307.7,20],[51.8,-294.5,20],[46.5,-267,16.9],[41.9,-239.4,10.1],[37.3,-211.8,4.7],[34.6,-196,4],[29.5,-180.9,3.5],[21.1,-167.3,2.6],[10.5,-155.4,1.5],[2.2,-141.7,0.5],[-2.8,-126.6,0],[-4.3,-110.6,0],[-1.9,-94.8,0],[0,-66.5,0],[0,-38.5,0],[0,-10.5,0]],
+      width: 22, narrow: [[0.366, 0.414, 19], [0.744, 0.804, 18]],
+      zones: [
+        { a: 0.298, b: 0.340, side: 1, extra: 16, kind: 'dirt' },   // 스위퍼 안쪽
+        { a: 0.535, b: 0.563, side: 1, extra: 18, kind: 'dirt' }    // 헤어핀 안쪽
+      ],
+      ramps: [{ a: 0.248, b: 0.259, h: 1.8 }, { a: 0.855, b: 0.864, h: 1.4 }],
+      tunnels: [{ a: 0.708, b: 0.742 }],
+      boostPads: [{ s: 0.21, lat: 0 }, { s: 0.43, lat: -4 }, { s: 0.55, lat: 16 }, { s: 0.61, lat: 0 }, { s: 0.83, lat: 0 }, { s: 0.96, lat: 0 }],
+      itemRows: [0.05, 0.13, 0.22, 0.32, 0.43, 0.52, 0.62, 0.72, 0.83, 0.93],
+      theme: {
+        sky: [0x5fb2ff, 0xffe6f0], fog: 0xf3dfe8, fogNear: 260, fogFar: 950,
+        sun: 0xfff6e0, sunInt: 1.4, sunDir: [-0.45, 1, -0.55], hemi: [0xdaeeff, 0x8fa870], hemiInt: 0.8, exposure: 1.05,
+        road: 'asphalt', roadTint: 0xffffff, rail: 0xffffff, railEm: 0x000000, ground: 'grass', skirt: 'grass',
+        tunnel: 0xb4b8c0, tunnelLight: 0xfff3b0, portal: 0xc9ccd2, portalEm: 0x000000, pillar: 0xb4b9c2, gate: 0xa8382c, gateEm: 0x000000,
+        time: 'DAY', stars: false, seed: 2026, gripMul: 1, preview: ['rgba(255,160,200,0.55)', '#5a6f4a', '#ff9ec8']
+      }
     }
   ];
 
@@ -403,10 +424,13 @@
       var h = path.P[j].y + hExtra[j];
       if (h > 5) {
         [-path.W[j] / 3, path.W[j] / 3].forEach(function (lat) {
+          // pillar top stays 0.6m under the real (banked) road surface at that lateral, so it never pokes through the deck
+          self.surfacePoint(j, lat, tmp);
+          var H = tmp.y - 0.6 - groundY;
+          if (H < 1) return;
           var pg = pillarGeo.clone();
-          pg.scale(1, h + 0.5, 1);
-          tmp.copy(path.P[j]).addScaledVector(path.R[j], lat); tmp.y = (h + 0.5) / 2 + groundY;
-          pg.translate(tmp.x, tmp.y, tmp.z);
+          pg.scale(1, H, 1);
+          pg.translate(tmp.x, H / 2 + groundY, tmp.z);
           pillars.push(pg);
         });
       }
@@ -521,7 +545,7 @@
     var rng = U.rng(th.seed);
     g.add(skyDome(th.sky[0], th.sky[1], th.stars));
     var groundY = -0.3;
-    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost }[th.mood] || this._sceneryCoast;
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul }[th.mood] || this._sceneryCoast;
     fn.call(this, rng, this.envelope, null, groundY);
   };
 
@@ -893,6 +917,222 @@
     this.animated.push(function (dt, t) {
       for (var i = 0; i < flakes.length; i++) { var fl = flakes[i]; fl.position.y -= fl.userData.v * dt; fl.position.x += Math.sin(t + fl.userData.ph) * dt * 2; if (fl.position.y < 0) fl.position.y = 60; }
     });
+  };
+
+
+  // ---------------------------------------------------------- seoul (spring, cherry blossoms, landmarks)
+  Track.prototype._scenerySeoul = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this, N = path.N;
+    var tmp = new THREE.Vector3(), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), e = new THREE.Euler();
+    function mesh(geo, mat, x, y, z) { var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; }
+    var stoneMat = new THREE.MeshStandardMaterial({ color: 0xa9a7a2, roughness: 1 });
+    var graniteMat = new THREE.MeshStandardMaterial({ color: 0x8f8d88, roughness: 0.95 });
+    var redMat = new THREE.MeshStandardMaterial({ color: 0xa8382c, roughness: 0.7 });
+    var wallMat = new THREE.MeshStandardMaterial({ color: 0xf1e6cf, roughness: 0.9 });
+    var danMat = new THREE.MeshStandardMaterial({ color: 0x1f8f73, roughness: 0.6 });
+    var tileMat = new THREE.MeshStandardMaterial({ color: 0x3c4047, roughness: 0.9 });
+    var darkMat = new THREE.MeshStandardMaterial({ color: 0x2a2320, roughness: 0.9 });
+    var woodMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.9 });
+    var glassMat = new THREE.MeshStandardMaterial({ color: 0xd8ecf8, metalness: 0.2, roughness: 0.2, emissive: 0x224466, emissiveIntensity: 0.25 });
+
+    // ---- ground + 광화문광장 pavement beside the start straight
+    var grassTex = tex.grass(); grassTex.repeat.set(160, 160);
+    var ground = mesh(new THREE.PlaneGeometry(3400, 3400).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ map: grassTex, roughness: 1 }), 0, groundY, 0);
+    ground.castShadow = false; g.add(ground);
+    function edge(latFn) { return function (j, out) { self.surfacePoint(j, latFn(j), out); }; }
+    var pa = Math.round(0.925 * N), pb = N + Math.round(0.08 * N);
+    var paveMat = new THREE.MeshStandardMaterial({ map: tex.concrete(), color: 0xd8d4cc, roughness: 1 });
+    var plaza = new THREE.Mesh(mergeGeoms([
+      stripGeom(path, edge(function (j) { return self.minLat[j] - 36; }), edge(function (j) { return self.minLat[j] - 1.6; }), 12, [pa, pb]),
+      stripGeom(path, edge(function (j) { return self.maxLat[j] + 1.6; }), edge(function (j) { return self.maxLat[j] + 36; }), 12, [pa, pb])]), paveMat);
+    plaza.position.y = 0.01; plaza.receiveShadow = true; g.add(plaza);
+
+    // ---- 한강: river band along z, stone banks, 유람선
+    var RX0 = 175, RX1 = 245, RC = (RX0 + RX1) / 2;
+    var waterTex = tex.water(); waterTex.repeat.set(4, 120);
+    var waterMat = new THREE.MeshStandardMaterial({ map: waterTex, color: 0x8ec4ea, roughness: 0.2, metalness: 0.3 });
+    var water = mesh(new THREE.PlaneGeometry(RX1 - RX0, 3000).rotateX(-Math.PI / 2), waterMat, RC, groundY + 0.02, -60);
+    water.castShadow = false; g.add(water);
+    this.animated.push(function (dt, t) { waterTex.offset.y = t * 0.02; waterTex.offset.x = Math.sin(t * 0.3) * 0.01; });
+    [RX0 - 1.5, RX1 + 1.5].forEach(function (x) { g.add(mesh(new THREE.BoxGeometry(3, 0.7, 3000), stoneMat, x, groundY + 0.35, -60)); });
+    var boat = new THREE.Group();
+    boat.add(mesh(new THREE.BoxGeometry(16, 2.2, 5), new THREE.MeshStandardMaterial({ color: 0xf4f6f8, roughness: 0.6 }), 0, 1.1, 0));
+    boat.add(mesh(new THREE.BoxGeometry(9, 2.4, 4), new THREE.MeshStandardMaterial({ color: 0x3b7dd8, roughness: 0.6 }), -1, 3.4, 0));
+    boat.add(mesh(new THREE.CylinderGeometry(0.5, 0.6, 2, 8), redMat, -4, 5.5, 0));
+    boat.position.set(RC, groundY, -5); g.add(boat);
+    this.animated.push(function (dt, t) { var ph = t * 0.06; boat.position.z = -5 + Math.sin(ph) * 150; boat.rotation.y = Math.cos(ph) >= 0 ? Math.PI / 2 : -Math.PI / 2; });
+    // 대교 arches over the high bridge
+    var arches = [];
+    for (var fa = 0.185; fa < 0.25; fa += 0.016) { var ja = Math.round(fa * N); arches.push(archGeom(path, ja, ja + 2, function (jj) { return self.maxLat[jj] + 2.5; }, 12, 0)); }
+    g.add(new THREE.Mesh(mergeGeoms(arches), new THREE.MeshStandardMaterial({ color: 0xf2f4f8, roughness: 0.5, side: THREE.DoubleSide })));
+
+    // ---- traditional architecture helpers (hip roofs with flared eaves)
+    function hipRoof(w, d, h) { var geo = new THREE.CylinderGeometry(Math.SQRT1_2 * 0.22, Math.SQRT1_2, 1, 4, 1); geo.rotateY(Math.PI / 4); geo.scale(w, h, d); return geo; }
+    function eaveGeo(w, d) { var geo = new THREE.CylinderGeometry(Math.SQRT1_2, Math.SQRT1_2 * 0.9, 1, 4, 1); geo.rotateY(Math.PI / 4); geo.scale(w, 0.5, d); return geo; }
+    var pillarGeo = new THREE.CylinderGeometry(0.45, 0.5, 1, 8);
+    function pavilion(x, z, y0, W, D, tiers) {
+      var grp = new THREE.Group(); grp.position.set(x, y0, z);
+      var w = W, d = D, y = 0;
+      for (var t = 0; t < tiers; t++) {
+        var ph = t === 0 ? 5.5 : 4.5, last = t === tiers - 1;
+        grp.add(mesh(new THREE.BoxGeometry(w + 1, 0.5, d + 1), stoneMat, 0, y + 0.25, 0));
+        var nx = Math.max(2, Math.round(w / 6)), nz = Math.max(2, Math.round(d / 6));
+        for (var i = 0; i <= nx; i++) for (var k = 0; k <= nz; k++) {
+          if (i > 0 && i < nx && k > 0 && k < nz) continue;
+          var pl = mesh(pillarGeo, redMat, -w / 2 + i * w / nx, y + 0.5 + ph / 2, -d / 2 + k * d / nz); pl.scale.y = ph; grp.add(pl);
+        }
+        grp.add(mesh(new THREE.BoxGeometry(w - 2.4, ph, d - 2.4), wallMat, 0, y + 0.5 + ph / 2, 0));
+        grp.add(mesh(new THREE.BoxGeometry(w + 1.4, 0.8, d + 1.4), danMat, 0, y + 0.5 + ph + 0.4, 0));
+        grp.add(mesh(eaveGeo(w + 6, d + 6), tileMat, 0, y + ph + 1.3, 0));
+        var rh = last ? 4.5 : 2.8;
+        grp.add(mesh(hipRoof(w + 5, d + 5, rh), tileMat, 0, y + ph + 1.55 + rh / 2, 0));
+        if (last) grp.add(mesh(new THREE.BoxGeometry(w * 0.45, 0.6, 1.2), darkMat, 0, y + ph + 1.55 + rh, 0));
+        y += ph + 1.55 + rh * 0.55; w *= 0.8; d *= 0.78;
+      }
+      return grp;
+    }
+
+    // ---- 광화문 (gate with three arches, two-tier pavilion), 해태, 광장, 경복궁 근정전, 북악산
+    var GX = -46, GZ = 152;
+    g.add(mesh(new THREE.BoxGeometry(46, 9, 14), graniteMat, GX, groundY + 4.5, GZ));
+    g.add(mesh(new THREE.BoxGeometry(48, 0.8, 16), stoneMat, GX, groundY + 9.2, GZ));
+    [[0, 6.5, 7.2], [-14, 5, 6], [14, 5, 6]].forEach(function (a) {
+      var bh = a[2] - a[1] / 2;
+      g.add(mesh(new THREE.BoxGeometry(a[1], bh, 1.2), darkMat, GX + a[0], groundY + bh / 2, GZ - 7.2));
+      g.add(mesh(new THREE.CylinderGeometry(a[1] / 2, a[1] / 2, 1.2, 14).rotateX(Math.PI / 2), darkMat, GX + a[0], groundY + bh, GZ - 7.2));
+    });
+    g.add(pavilion(GX, GZ, groundY + 9.6, 38, 9, 2));
+    var haetae = new THREE.MeshStandardMaterial({ color: 0xc9b98a, roughness: 0.9 });
+    [-1, 1].forEach(function (sd) {
+      var st = new THREE.Group(); st.position.set(GX + sd * 20, groundY, GZ - 16);
+      st.add(mesh(new THREE.BoxGeometry(2.6, 1.2, 3.4), stoneMat, 0, 0.6, 0));
+      st.add(mesh(new THREE.BoxGeometry(2, 1.6, 2.6), haetae, 0, 2.0, 0));
+      st.add(mesh(new THREE.SphereGeometry(1.0, 10, 8), haetae, 0, 3.3, 0.9));
+      g.add(st);
+    });
+    g.add(mesh(new THREE.BoxGeometry(64, 0.16, 44), new THREE.MeshStandardMaterial({ color: 0xcfcbc2, roughness: 1 }), GX, groundY + 0.08, GZ - 38));
+    g.add(mesh(new THREE.BoxGeometry(58, 3, 42), stoneMat, GX, groundY + 1.5, GZ + 70));
+    g.add(pavilion(GX, GZ + 70, groundY + 3, 40, 26, 2));
+    var mtMat = new THREE.MeshStandardMaterial({ color: 0x4f7f4a, roughness: 1, flatShading: true });
+    [[-70, 540, 200, 170], [140, 590, 170, 120], [-300, 500, 180, 130], [90, -820, 240, 150], [460, 600, 180, 110], [-520, -320, 200, 120]].forEach(function (m) { g.add(mesh(new THREE.ConeGeometry(m[2], m[3], 7), mtMat, m[0], groundY + m[3] / 2, m[1])); });
+    // 태극기 along the plaza
+    var flagMat = new THREE.MeshBasicMaterial({ map: tex.taegukgi(), side: THREE.DoubleSide });
+    var poleMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.6, roughness: 0.4 });
+    var flagGeo = new THREE.PlaneGeometry(4, 2.7); flagGeo.translate(2, 0, 0);
+    var flags = [];
+    for (var fi = 0; fi < 12; fi++) {
+      var fx = fi < 6 ? -30 : 30, fz = 10 + (fi % 6) * 18;
+      g.add(mesh(new THREE.CylinderGeometry(0.12, 0.16, 12, 6), poleMat, fx, groundY + 6, fz));
+      var fl = mesh(flagGeo, flagMat, fx, groundY + 10.5, fz); fl.castShadow = false; g.add(fl); flags.push(fl);
+    }
+    this.animated.push(function (dt, t) { for (var i = 0; i < flags.length; i++) flags[i].rotation.y = 0.3 + Math.sin(t * 2.2 + i) * 0.3; });
+
+    // ---- 63빌딩, 롯데월드타워 + 석촌호수, DDP
+    g.add(mesh(new THREE.BoxGeometry(22, 96, 14), new THREE.MeshStandardMaterial({ color: 0xe6b640, metalness: 0.35, roughness: 0.3, emissive: 0x5a3a08, emissiveIntensity: 0.35 }), 292, groundY + 48, 232));
+    var lotteTex = tex.windowsDay(3).clone(); lotteTex.repeat.set(10, 70); lotteTex.needsUpdate = true;
+    g.add(mesh(new THREE.CylinderGeometry(3.5, 14, 200, 8), new THREE.MeshStandardMaterial({ map: lotteTex, color: 0xcfe4f5, roughness: 0.4, metalness: 0.1 }), 445, groundY + 100, 40));
+    g.add(mesh(new THREE.ConeGeometry(3.5, 26, 8), glassMat, 445, groundY + 213, 40));
+    g.add(mesh(new THREE.BoxGeometry(30, 9, 22), glassMat, 445, groundY + 4.5, 40));
+    var lake = mesh(new THREE.CircleGeometry(36, 32).rotateX(-Math.PI / 2), waterMat, 452, groundY + 0.02, -52); lake.castShadow = false; g.add(lake);
+    var ddp = mesh(new THREE.SphereGeometry(26, 24, 14), new THREE.MeshStandardMaterial({ color: 0xd8dbe0, metalness: 0.3, roughness: 0.35 }), 100, groundY + 4, 262); ddp.scale.set(1.7, 0.42, 1); g.add(ddp);
+
+    // ---- 남산 + N서울타워 (inside the tower loop)
+    var HX = 84.6, HZ = -282;
+    g.add(mesh(new THREE.CylinderGeometry(9, 27, 17, 24), new THREE.MeshStandardMaterial({ color: 0x3f7d3a, roughness: 1 }), HX, groundY + 8.5, HZ));
+    g.add(mesh(new THREE.CylinderGeometry(24, 48, 8, 24), new THREE.MeshStandardMaterial({ color: 0x4a8a44, roughness: 1 }), HX, groundY + 4, HZ));
+    var twMat = new THREE.MeshStandardMaterial({ color: 0xe3e6ea, roughness: 0.5, metalness: 0.2 });
+    var ty = groundY + 17;
+    g.add(mesh(new THREE.CylinderGeometry(6, 8, 3, 12), stoneMat, HX, ty + 1.5, HZ));
+    g.add(mesh(new THREE.CylinderGeometry(2.2, 3.4, 58, 12), twMat, HX, ty + 32, HZ));
+    g.add(mesh(new THREE.CylinderGeometry(7.5, 5.5, 7, 16), twMat, HX, ty + 64.5, HZ));
+    g.add(mesh(new THREE.CylinderGeometry(7.7, 7.7, 2.2, 16), glassMat, HX, ty + 66, HZ));
+    g.add(mesh(new THREE.CylinderGeometry(0.5, 1.0, 42, 8), new THREE.MeshStandardMaterial({ color: 0xd8dde3, roughness: 0.5 }), HX, ty + 89, HZ));
+    g.add(mesh(new THREE.SphereGeometry(0.9, 8, 6), new THREE.MeshStandardMaterial({ color: 0xff3030, emissive: 0xff2020, emissiveIntensity: 1.5 }), HX, ty + 110, HZ));
+
+    // ---- 북촌 한옥마을 (south-west quarter, below 남산)
+    var walls = [], roofs = [], bases = [], hspots = [], tries = 0;
+    while (hspots.length < 75 && tries++ < 6000) {
+      var hx = rng.range(-60, 160), hz = rng.range(-345, -105);
+      if (self.distToPath(hx, hz) < 21 || Math.hypot(hx - HX, hz - HZ) < 48) continue;
+      var ok = true; for (var hi = 0; hi < hspots.length; hi++) if (Math.hypot(hspots[hi][0] - hx, hspots[hi][1] - hz) < 17) { ok = false; break; }
+      if (!ok) continue;
+      hspots.push([hx, hz]);
+      var w = rng.range(8, 14), d = rng.range(6, 10), rot = rng.pick([0, Math.PI / 2, 0.3, -0.3]);
+      var wg = new THREE.BoxGeometry(w, 3.2, d); wg.rotateY(rot); wg.translate(hx, groundY + 1.6, hz); walls.push(wg);
+      var bg = new THREE.BoxGeometry(w + 0.5, 0.9, d + 0.5); bg.rotateY(rot); bg.translate(hx, groundY + 0.45, hz); bases.push(bg);
+      var band = new THREE.BoxGeometry(w + 0.2, 0.35, d + 0.2); band.rotateY(rot); band.translate(hx, groundY + 3.05, hz); bases.push(band);
+      var eg = eaveGeo(w + 3.5, d + 3.5); eg.rotateY(rot); eg.translate(hx, groundY + 3.45, hz); roofs.push(eg);
+      var rg = hipRoof(w + 3, d + 3, 2.6); rg.rotateY(rot); rg.translate(hx, groundY + 5.0, hz); roofs.push(rg);
+    }
+    if (walls.length) { g.add(mesh(mergeGeoms(walls), wallMat, 0, 0, 0)); g.add(mesh(mergeGeoms(bases), woodMat, 0, 0, 0)); g.add(mesh(mergeGeoms(roofs), tileMat, 0, 0, 0)); }
+
+    // ---- city blocks: 잠실 (east of the river), 종로 (north-west), 명동 (inside the loop)
+    var byVar = [[], [], [], [], []], pastel = [0xdfe6ee, 0xe8e0d6, 0xd6e4f0, 0xf0e6e0, 0xe2e8e2];
+    function block(x, z, w, d, h) { var geo = boxWithUV(w, h, d, 6); geo.translate(x, h / 2 + groundY, z); byVar[rng.int(0, 4)].push(geo); }
+    function scatter(count, xr, zr, wr, hr, margin, reject) {
+      var c = 0, tr = 0;
+      while (c < count && tr++ < 6000) {
+        var x = rng.range(xr[0], xr[1]), z = rng.range(zr[0], zr[1]), w = rng.range(wr[0], wr[1]), d = rng.range(wr[0], wr[1]), h = rng.range(hr[0], hr[1]);
+        if (self.distToPath(x, z) < margin + Math.max(w, d) * 0.6) continue;
+        if (x > RX0 - 16 && x < RX1 + 16) continue;
+        if (reject && reject(x, z)) continue;
+        block(x, z, w, d, h); c++;
+      }
+    }
+    scatter(70, [262, 540], [-240, 260], [12, 24], [22, 70], 30, function (x, z) { return Math.hypot(x - 445, z - 40) < 58 || Math.hypot(x - 452, z + 52) < 58 || Math.hypot(x - 292, z - 232) < 32; });
+    scatter(45, [-280, 160], [120, 340], [10, 22], [10, 36], 28, function (x, z) { return Math.hypot(x - GX, z - GZ) < 72 || Math.hypot(x - GX, z - GZ - 70) < 62 || Math.hypot(x - 100, z - 262) < 62; });
+    scatter(35, [30, 160], [-95, 105], [10, 20], [12, 40], 40, null);
+    scatter(30, [-300, -50], [-200, 100], [10, 22], [8, 30], 30, null);
+    byVar.forEach(function (list, vi) { if (!list.length) return; var mm = new THREE.Mesh(mergeGeoms(list), new THREE.MeshStandardMaterial({ map: tex.windowsDay(vi), color: pastel[vi], roughness: 0.8 })); mm.castShadow = true; mm.receiveShadow = true; g.add(mm); });
+
+    // ---- 벚꽃: instanced trees with per-instance pink, falling petals
+    var trunkGeo = new THREE.CylinderGeometry(0.28, 0.42, 3.6, 6); trunkGeo.translate(0, 1.8, 0);
+    var canopyGeo = mergeGeoms([new THREE.IcosahedronGeometry(2.6, 1).translate(0, 5.2, 0), new THREE.IcosahedronGeometry(2.0, 1).translate(1.5, 4.3, 0.7), new THREE.IcosahedronGeometry(1.9, 1).translate(-1.3, 4.5, -0.9), new THREE.IcosahedronGeometry(1.6, 1).translate(0.3, 6.6, -0.4)]);
+    var spots = [];
+    function treeAt(j, lat, s) { self.surfacePoint(j, lat, tmp); spots.push({ x: tmp.x, y: Math.max(groundY, tmp.y - 1.4), z: tmp.z, s: s, rot: rng() * 6.28, c: rng() }); }
+    for (var j = Math.round(0.806 * N); j < Math.round(0.86 * N); j += 3) { treeAt(j, self.maxLat[j] + rng.range(2.5, 4), rng.range(1.0, 1.4)); treeAt(j, self.minLat[j] - rng.range(2.5, 4), rng.range(1.0, 1.4)); }
+    for (j = Math.round(0.862 * N); j < N + Math.round(0.078 * N); j += 6) { var jj = j % N; if (rng() < 0.8) treeAt(jj, self.maxLat[jj] + rng.range(5, 14), rng.range(0.8, 1.3)); if (rng() < 0.8) treeAt(jj, self.minLat[jj] - rng.range(5, 14), rng.range(0.8, 1.3)); }
+    for (j = Math.round(0.414 * N); j < Math.round(0.535 * N); j += 5) { if (rng() < 0.7) treeAt(j, self.maxLat[j] + rng.range(4, 12), rng.range(0.8, 1.3)); }
+    for (j = Math.round(0.674 * N); j < Math.round(0.706 * N); j += 5) { if (rng() < 0.7) treeAt(j, self.minLat[j] - rng.range(4, 10), rng.range(0.8, 1.2)); }
+    tries = 0;
+    while (spots.length < 340 && tries++ < 4000) {
+      var tx = rng() < 0.5 ? rng.range(RX0 - 30, RX0 - 6) : rng.range(RX1 + 6, RX1 + 30), tz = rng.range(-180, 300);
+      if (self.distToPath(tx, tz) < 16) continue;
+      spots.push({ x: tx, y: groundY, z: tz, s: rng.range(0.7, 1.2), rot: rng() * 6.28, c: rng() });
+    }
+    var trunks = new THREE.InstancedMesh(trunkGeo, new THREE.MeshStandardMaterial({ color: 0x5c4030, roughness: 1 }), spots.length);
+    var canopy = new THREE.InstancedMesh(canopyGeo, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 }), spots.length);
+    var col = new THREE.Color(), pinkA = new THREE.Color(0xffc4dc), pinkB = new THREE.Color(0xff9ec8);
+    spots.forEach(function (sp, i) {
+      tmp.set(sp.x, sp.y, sp.z); e.set(0, sp.rot, 0); q.setFromEuler(e); sc.set(sp.s, sp.s, sp.s);
+      m4.compose(tmp, q, sc); trunks.setMatrixAt(i, m4); canopy.setMatrixAt(i, m4);
+      canopy.setColorAt(i, col.copy(pinkA).lerp(pinkB, sp.c));
+    });
+    trunks.castShadow = canopy.castShadow = true; g.add(trunks); g.add(canopy);
+    var petalMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffc0d8, transparent: true, opacity: 0.85, depthWrite: false });
+    var petals = [];
+    for (var pi = 0; pi < 150; pi++) { var pt = new THREE.Sprite(petalMat); pt.scale.set(0.45, 0.35, 1); pt.position.set(rng.range(-120, 500), rng.range(2, 45), rng.range(-380, 280)); pt.userData.v = rng.range(0.8, 1.8); pt.userData.ph = rng() * 6.28; g.add(pt); petals.push(pt); }
+    this.animated.push(function (dt, t) {
+      for (var i = 0; i < petals.length; i++) { var pt = petals[i]; pt.position.y -= pt.userData.v * dt; pt.position.x += Math.sin(t * 1.3 + pt.userData.ph) * dt * 2.5; pt.position.z += Math.cos(t * 0.9 + pt.userData.ph) * dt * 1.5; if (pt.position.y < 0) pt.position.y = 45; }
+    });
+
+    // ---- 한글 간판 along the 둔치 straight
+    [['서울', '#ffffff', '#cd2e3a'], ['어서오세요', '#ffffff', '#0047a0'], ['한강공원', '#112233', '#ffe066'], ['NITRO RUSH', '#ffffff', '#ff2f6d']].forEach(function (sg, i) {
+      var j = Math.round((0.42 + i * 0.03) * N), bb = new THREE.Group();
+      bb.add(mesh(new THREE.BoxGeometry(14, 4.5, 0.5), new THREE.MeshBasicMaterial({ map: tex.label('kr' + i, sg[0], sg[1], sg[2]) }), 0, 8, 0));
+      bb.add(mesh(new THREE.BoxGeometry(0.7, 6, 0.7), new THREE.MeshStandardMaterial({ color: 0x555a66 }), 0, 3, 0));
+      self.surfacePoint(j, self.minLat[j] - 9, tmp); bb.position.set(tmp.x, groundY, tmp.z); bb.lookAt(path.P[j].x, groundY, path.P[j].z); g.add(bb);
+    });
+
+    // ---- sky: clouds + sun
+    var cloudMat = new THREE.SpriteMaterial({ map: tex.smoke(), color: 0xffffff, opacity: 0.95, transparent: true, depthWrite: false, fog: false });
+    for (var c = 0; c < 24; c++) {
+      var a2 = rng() * Math.PI * 2, r2 = rng.range(300, 900), cl = new THREE.Sprite(cloudMat);
+      cl.position.set(190 + Math.cos(a2) * r2, rng.range(110, 190), -70 + Math.sin(a2) * r2);
+      var s2 = rng.range(50, 120); cl.scale.set(s2 * 1.6, s2 * 0.8, 1); g.add(cl);
+    }
+    var sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xfff1b0, transparent: true, fog: false }));
+    sun.position.set(-500, 520, -800); sun.scale.set(240, 240, 1); g.add(sun);
   };
 
   Track.prototype.update = function (dt, t) {

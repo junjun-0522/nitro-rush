@@ -7,7 +7,7 @@
   function $(id) { return document.getElementById(id); }
 
   var SETTINGS_KEY = 'nitroRush.settings.v1';
-  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark' };
+  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark', kart: 'nitro' };
   var MODES = {
     mixed: { label: 'ITEM + SPEED', desc: '아이템 + 드리프트 부스터 (부스터 1개 저장)', items: true, gauge: true, stock: 1, gaugeMul: 1 },
     speed: { label: 'SPEED RACE', desc: '아이템 없음 · 드리프트로 부스터 충전 · 부스터 2개 저장', items: false, gauge: true, stock: 2, gaugeMul: 1.5 },
@@ -90,6 +90,7 @@
       var mq = /mode=(mixed|speed|item)/.exec(qs); if (mq) settings.mode = mq[1];
       var chq = /char=([a-z]+)/.exec(qs); if (chq) settings.char = chq[1];
       var ptq = /pet=([a-z]*)/.exec(qs); if (ptq) settings.pet = ptq[1] || null;
+      var ktq = /kart=([a-z0-9]+)/.exec(qs); if (ktq) settings.kart = ktq[1];
       if (/garage/.test(qs)) { setTimeout(openGarage, 300); }
       var on = /online=(host|join)/.exec(qs), room = /room=([A-Za-z0-9]+)/.exec(qs), nm = /name=([A-Za-z0-9]+)/.exec(qs);
       if (on) {
@@ -154,7 +155,7 @@
   function showScreen(name) {
     ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
     if (name !== 'garage' && garage.kart) destroyGaragePreview();
-    $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '');
+    $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '') + ' · ' + findKart(settings.kart).name;
     $('hud').classList.toggle('hidden', !(name === null));
     $('vignette').classList.toggle('hidden', !(name === null));
     if (name) state = name === 'trackSelect' ? 'trackselect' : name;
@@ -297,7 +298,7 @@
   function aiName(i) { return AI_NAMES[i % AI_NAMES.length] + (i >= AI_NAMES.length ? ' ' + (Math.floor(i / AI_NAMES.length) + 1) : ''); }
   function addKart(k) { scene.add(k.root); if (k.petRoot) scene.add(k.petRoot); }
   function removeKart(k) { scene.remove(k.root); if (k.petRoot) scene.remove(k.petRoot); }
-  function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null }; }
+  function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null, kart: rng.pick(KARTS).id }; }
 
   function startRace(ti, cfg) {
     audio.init();
@@ -313,10 +314,10 @@
     var band = settings.difficulty === 'easy' ? 0.6 : (settings.difficulty === 'hard' ? 1.25 : 1);
     var list = [], i, kt;
     if (!isOnline) {
-      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet });
+      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart });
       for (i = 1; i < n; i++) {
         var lk = aiLook(rng);
-        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet });
+        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart });
         list.push(kt);
         ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: band, seed: i }));
       }
@@ -326,13 +327,13 @@
       var aiCount = n - cfg.players.length;
       for (i = 0; i < aiCount; i++) {
         var lk2 = aiLook(rng), sk = difficultySkill(rng); // consume the shared rng identically on every peer
-        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet });
+        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet, kart: lk2.kart });
         list.push(kt); kartById[100 + i] = kt;
         if (isHost) ais.push(new AIDriver(kt, { skill: sk, band: 0.7, seed: i + 1 }));
       }
       cfg.players.forEach(function (p, pi) {
         var mine = p.id === online.myId;
-        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null });
+        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro' });
         list.push(pk); kartById[p.id] = pk;
         if (mine) player = pk;
       });
@@ -825,7 +826,7 @@
     if (/network|server|socket|browser-incompatible|ssl/.test(t)) return '접속 서버(PeerJS)에 연결할 수 없어요. 인터넷/방화벽을 확인하세요. (' + t + ')';
     return '연결 실패: ' + t;
   }
-  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet }; }
+  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet, kart: settings.kart }; }
   function bindNet(net) {
     net.on('players', function () { renderRoom(); });
     net.on('lobby', function (lobby) { if (online) { online.lobby = lobby; renderRoom(); } });
@@ -895,7 +896,7 @@
     var list = net.playerList(), html = '';
     list.forEach(function (p) {
       var col = '#' + PLAYER_COLORS[p.id % PLAYER_COLORS.length].toString(16).padStart(6, '0');
-      var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '');
+      var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '') + ' · ' + findKart(p.kart || 'nitro').name;
       html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span><span class="look">' + look + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
     });
     for (var i = list.length; i < Math.max(2, lobby.racers); i++) html += '<div class="prow dim"><span class="chip" style="background:#555"></span><span>' + (i < lobby.racers ? 'AI' : '') + '</span></div>';
@@ -997,7 +998,7 @@
   }
   function rebuildGaragePreview() {
     destroyGaragePreview();
-    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet });
+    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart });
     k.placeAt(track.path, 12, 0);
     addKart(k); garage.kart = k;
   }
@@ -1006,7 +1007,11 @@
     return '<div class="sb"><span>' + label + '</span><i><b style="width:' + pct.toFixed(0) + '%"></b></i></div>';
   }
   function buildGarageCards() {
-    var ch = '', pt = '';
+    var ch = '', pt = '', kt = '';
+    KARTS.forEach(function (k) {
+      kt += '<div class="gcard kart' + (k.id === settings.kart ? ' sel' : '') + '" data-kart="' + k.id + '"><div class="gname">' + k.name + ' <small>' + k.kr + '</small></div><div class="gdesc">' + k.desc + '</div>' +
+        statBar('속도', k.stat.speed) + statBar('가속', k.stat.accel) + statBar('조향', k.stat.handling) + statBar('무게', 0.9 + (k.mass - 0.85) / 0.65 * 0.2) + '</div>';
+    });
     CHARS.forEach(function (c) {
       ch += '<div class="gcard' + (c.id === settings.char ? ' sel' : '') + '" data-char="' + c.id + '"><div class="gname"><i style="background:#' + c.body.toString(16).padStart(6, '0') + '"></i>' + c.name + ' <small>' + c.kr + '</small></div><div class="gdesc">' + c.desc + '</div>' +
         statBar('속도', c.stat.speed) + statBar('가속', c.stat.accel) + statBar('조향', c.stat.handling) + statBar('게이지', c.stat.gauge) + '</div>';
@@ -1015,7 +1020,10 @@
     PETS.forEach(function (p) {
       pt += '<div class="gcard pet' + (p.id === settings.pet ? ' sel' : '') + '" data-pet="' + p.id + '"><div class="gname">' + p.name + ' <small>' + p.kr + '</small></div><div class="gdesc">' + p.desc + '</div></div>';
     });
-    $('garageChars').innerHTML = ch; $('garagePets').innerHTML = pt;
+    $('garageChars').innerHTML = ch; $('garagePets').innerHTML = pt; $('garageKarts').innerHTML = kt;
+    $('garageKarts').querySelectorAll('.gcard').forEach(function (el) {
+      el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.kart = el.getAttribute('data-kart'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
+    });
     $('garageChars').querySelectorAll('.gcard').forEach(function (el) {
       el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.char = el.getAttribute('data-char'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
     });
@@ -1023,7 +1031,7 @@
       el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.pet = el.getAttribute('data-pet') || null; saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
     });
     var c = findChar(settings.char), p = settings.pet ? findPet(settings.pet) : null;
-    $('garageTitle').textContent = c.name + (p ? ' & ' + p.name : '');
+    $('garageTitle').textContent = findKart(settings.kart).name + ' · ' + c.name + (p ? ' & ' + p.name : '');
   }
   function garageTick(dt) {
     var k = garage.kart; if (!k) return;

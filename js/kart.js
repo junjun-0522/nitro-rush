@@ -26,7 +26,8 @@
   var _geo = {};
   function G(key, make) { return _geo[key] || (_geo[key] = make()); }
 
-  function buildKartMesh(color, accent, isPlayer, variant, charId) {
+  function buildKartMesh(color, accent, isPlayer, variant, charId, kartId) {
+    var def = findKart(kartId);
     var root = new THREE.Group();
     var body = new THREE.Group(); root.add(body);
     var paint = new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.25 });
@@ -35,82 +36,68 @@
     var chrome = new THREE.MeshStandardMaterial({ color: 0xd9dde6, roughness: 0.2, metalness: 0.9 });
     var rubber = new THREE.MeshStandardMaterial({ color: 0x15161a, roughness: 0.95 });
     var skin = new THREE.MeshStandardMaterial({ color: 0xffd9b3, roughness: 0.8 });
-    var visor = new THREE.MeshStandardMaterial({ color: 0x66e0ff, roughness: 0.1, metalness: 0.6, emissive: 0x1a5fff, emissiveIntensity: 0.3 });
+    var glass = new THREE.MeshStandardMaterial({ color: 0x66e0ff, roughness: 0.1, metalness: 0.6, emissive: 0x1a5fff, emissiveIntensity: 0.3, transparent: true, opacity: 0.75 });
     var lampMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff2c0, emissiveIntensity: 1.2 });
     var tailMat = new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff2020, emissiveIntensity: 1.0 });
+    var mats = {
+      paint: paint, acc: acc, dark: dark, chrome: chrome, rubber: rubber, skin: skin, glass: glass, lamp: lampMat, tail: tailMat,
+      glow: new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.9, roughness: 0.3 }),
+      wood: new THREE.MeshStandardMaterial({ color: 0x8a5a2b, roughness: 0.85 }),
+      green: new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: 0.6, metalness: 0.2 }),
+      red: new THREE.MeshStandardMaterial({ color: 0xb5342c, roughness: 0.6 }),
+      flag: new THREE.MeshBasicMaterial({ map: U.tex.taegukgi(), side: THREE.DoubleSide })
+    };
 
     function add(geo, mat, x, y, z, parent) {
       var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; (parent || body).add(m); return m;
     }
     variant = variant || 0;
-    // chassis floor
-    add(G('floor', function () { return new THREE.BoxGeometry(1.5, 0.12, 2.5); }), dark, 0, 0.32, 0);
-    // main tub
-    var tub = add(G('tub', function () { return new THREE.BoxGeometry(1.1, 0.42, 1.5); }), paint, 0, 0.55, -0.15);
-    // nose (tapered): scale a box
-    var nose = add(G('nose', function () { var g = new THREE.BoxGeometry(0.9, 0.32, 1.1); var p = g.getAttribute('position'); for (var i = 0; i < p.count; i++) { if (p.getZ(i) > 0) { p.setX(i, p.getX(i) * 0.55); p.setY(i, p.getY(i) * 0.6 - 0.05); } } g.computeVertexNormals(); return g; }), paint, 0, 0.55, 1.05);
-    // front bumper / wing
-    add(G('wing', function () { return new THREE.BoxGeometry(1.7, 0.1, 0.4); }), acc, 0, 0.36, 1.45);
-    add(G('wingLip', function () { return new THREE.BoxGeometry(1.7, 0.16, 0.08); }), acc, 0, 0.42, 1.62);
-    // side pods
-    add(G('pod', function () { return new THREE.BoxGeometry(0.35, 0.3, 1.0); }), acc, -0.72, 0.5, -0.1);
-    add(G('pod', function () { return new THREE.BoxGeometry(0.35, 0.3, 1.0); }), acc, 0.72, 0.5, -0.1);
-    // engine block
-    add(G('engine', function () { return new THREE.BoxGeometry(0.8, 0.45, 0.6); }), dark, 0, 0.62, -0.95);
-    add(G('engineTop', function () { return new THREE.CylinderGeometry(0.16, 0.16, 0.5, 8); }), chrome, 0.2, 0.9, -0.95);
-    add(G('engineTop', function () { return new THREE.CylinderGeometry(0.16, 0.16, 0.5, 8); }), chrome, -0.2, 0.9, -0.95);
-    // exhausts
-    var exL = add(G('exh', function () { return new THREE.CylinderGeometry(0.09, 0.11, 0.5, 8).rotateX(Math.PI / 2); }), chrome, -0.32, 0.5, -1.35);
-    var exR = add(G('exh', function () { return new THREE.CylinderGeometry(0.09, 0.11, 0.5, 8).rotateX(Math.PI / 2); }), chrome, 0.32, 0.5, -1.35);
-    // rear spoiler
-    add(G('strut', function () { return new THREE.BoxGeometry(0.08, 0.5, 0.08); }), dark, -0.55, 1.05, -1.15);
-    add(G('strut', function () { return new THREE.BoxGeometry(0.08, 0.5, 0.08); }), dark, 0.55, 1.05, -1.15);
-    var spoiler = add(G('spoiler', function () { return new THREE.BoxGeometry(1.7, 0.08, 0.45); }), acc, 0, 1.3, -1.15);
-    spoiler.rotation.x = -0.2;
-    // headlights & tail lights
-    add(G('lamp', function () { return new THREE.BoxGeometry(0.18, 0.1, 0.06); }), lampMat, -0.28, 0.5, 1.6);
-    add(G('lamp', function () { return new THREE.BoxGeometry(0.18, 0.1, 0.06); }), lampMat, 0.28, 0.5, 1.6);
-    add(G('tail', function () { return new THREE.BoxGeometry(0.7, 0.08, 0.05); }), tailMat, 0, 0.72, -1.27);
+    def.build({ add: add, G: G, m: mats, isPlayer: isPlayer, variant: variant, color: color, accent: accent, body: body });
+    // exhausts (flames attach here)
+    var exhausts = def.exhausts.map(function (p) { return add(G('exh', function () { return new THREE.CylinderGeometry(0.09, 0.11, 0.5, 8).rotateX(Math.PI / 2); }), chrome, p[0], p[1], p[2]); });
     // seat + driver
-    add(G('seat', function () { return new THREE.BoxGeometry(0.62, 0.55, 0.22); }), dark, 0, 0.9, -0.55);
+    var dp = def.driver;
+    add(G('seat', function () { return new THREE.BoxGeometry(0.62, 0.55, 0.22); }), dark, dp[0], dp[1] - 0.3, dp[2] - 0.2);
     var driver = buildDriver(charId, accent);
-    driver.group.position.set(0, 1.2, -0.35); body.add(driver.group);
+    driver.group.position.set(dp[0], dp[1], dp[2]); body.add(driver.group);
     var head = driver.group;
-    add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, -0.28, 0.95, 0.0);
-    add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, 0.28, 0.95, 0.0);
-    var wheelRing = add(G('swheel', function () { return new THREE.TorusGeometry(0.17, 0.035, 6, 14); }), dark, 0, 1.0, 0.28);
+    add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, dp[0] - 0.28, dp[1] - 0.25, dp[2] + 0.35);
+    add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, dp[0] + 0.28, dp[1] - 0.25, dp[2] + 0.35);
+    var wheelRing = add(G('swheel', function () { return new THREE.TorusGeometry(0.17, 0.035, 6, 14); }), dark, dp[0], dp[1] - 0.2, dp[2] + 0.63);
     wheelRing.rotation.x = -1.1;
-    // stripes for the player / decoration for AI
+    // stripes for the player / decoration for AI (standard tub only); every player kart gets the flag antenna
     if (isPlayer) {
-      add(G('stripe', function () { return new THREE.BoxGeometry(0.28, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0, 0.77, 0.15);
-      add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0.3, 0.77, 0.15);
-      add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), -0.3, 0.77, 0.15);
-      // roof flag / antenna
-      var ant = add(G('ant', function () { return new THREE.CylinderGeometry(0.02, 0.02, 1.2, 4); }), chrome, -0.6, 1.5, -1.0);
-      add(G('flag', function () { return new THREE.BoxGeometry(0.02, 0.28, 0.42); }), new THREE.MeshBasicMaterial({ color: 0xffe600 }), -0.6, 2.0, -0.8);
-    } else if (variant % 3 === 1) {
+      if (def.stripes) {
+        add(G('stripe', function () { return new THREE.BoxGeometry(0.28, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0, 0.77, 0.15);
+        add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0.3, 0.77, 0.15);
+        add(G('stripe2', function () { return new THREE.BoxGeometry(0.08, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), -0.3, 0.77, 0.15);
+      }
+      var fy = def.id === 'bigfoot' ? 2.2 : 1.5;
+      add(G('ant', function () { return new THREE.CylinderGeometry(0.02, 0.02, 1.2, 4); }), chrome, -0.6, fy, -1.0);
+      add(G('flag', function () { return new THREE.BoxGeometry(0.02, 0.28, 0.42); }), new THREE.MeshBasicMaterial({ color: 0xffe600 }), -0.6, fy + 0.5, -0.8);
+    } else if (def.stripes && variant % 3 === 1) {
       add(G('stripeX', function () { return new THREE.BoxGeometry(1.1, 0.02, 0.3); }), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), 0, 0.77, 0.4);
-    } else if (variant % 3 === 2) {
+    } else if (def.stripes && variant % 3 === 2) {
       add(G('stripeD', function () { return new THREE.BoxGeometry(0.2, 0.02, 2.4); }), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.4 }), 0.25, 0.77, 0.15);
     }
 
-    // wheels
-    var wheelGeo = G('wheel', function () { return new THREE.CylinderGeometry(0.33, 0.33, 0.32, 14).rotateZ(Math.PI / 2); });
-    var hubGeo = G('hub', function () { return new THREE.CylinderGeometry(0.2, 0.2, 0.34, 8).rotateZ(Math.PI / 2); });
-    var wheels = [], pivots = [];
-    var wpos = [[-0.82, 0.33, 0.9], [0.82, 0.33, 0.9], [-0.86, 0.33, -0.85], [0.86, 0.33, -0.85]];
-    wpos.forEach(function (p, i) {
-      var piv = new THREE.Group(); piv.position.set(p[0], p[1], p[2]); root.add(piv);
+    // wheels (pivots always exist so skid marks / contact queries work for wheel-less karts too)
+    var wd = def.wheel, wheels = [], pivots = [];
+    var wheelGeo = wd.hidden ? null : G('wheel' + wd.r, function () { return new THREE.CylinderGeometry(wd.r, wd.r, wd.w, 14).rotateZ(Math.PI / 2); });
+    var hubGeo = wd.hidden ? null : G('hub' + wd.r, function () { return new THREE.CylinderGeometry(wd.r * 0.6, wd.r * 0.6, wd.w + 0.02, 8).rotateZ(Math.PI / 2); });
+    wd.pos.forEach(function (p) {
+      var piv = new THREE.Group(); piv.position.set(p[0], wd.r, p[1]); root.add(piv); pivots.push(piv);
+      if (wd.hidden) return;
       var w = new THREE.Mesh(wheelGeo, rubber); w.castShadow = true; piv.add(w);
       var hub = new THREE.Mesh(hubGeo, isPlayer ? new THREE.MeshStandardMaterial({ color: accent, roughness: 0.3, metalness: 0.6 }) : chrome); w.add(hub);
-      wheels.push(w); pivots.push(piv);
+      wheels.push(w);
     });
 
     // boost flames
     var flameMat = new THREE.MeshBasicMaterial({ color: 0xffa640, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
     var flameGeo = G('flame', function () { return new THREE.ConeGeometry(0.16, 1.4, 8).rotateX(-Math.PI / 2).translate(0, 0, -0.7); });
     var flames = [];
-    [exL, exR].forEach(function (ex) {
+    exhausts.forEach(function (ex) {
       var f = new THREE.Mesh(flameGeo, flameMat); f.position.copy(ex.position); f.position.z -= 0.25; f.visible = false; body.add(f);
       var g2 = new THREE.Mesh(flameGeo, new THREE.MeshBasicMaterial({ color: 0x66aaff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false }));
       g2.scale.set(0.6, 0.6, 0.7); f.add(g2);
@@ -120,10 +107,10 @@
     var shield = new THREE.Mesh(G('shield', function () { return new THREE.SphereGeometry(1.9, 18, 14); }), new THREE.MeshStandardMaterial({ color: 0x66ccff, emissive: 0x2288ff, emissiveIntensity: 0.6, transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0.3, depthWrite: false, side: THREE.DoubleSide }));
     shield.position.y = 0.8; shield.visible = false; root.add(shield);
     // underglow sprite (adds pop)
-    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: U.tex.particle(), color: accent, transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending }));
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: U.tex.particle(), color: accent, transparent: true, opacity: def.hover ? 0.6 : 0.35, depthWrite: false, blending: THREE.AdditiveBlending }));
     glow.scale.set(4, 2.2, 1); glow.position.y = 0.15; root.add(glow);
 
-    return { root: root, body: body, wheels: wheels, pivots: pivots, flames: flames, shield: shield, glow: glow, exhausts: [exL, exR], paint: paint, head: head };
+    return { root: root, body: body, wheels: wheels, pivots: pivots, flames: flames, shield: shield, glow: glow, exhausts: exhausts, paint: paint, head: head, wheelR: wd.r || 0.33, hover: !!def.hover, def: def };
   }
 
   // ------------------------------------------------------------ Kart
@@ -132,16 +119,17 @@
     this.remote = !!opts.remote; this.netId = opts.netId !== undefined ? opts.netId : -1;
     this.netTarget = null; this.netTime = 0; this.netInit = false;
     this.color = opts.color; this.accent = opts.accent;
-    this.charId = opts.char || 'volt'; this.petId = opts.pet || null;
-    this.charDef = findChar(this.charId);
-    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index, this.charId);
-    // stat multipliers: character + pet perk
-    var st = { speed: 1, accel: 1, handling: 1, gauge: 1, boostDur: 1 }, cs = this.charDef.stat, k;
+    this.charId = opts.char || 'volt'; this.petId = opts.pet || null; this.kartId = opts.kart || 'nitro';
+    this.charDef = findChar(this.charId); this.kartDef = findKart(this.kartId);
+    this.mesh = buildKartMesh(opts.color, opts.accent, this.isPlayer, opts.index, this.charId, this.kartId);
+    // stat multipliers: kart body x character + pet perk
+    var st = { speed: 1, accel: 1, handling: 1, gauge: 1, boostDur: 1 }, cs = this.charDef.stat, ks = this.kartDef.stat, k;
     for (k in cs) st[k] *= cs[k];
+    for (k in ks) st[k] *= ks[k];
     this.pet = this.petId ? buildPet(this.petId) : null;
     if (this.pet) { for (k in this.pet.def.perk) st[k] *= this.pet.def.perk[k]; this.petRoot = this.pet.root; this.petPos = new THREE.Vector3(); this.petInit = false; }
     else this.petRoot = null;
-    this.statMul = st; this.mass = this.charDef.mass || 1;
+    this.statMul = st; this.mass = (this.charDef.mass || 1) * (this.kartDef.mass || 1);
     this.root = this.mesh.root;
     this.pos = new THREE.Vector3(); this.vel = new THREE.Vector3();
     this.yaw = 0; this.hint = -1; this.proj = {};
@@ -542,16 +530,16 @@
     m.body.rotation.z = U.damp(m.body.rotation.z, roll, 10, dt);
     m.body.rotation.x = U.damp(m.body.rotation.x, pitch, 8, dt);
     var bounce = this.offroad && !this.airborne ? Math.sin(t * 45 + this.index) * 0.04 * Math.min(1, this.speed / 8) : 0;
-    m.body.position.y = bounce;
+    m.body.position.y = bounce + (m.hover ? 0.14 + Math.sin(t * 4 + this.index) * 0.05 : 0);
 
     // wheels
-    this.wheelSpin += this.vf / 0.33 * dt;
+    this.wheelSpin += this.vf / m.wheelR * dt;
     var steerVis = this.input.steer * 0.42 + (this.drifting ? -this.driftDir * 0.3 : 0);
     this.steerVis = U.damp(this.steerVis, steerVis, 12, dt);
-    for (var i = 0; i < 4; i++) {
-      m.wheels[i].rotation.x = this.wheelSpin;
+    for (var i = 0; i < m.pivots.length; i++) {
+      if (m.wheels[i]) m.wheels[i].rotation.x = this.wheelSpin;
       if (i < 2) m.pivots[i].rotation.y = this.steerVis;
-      m.pivots[i].position.y = 0.33 + bounce * (i % 2 ? -1 : 1);
+      m.pivots[i].position.y = m.wheelR + bounce * (i % 2 ? -1 : 1);
     }
     // flames
     var boosting = this.boostTime > 0;

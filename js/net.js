@@ -79,7 +79,7 @@
 
   Net.prototype.playerList = function () {
     var self = this;
-    return Object.keys(this.players).map(function (k) { var p = self.players[k]; return { id: p.id, name: p.name, char: p.char || 'volt', pet: p.pet || null }; })
+    return Object.keys(this.players).map(function (k) { var p = self.players[k]; return { id: p.id, name: p.name, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro' }; })
       .sort(function (a, b) { return a.id - b.id; });
   };
 
@@ -91,7 +91,7 @@
   };
   Net.prototype._setupHost = function (profile, code) {
     this.isHost = true; this.myId = 0; this.nextId = 1; this.code = code; this.state = 'lobby';
-    this.players = { 0: { id: 0, name: profile.name, char: profile.char, pet: profile.pet } };
+    this.players = { 0: { id: 0, name: profile.name, char: profile.char, pet: profile.pet, kart: profile.kart || 'nitro' } };
   };
   Net.prototype._host = function (profile, cb, forcedCode) {
     var self = this, code = forcedCode || Net.randomCode();
@@ -169,7 +169,7 @@
       }
       var id = this.nextId++;
       conn.playerId = id; this.conns[id] = conn;
-      this.players[id] = { id: id, name: String(msg.name || 'PLAYER').slice(0, 12), char: msg.char || 'volt', pet: msg.pet || null };
+      this.players[id] = { id: id, name: String(msg.name || 'PLAYER').slice(0, 12), char: msg.char || 'volt', pet: msg.pet || null, kart: msg.kart || 'nitro' };
       conn.send({ t: 'welcome', id: id, players: this.playerList(), lobby: this.lobby, h: performance.now() });
       this.broadcast({ t: 'lobby', players: this.playerList(), lobby: this.lobby }, id);
       this._emit('players', this.playerList());
@@ -247,7 +247,7 @@
         try { ice = conn.peerConnection ? conn.peerConnection.iceConnectionState : 'no-pc'; } catch (e) { }
         var err = mkErr('timeout'); err.ice = ice; fail(err);
       }, P2P_TIMEOUT);
-      conn.on('open', function () { self._emit('stage', 'open'); conn.send({ t: 'hello', name: profile.name, char: profile.char, pet: profile.pet }); });
+      conn.on('open', function () { self._emit('stage', 'open'); conn.send({ t: 'hello', name: profile.name, char: profile.char, pet: profile.pet, kart: profile.kart }); });
       conn.on('data', self._clientHandler(function (err, welcome) {
         clearTimeout(timer);
         if (err) fail(err); else if (!done) { done = true; cb(null, welcome); }
@@ -278,7 +278,7 @@
       if (c0 === 33) {                                         // !ok|CODE — room exists, host reachable; !bye|why — closed by server
         if (s.slice(1, 3) === 'ok') {
           opened = true; conn.open = true; self._emit('stage', 'open'); self._startKeepalive(ws);
-          conn.send({ t: 'hello', name: profile.name, char: profile.char, pet: profile.pet });
+          conn.send({ t: 'hello', name: profile.name, char: profile.char, pet: profile.pet, kart: profile.kart });
         } else if (s.slice(1, 4) === 'bye') {
           clearTimeout(timer); conn.open = false; self._closeWs(ws);
           if (done) self._emit('hostLeft'); else fail(mkErr('closed'));

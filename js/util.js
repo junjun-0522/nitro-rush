@@ -261,6 +261,30 @@
         for (var i = 0; i < 10; i++) { g.beginPath(); g.moveTo(i * 12, h / 2); g.lineTo(i * 12 + 10, i % 2 ? 10 : h - 10); g.stroke(); }
       }, { clamp: true, height: 64 });
     },
+    /** 태극기 (simplified but correctly oriented taeguk + four trigrams) */
+    taegukgi: function () {
+      return U.canvasTexture('taegukgi', 192, function (g, w, h) {
+        g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+        var cx = w / 2, cy = h / 2, r = h * 0.25, tilt = Math.atan2(2, 3);
+        g.save(); g.translate(cx, cy); g.rotate(tilt);
+        g.fillStyle = '#cd2e3a'; g.beginPath(); g.arc(0, 0, r, Math.PI, 0); g.fill();
+        g.fillStyle = '#0047a0'; g.beginPath(); g.arc(0, 0, r, 0, Math.PI); g.fill();
+        g.fillStyle = '#cd2e3a'; g.beginPath(); g.arc(-r / 2, 0, r / 2, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#0047a0'; g.beginPath(); g.arc(r / 2, 0, r / 2, 0, Math.PI * 2); g.fill();
+        g.restore();
+        g.fillStyle = '#000';
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (b, i) {   // 건 감 리 곤
+          var px = cx + b[0] * r * 1.55, py = cy + b[1] * r * 1.02;
+          g.save(); g.translate(px, py); g.rotate(Math.atan2(b[1] * 1.02, b[0] * 1.55) + Math.PI / 2);
+          for (var k = -1; k <= 1; k++) {
+            var y = k * r * 0.24, solid = (i === 0) || (i === 1 && k === 0) || (i === 2 && k !== 0);
+            if (solid) g.fillRect(-r * 0.34, y - r * 0.07, r * 0.68, r * 0.14);
+            else { g.fillRect(-r * 0.34, y - r * 0.07, r * 0.29, r * 0.14); g.fillRect(r * 0.05, y - r * 0.07, r * 0.29, r * 0.14); }
+          }
+          g.restore();
+        });
+      }, { clamp: true, height: 128 });
+    },
     label: function (key, text, color, bg) {
       return U.canvasTexture('label' + key, 256, function (g, w, h) {
         g.fillStyle = bg || 'rgba(0,0,0,0)'; g.fillRect(0, 0, w, h);

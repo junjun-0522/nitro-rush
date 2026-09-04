@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- Static track viewer for GPU screenshots (no game loop):
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --ignore-gpu-blocklist --no-sandbox --mute-audio \
+     --user-data-dir=/tmp/p --window-size=1280,800 --timeout=7000 --screenshot=./x.png \
+     "http://127.0.0.1:8765/tools/track_view.html?track=4&s=0.02&h=3&back=9"
+  params: track=N  s=fraction lat=m h=eye height back=m behind fov yaw(rad) pitch  kart=<kartId> (place a kart at the point)
+          free camera: x=&y=&z=&lx=&ly=&lz=
+-->
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style></head><body>
+<canvas id="c"></canvas>
+<script src="../js/vendor/three.min.js"></script>
+<script src="../js/util.js"></script>
+<script src="../js/path.js"></script>
+<script src="../js/tracks.js"></script>
+<script src="../js/chars.js"></script>
+<script src="../js/karts.js"></script>
+<script src="../js/kart.js"></script>
+<script>
+(function () {
+  var qs = location.search;
+  function num(k, d) { var m = new RegExp('[?&]' + k + '=(-?[\\d.]+)').exec(qs); return m ? parseFloat(m[1]) : d; }
+  function str(k) { var m = new RegExp('[?&]' + k + '=([a-z0-9_]+)').exec(qs); return m ? m[1] : null; }
+  var ti = num('track', 0) | 0, s = num('s', 0.02), lat = num('lat', 0), h = num('h', 3.2), back = num('back', 9), fov = num('fov', 72), yaw = num('yaw', 0), pitch = num('pitch', 0);
+  var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true });
+  renderer.setSize(innerWidth, innerHeight); renderer.shadowMap.enabled = true;
+  if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  var scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(fov, innerWidth / innerHeight, 0.3, 2600);
+  var hemi = new THREE.HemisphereLight(0xbfe9ff, 0x6c8f4a, 0.75); scene.add(hemi);
+  var sun = new THREE.DirectionalLight(0xfff3d6, 1.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.near = 5; sun.shadow.camera.far = 420; sun.shadow.camera.left = -70; sun.shadow.camera.right = 70; sun.shadow.camera.top = 70; sun.shadow.camera.bottom = -70;
+  scene.add(sun); scene.add(sun.target);
+  var track = new Track(TRACKS[ti], scene, 'high'), th = track.theme;
+  scene.fog = new THREE.Fog(th.fog, th.fogNear, th.fogFar); scene.background = new THREE.Color(th.sky[1]);
+  sun.color.setHex(th.sun); sun.intensity = th.sunInt; hemi.color.setHex(th.hemi[0]); hemi.groundColor.setHex(th.hemi[1]); hemi.intensity = th.hemiInt; renderer.toneMappingExposure = th.exposure;
+  var sunDir = new THREE.Vector3().fromArray(th.sunDir).normalize();
+  var path = track.path, sm = path.sample(s * path.length), p = new THREE.Vector3();
+  track.surfacePoint(sm.idx, lat, p);
+  var eye, look;
+  if (/[?&]x=/.test(qs)) { eye = new THREE.Vector3(num('x', 0), num('y', 100), num('z', 0)); look = new THREE.Vector3(num('lx', 0), num('ly', 0), num('lz', 0)); }
+  else {
+    eye = p.clone().addScaledVector(sm.tan, -back); eye.y += h;
+    look = p.clone().addScaledVector(sm.tan, 20); look.y += 1 + pitch;
+    if (yaw) { var d = look.clone().sub(eye), c = Math.cos(yaw), sn = Math.sin(yaw); look.set(eye.x + d.x * c + d.z * sn, look.y, eye.z - d.x * sn + d.z * c); }
+  }
+  camera.position.copy(eye); camera.lookAt(look);
+  sun.position.copy(p).addScaledVector(sunDir, 160); sun.target.position.copy(p);
+  var kid = str('kart');
+  if (kid) {
+    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: str('char') || 'volt', pet: null, kart: kid });
+    k.root.position.copy(p); k.root.rotation.y = Math.atan2(sm.tan.x, sm.tan.z); scene.add(k.root);
+  }
+  track.update(0.016, 3);
+  function frame() { renderer.render(scene, camera); }
+  frame(); setTimeout(frame, 400); setTimeout(frame, 1500); setTimeout(frame, 3500);
+  window.__ready = true;
+})();
+</script></body></html>

@@ -3,9 +3,9 @@
 브라우저용 카트라이더풍 3D 아케이드 레이싱. 로컬 `~/nitro-rush`, GitHub `junjun-0522/nitro-rush`, 배포 **https://junjun-0522.github.io/nitro-rush/** (main에 push하면 ~1분 내 반영).
 
 ## 현재 상태 (전부 동작·배포됨)
-- 트랙 4개: AZURE COAST(입문), NEON METROPOLIS(고수), SUNSET CANYON(중급), FROST PEAK(고수·빙판 그립 0.86)
+- 트랙 5개: AZURE COAST(입문), NEON METROPOLIS(고수), SUNSET CANYON(중급), FROST PEAK(고수·빙판 그립 0.86), **SEOUL BLOSSOM(중급, 한국 테마: 광화문·경복궁·한강 대교/잠수교·롯데타워·63빌딩·DDP·남산 N타워·북촌 한옥·벚꽃길·태극기)**
 - 모드 3개: ITEM + SPEED(기본) / SPEED RACE(아이템 없음, 부스터 2개 저장, 게이지 1.5배) / ITEM RACE(게이지·드리프트 부스터 없음)
-- 캐릭터 8 + 펫 6 (`js/chars.js`, GARAGE 화면, 능력치 배수·펫 퍼크), 온라인에서도 상대 캐릭터/펫 표시
+- 카트 6종(`js/karts.js`: nitro/bullet/bigfoot/formula/hover/geobukseon — 차체 빌드 함수 + 능력치 배수 + 질량 + 바퀴 배치) × 캐릭터 8 + 펫 6 (`js/chars.js`). GARAGE 화면에서 선택, 온라인 프로필(hello/players)에 kart 포함, AI는 공유 RNG로 랜덤(aiLook). 능력치 = 카트 × 캐릭터 × 펫.
 - 드리프트(Space+←→, 3단계 부스터), 자동 게이지 충전(속도 비례), 순위별 아이템 확률(선두=실드/트랩, 후미=라이트닝/로켓/스피드)
 - 온라인: **WebSocket 릴레이(Cloudflare Worker, relay/)** 기본 + PeerJS/WebRTC P2P 폴백. 스타 토폴로지, 방 코드 4자리, 최대 8명, AI로 채움. 호스트가 AI/로켓 시뮬 + 20Hz 상태 방송, 각 피어는 자기 카트 시뮬.
 - AI 7대(설정에서 최대 57대), 러버밴딩, 헤드리스 자동 테스트 하네스 포함
@@ -31,7 +31,7 @@
 - 배포: `git add -A && git commit && git push origin main` (커밋 서명은 Co-Authored-By: Claude 형식 유지)
 
 ## 코드 구조 (`js/`)
-config(relayUrl/ICE/TURN) · util(텍스처·RNG) · audio(Web Audio SFX/BGM) · path(스플라인, 뱅크) · tracks(트랙 정의·도로·경관) · chars(캐릭터·펫) · kart(메시·물리·원격 보간) · fx(파티클·스키드) · items · ai · net(릴레이 WS 또는 PeerJS) · game(상태·UI·HUD·온라인 통합)
+config(relayUrl/ICE/TURN) · karts(카트 차체) · util(텍스처·RNG) · audio(Web Audio SFX/BGM) · path(스플라인, 뱅크) · tracks(트랙 정의·도로·경관) · chars(캐릭터·펫) · kart(메시·물리·원격 보간) · fx(파티클·스키드) · items · ai · net(릴레이 WS 또는 PeerJS) · game(상태·UI·HUD·온라인 통합)
 
 ## 꼭 알아야 할 규약/함정
 - three.js에서 +Z를 볼 때 +X는 **왼쪽**. 코드의 `right = up × T`는 실제로 왼쪽이며 전체가 그 규약으로 일관됨. 사람 입력만 `steer = left - right`로 뒤집혀 있음. 건드리지 말 것.
@@ -39,6 +39,9 @@ config(relayUrl/ICE/TURN) · util(텍스처·RNG) · audio(Web Audio SFX/BGM) ·
 - 트랙 레이아웃은 터틀(직선/호) 명령 → `def.pts` [x,z,y]. 출발 직선은 반드시 곧게, 최소 코너 반경 ≥ 20m. 생성 도구는 이전 세션 스크래치에 있었고(turtle.js) 현재 저장소엔 없음 — 필요하면 재작성(Catmull-Rom + 곡률 분석 + Hermite/free-straight 클로저).
 - 온라인 AI 캐릭터 선택 등 공유 RNG는 모든 피어가 동일하게 소비해야 함.
 - 헤드리스 하네스는 `/json`에서 `about:blank` 페이지 타깃을 골라야 함(아니면 ERR_ABORTED).
+- 고가 구간 교각(pillar)은 `surfacePoint`로 실제 노면 높이를 구해 그 0.6m 아래에서 끝냄. 예전엔 노면 위로 0.2~1.5m 튀어나왔음(2026-09-04 수정).
+- 트랙 레이아웃 생성기: `node tools/layout.js korea` — 터틀 세그먼트(['S',len]/['A',r,deg]) → Hermite 닫힘 + 80m 출발 직선, 자기교차/최소반경 검사, 고도 프로파일, ASCII 지도, pts 출력. 새 트랙은 DESIGNS에 추가.
+- 정적 스크린샷: `tools/shot.sh "http://127.0.0.1:8765/tools/track_view.html?track=4&s=0.2&h=3.5&back=10[&yaw=0.3][&kart=hover&char=kiki][&x=&y=&z=&lx=&ly=&lz=]" out.png` (GPU 렌더, 게임 루프 없음). 카트 외형/트랙 장식 확인용. Chrome이 PNG를 쓰고 안 죽으므로 스크립트가 파일 생기면 kill함.
 
 ## 다음에 할 만한 것
-실제 친구 테스트(릴레이) → 결과 화면 지연(rtt) 표시 → 카메라/조작감 피드백 반영 → 결과 화면 리플레이/기록 저장 → 모바일 터치 조작 → 추가 트랙/캐릭터
+실제 친구 테스트(릴레이) → 서울 트랙 실주행 피드백(코너 난이도·장식 밀도) → 결과 화면 지연(rtt) 표시 → 카메라/조작감 피드백 반영 → 결과 화면 리플레이/기록 저장 → 모바일 터치 조작 → 추가 트랙/캐릭터
