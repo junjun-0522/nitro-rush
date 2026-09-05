@@ -245,7 +245,8 @@
     this.hint = path.idxOf(po.toS); this.s = path.wrap(po.toS); this.prevS = this.s; this.lastGoodS = this.s; this.lastGoodLat = po.toLat; this.lat = po.toLat;
     this.airborne = false; this.vy = 0; this.drifting = false; this.driftCharge = 0; this.driftTier = 0; this.wrongWay = 0; this.stuckTime = 0;
     this.upSmooth.set(0, 1, 0);
-    var n = track.cpS.length, cp = Math.min(n - 1, Math.floor(this.s / (path.length / n)));
+    var n = track.cpS.length, cp = 0;
+    for (var c = 1; c < n; c++) if (track.cpS[c] <= this.s) cp = c;
     if (cp > this.cpPassed) this.cpPassed = cp;
     this.portalCooldown = 2.5; this.invulnTime = Math.max(this.invulnTime, 1);
     this.stats.portals = (this.stats.portals || 0) + 1;
@@ -443,6 +444,12 @@
     var minL = track.minLat[idx] + P.wallHalf, maxL = track.maxLat[idx] - P.wallHalf;
     this.offroad = pr.lat < -halfW - 0.4 || pr.lat > halfW + 0.4;
     this.wallContact = 0;
+    if (track.open) {
+      // point-to-point: coast to a stop after the finish line, and never drive past the end of the road
+      if (this.finished) { inp.throttle = 0; inp.drift = false; inp.boost = false; if (this.s > track.finishS + 45) inp.brake = 1; }
+      var endS = path.length - 8;
+      if (pr.s > endS) { this.pos.addScaledVector(pr.tan, endS - pr.s); this.s = endS; var vt = this.vel.dot(pr.tan); if (vt > 0) this.vel.addScaledVector(pr.tan, -vt); }
+    }
     var pen = 0, sign = 0;
     if (pr.lat > maxL) { pen = pr.lat - maxL; sign = 1; }
     else if (pr.lat < minL) { pen = minL - pr.lat; sign = -1; }
@@ -530,7 +537,7 @@
               if (this.lapsCompleted >= track.laps) { this.finished = true; this.finishTime = world.time; ev.push({ type: 'finish' }); }
               else ev.push({ type: 'lap', lap: this.lapsCompleted, time: lapT });
             }
-          } else if (c === this.cpPassed + 1) this.cpPassed = c;
+          } else if (c === this.cpPassed + 1) { this.cpPassed = c; ev.push({ type: 'cp', n: c, of: n }); }
         } else if (dir === -1) {
           if (c === 0) { if (this.cpPassed === 0 && this.lapsCompleted > 0) { this.lapsCompleted--; this.cpPassed = n - 1; this.lapStart = world.time - (this.lapTimes.pop() || 0); } }
           else if (c === this.cpPassed) this.cpPassed = c - 1;

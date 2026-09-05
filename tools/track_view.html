@@ -25,7 +25,7 @@
   renderer.setSize(innerWidth, innerHeight); renderer.shadowMap.enabled = true;
   if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  var scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(fov, innerWidth / innerHeight, 0.3, 2600);
+  var scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(fov, innerWidth / innerHeight, 0.3, 7000);
   var hemi = new THREE.HemisphereLight(0xbfe9ff, 0x6c8f4a, 0.75); scene.add(hemi);
   var sun = new THREE.DirectionalLight(0xfff3d6, 1.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
   sun.shadow.camera.near = 5; sun.shadow.camera.far = 420; sun.shadow.camera.left = -70; sun.shadow.camera.right = 70; sun.shadow.camera.top = 70; sun.shadow.camera.bottom = -70;
@@ -51,8 +51,15 @@
     k.root.position.copy(p); k.root.rotation.y = Math.atan2(sm.tan.x, sm.tan.z); scene.add(k.root);
   }
   track.update(0.016, 3);
+  // debug: &hide=sprite|points|shader|<GeometryType>  hides matching objects (comma separated)
+  var hide = str('hide'); if (hide) { var hs = hide.split('_'); track.group.traverse(function (o) { hs.forEach(function (hkey) { if ((hkey === 'sprite' && o.isSprite) || (hkey === 'points' && o.isPoints) || (hkey === 'shader' && o.material && o.material.isShaderMaterial) || (o.geometry && o.geometry.type.toLowerCase() === hkey)) o.visible = false; }); }); }
   function frame() { renderer.render(scene, camera); }
   frame(); setTimeout(frame, 400); setTimeout(frame, 1500); setTimeout(frame, 3500);
+  window.__pick = function (nx, ny) {   // debug: what is rendered at normalized screen coords (-1..1)?
+    var rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(nx, ny), camera); rc.camera = camera;
+    var hits = rc.intersectObject(track.group, true).filter(function (h) { return h.object.visible; });
+    return hits.slice(0, 3).map(function (h) { var o = h.object; return o.type + ' ' + (o.geometry ? o.geometry.type + JSON.stringify(o.geometry.parameters || {}).slice(0, 60) : '') + ' d=' + h.distance.toFixed(0) + ' col=' + (o.material && o.material.color ? o.material.color.getHexString() : '') + ' pos=' + o.position.x.toFixed(0) + ',' + o.position.y.toFixed(0) + ',' + o.position.z.toFixed(0) + ' parentPos=' + (o.parent ? o.parent.position.x.toFixed(0) + ',' + o.parent.position.y.toFixed(0) + ',' + o.parent.position.z.toFixed(0) : ''); }).join(' || ');
+  };
   window.__ready = true;
 })();
 </script></body></html>

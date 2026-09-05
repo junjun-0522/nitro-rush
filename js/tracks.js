@@ -161,6 +161,34 @@
         tunnel: 0x151a2e, tunnelLight: 0x35e6ff, portal: 0x35e6ff, portalEm: 0x35e6ff, pillar: 0x1d2440, gate: 0x1a2240, gateEm: 0x35e6ff,
         time: 'NIGHT', stars: false, seed: 4242, gripMul: 0.94, preview: ['rgba(53,230,255,0.45)', '#101a33', '#35e6ff']
       }
+    },
+    {
+      id: 'orbit', name: 'ORBITAL RUN', tag: 'EXPERT', mood: 'space', laps: 1, open: true, runoff: 120, cpCount: 10, lengthKm: '5.8',
+      desc: '순환 없음, 출발과 결승이 다른 곳인 5.8km 우주 원정. 정거장 격납고 → 발사 터널 → 무중력 구간 → 궤도 고속도로 → 행성 궤도 → 우주선 교통 구역 → 중력 반전 터널 → 거대 정거장 외벽 → 최종 직선과 결승 아레나.',
+      pts: [[0,0,0],[0,28,0],[0,56,0],[0,84,0],[0,112,0],[0.5,128,0],[4.6,143.4,0],[12.7,157.2,0],[24.1,168.3,0],[48.1,182.6,0],[72.4,196.6,0],[96.7,210.5,0],[109.7,219.8,0],[119.1,232.6,0],[124.1,247.8,0],[124,263.7,0],[118.9,278.8,0],[105,303.1,0],[91.1,327.4,0],[77.2,351.7,0],[63.3,376,0],[49.4,400.3,0],[41.6,414.3,0],[37.7,429.7,0],[42.6,457.1,0],[50,484.1,0.3],[57.5,511.1,1.1],[64.9,538.1,2.2],[72.3,565.1,3.7],[79.8,592.1,5.5],[87.2,619.1,7.4],[94.6,646.1,9.5],[102.1,673,11.7],[109.5,700,13.9],[117,727,16],[124.4,754,18.1],[131.8,781,20],[139.3,808,21.7],[146.7,835,23.1],[154.2,862,24.2],[161.6,889,24.8],[169,916,25],[176.5,943,24],[180.1,958.6,22.9],[181.6,974.5,21.5],[181,990.5,19.8],[178.3,1006.2,17.9],[173.5,1021.5,16],[166.7,1036,14],[158.1,1049.4,12],[147.7,1061.6,10.1],[135.9,1072.3,8.4],[123.2,1082,7],[111.7,1093.2,5.9],[101.8,1105.7,5.2],[93.7,1119.5,5],[87.5,1134.2,5.4],[83.3,1149.7,6.3],[81.1,1165.5,7.8],[81.1,1181.5,9.6],[83.3,1197.3,11.7],[90.4,1224.4,15.9],[97.9,1251.4,20.3],[105.3,1278.4,24.4],[111.7,1301.5,27.2],[114.6,1317.2,28.7],[114.7,1333.2,29.6],[111.9,1349,30],[106.4,1364,29.7],[98.4,1377.8,28.6],[88,1389.9,27],[75.7,1400.1,24.8],[61.7,1407.9,22.3],[46.6,1413,19.5],[30.8,1415.5,16.6],[2.9,1414.2,11.3],[-25,1411.9,6.5],[-52.9,1409.5,2.6],[-80.9,1407.2,0.4],[-108.8,1404.9,0],[-136.7,1402.6,0],[-164.6,1400.3,0],[-192.5,1398,0],[-220.4,1395.7,0],[-248.3,1393.4,0],[-276.2,1391.1,0],[-304.1,1388.8,-0.3],[-332,1386.5,-1],[-359.9,1384.1,-2.1],[-387.8,1381.8,-3.6],[-415.7,1379.5,-5.3],[-431.7,1378.2,-6.4],[-447.6,1377.6,-7.6],[-463.6,1378.3,-8.7],[-479.5,1380.2,-10],[-495.2,1383.4,-11.2],[-510.5,1387.8,-12.5],[-525.5,1393.5,-13.7],[-540,1400.3,-15],[-553.8,1408.3,-16.2],[-567,1417.3,-17.4],[-579.5,1427.4,-18.5],[-591,1438.4,-19.6],[-601.7,1450.4,-20.6],[-611.4,1463.1,-21.6],[-627.3,1486.1,-23],[-643.3,1509.1,-24.1],[-659.2,1532.1,-24.8],[-675.2,1555.2,-25],[-691.1,1578.2,-25],[-707,1601.2,-25],[-723,1624.2,-25],[-738.9,1647.2,-25],[-754,1669,-25],[-763.8,1681.7,-25],[-774.9,1693.2,-25],[-787.1,1703.5,-25],[-800.4,1712.5,-25],[-814.5,1719.9,-25],[-829.3,1725.9,-25],[-844.7,1730.2,-25],[-860.5,1732.8,-25],[-876.4,1734.8,-25],[-892,1738.1,-25],[-907.3,1742.7,-25],[-922.2,1748.7,-25],[-936.4,1756,-25],[-949.9,1764.6,-25],[-962.7,1774.3,-25],[-974.5,1785,-25],[-985.3,1796.8,-25],[-995,1809.5,-25],[-1003.5,1823.1,-25],[-1010.8,1837.3,-25],[-1016.9,1852.1,-25],[-1021.6,1867.4,-24.9],[-1024.9,1883,-24.6],[-1026.8,1898.9,-24],[-1027.3,1914.9,-23.3],[-1026.3,1930.9,-22.4],[-1024,1946.7,-21.4],[-1020.2,1962.3,-20.2],[-1015.1,1977.4,-18.8],[-1008.7,1992.1,-17.4],[-1001,2006.1,-15.9],[-992.1,2019.3,-14.3],[-982,2031.8,-12.6],[-970.9,2043.3,-10.9],[-958.8,2053.7,-9.1],[-945.8,2063.1,-7.4],[-932,2071.2,-5.6],[-917.6,2078.1,-3.9],[-902.6,2083.7,-2.2],[-887.2,2087.9,-0.5],[-871.4,2090.8,1.1],[-855.5,2092.2,2.6],[-839.5,2092.2,4],[-823.6,2090.8,5.3],[-807.8,2088,6.5],[-792.4,2083.8,7.5],[-777.4,2078.3,8.4],[-752,2066.5,9.5],[-726.7,2054.5,10],[-701.4,2042.5,10],[-676.1,2030.6,10],[-661.6,2023.7,10],[-646.2,2020,10],[-630.5,2022.6,10],[-616.5,2030.3,10],[-601.1,2034.3,10],[-585.4,2032,10],[-560,2020.1,10],[-534.7,2008.2,10],[-509.8,1996.4,10],[-497,1987,10],[-488.9,1973.3,9.9],[-486,1957.6,9.7],[-479.4,1943.1,9.3],[-467.8,1932.3,8.9],[-442.6,1920.2,8.1],[-417.3,1908.2,7.1],[-392,1896.2,5.9],[-366.6,1884.2,4.8],[-352.1,1877.5,4.1],[-336.7,1873.6,3.5],[-320.7,1874,2.8],[-305.4,1878.5,2.2],[-291.8,1886.9,1.7],[-281,1898.6,1.2],[-268.1,1923.4,0.5],[-256.1,1948.7,0.1],[-244,1973.9,0],[-231.9,1999.2,0],[-219.8,2024.4,0],[-207.8,2049.7,0],[-195.7,2075,0],[-183.6,2100.2,0],[-171.5,2125.5,0],[-159.5,2150.8,0],[-151,2164.3,0],[-139.7,2175.6,0],[-126.2,2184.1,0.5],[-111.1,2189.2,2.4],[-95.2,2190.8,5.4],[-79.4,2188.8,9.3],[-64.4,2183.2,13.7],[-51.1,2174.3,18.4],[-40.1,2162.7,23],[-30,2150.4,27.3],[-17.5,2140.5,30.9],[-3,2133.8,33.5],[12.6,2130.5,34.9],[28.6,2130.8,34.9],[44,2134.8,34],[58.2,2142.1,32.6],[70.4,2152.5,30.6],[79.8,2165.4,28.1],[92.1,2190.5,22.8],[104.2,2215.8,16.8],[116.2,2241.1,10.5],[128.3,2266.3,4.3],[140.4,2291.6,-1.3],[147.3,2306,-4],[152.7,2321,-6.4],[155.4,2336.8,-8.2],[155.3,2352.8,-9.4],[152.4,2368.5,-10],[146.7,2383.4,-9.9],[138.5,2397.1,-9.6],[128,2409.1,-9.1],[105.8,2426.2,-7.8],[83.1,2442.5,-6.2],[60.3,2458.8,-4.4],[37.6,2475.1,-2.8],[14.8,2491.4,-1.3],[-8,2507.8,-0.3],[-30.7,2524.1,0],[-44.1,2533.7,0],[-55.8,2544.6,0],[-64.2,2558.2,0],[-68.7,2573.5,0],[-69,2589.4,0],[-65.1,2604.9,0],[-50.3,2628.6,0],[-34.1,2651.4,0],[-17.8,2674.2,0],[-1.6,2697,0],[14.6,2719.9,0],[28.5,2739.4,0.2],[39,2751.5,0.6],[51.7,2761.2,1.1],[66,2768.3,1.7],[81.4,2772.3,2.5],[97.4,2773.2,3.2],[125.3,2770.6,4.6],[153.1,2767.9,6],[181,2765.1,7.1],[200.9,2763.2,7.6],[216.8,2764.1,7.9],[242.7,2774.6,8],[268.3,2786.1,8],[293.8,2797.6,8],[319.3,2809.1,8],[344.9,2820.6,8],[370.4,2832.1,7.5],[395.9,2843.5,6.6],[421.5,2855,5.4],[447,2866.5,4],[472.5,2878,2.6],[498.1,2889.5,1.4],[523.6,2901,0.5],[549.1,2912.5,0],[574.7,2924,0],[600.2,2935.4,0],[625.7,2946.9,0],[651.3,2958.4,0],[676.8,2969.9,0],[702.3,2981.4,0],[727.9,2992.9,0],[753.4,3004.4,0],[773.5,3013.4,0]],
+      width: 20, narrow: [[0.04, 0.06, 16], [0.571, 0.613, 16], [0.694, 0.743, 17]],
+      zones: [
+        { a: 0.044, b: 0.057, side: -1, extra: 12, kind: 'dirt' },   // 격납고 코너 안쪽 정비 바닥
+        { a: 0.47, b: 0.53, side: 1, extra: 18, kind: 'dirt' },      // 행성 궤도 안쪽 (소행성 먼지)
+        { a: 0.633, b: 0.649, side: -1, extra: 12, kind: 'dirt' },   // 교통 구역 코너
+        { a: 0.768, b: 0.789, side: -1, extra: 14, kind: 'dirt' },   // 정거장 외벽 코너
+        { a: 0.823, b: 0.839, side: 1, extra: 14, kind: 'dirt' }
+      ],
+      ramps: [{ a: 0.170, b: 0.178, h: 2.4 }, { a: 0.250, b: 0.257, h: 2.0 }, { a: 0.763, b: 0.770, h: 2.2 }, { a: 0.900, b: 0.906, h: 1.8 }],
+      tunnels: [{ a: 0.092, b: 0.168 }, { a: 0.68, b: 0.76 }],
+      portals: [
+        { a: 0.566, lat: 6, r: 4.2, to: 0.616, toLat: 0 },          // 교통 시케인 건너뛰기
+        { a: 0.792, lat: -6, r: 4.2, to: 0.842, toLat: 0 }          // 정거장 외벽 코너 건너뛰기
+      ],
+      boostPads: [{ s: 0.10, lat: -3 }, { s: 0.12, lat: 3 }, { s: 0.14, lat: -3 }, { s: 0.16, lat: 3 }, { s: 0.31, lat: 0 }, { s: 0.36, lat: 0 }, { s: 0.40, lat: 0 }, { s: 0.66, lat: 0 }, { s: 0.85, lat: 0 }, { s: 0.91, lat: 0 }, { s: 0.93, lat: 0 }, { s: 0.95, lat: 0 }],
+      itemRows: [0.03, 0.07, 0.15, 0.22, 0.30, 0.38, 0.46, 0.55, 0.62, 0.71, 0.80, 0.87, 0.93],
+      theme: {
+        sky: [0x02040c, 0x070b22], fog: 0x05081a, fogNear: 600, fogFar: 2200,
+        sun: 0xffffff, sunInt: 1.35, sunDir: [0.4, 0.8, -0.5], hemi: [0x3346aa, 0x080a14], hemiInt: 0.75, exposure: 1.1,
+        road: 'asphaltNight', roadTint: 0xa8b8e8, rail: 0x1a2240, railEm: 0x35e6ff, ground: 'concrete', skirt: 'none', noPillars: true, zoneTex: 'labFloor', zoneTint: 0x6f7a92, zoneEm: 0x102040,
+        tunnel: 0x10162a, tunnelLight: 0x35e6ff, portal: 0x35e6ff, portalEm: 0x35e6ff, pillar: 0x1d2440, gate: 0x1a2240, gateEm: 0xff2f6d,
+        time: 'SPACE', stars: true, seed: 7777, gripMul: 0.97, preview: ['rgba(53,230,255,0.5)', '#0a0f2a', '#ffffff']
+      }
     }
   ];
 
@@ -274,8 +302,8 @@
     return geo;
   }
 
-  function skyDome(colTop, colBot, stars) {
-    var geo = new THREE.SphereGeometry(1800, 24, 12);
+  function skyDome(colTop, colBot, stars, radius) {
+    var geo = new THREE.SphereGeometry(radius || 1800, 24, 12);
     var mat = new THREE.ShaderMaterial({
       uniforms: { top: { value: new THREE.Color(colTop) }, bot: { value: new THREE.Color(colBot) } },
       vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
@@ -312,13 +340,15 @@
       (def.narrow || []).forEach(function (nr) { if (f >= nr[0] && f <= nr[1]) w = nr[2]; });
       cps.push({ x: p[0], y: p[2] || 0, z: p[1], w: w });
     }
-    var path = this.path = new TrackPath(cps);
+    var path = this.path = new TrackPath(cps, { open: !!def.open });
     this._buildEnvelope();
     var N = path.N;
     this.group = new THREE.Group();
     this.animated = [];
-    this.laps = def.laps || 3;
-    this.cpCount = 10;
+    this.open = !!def.open;                                   // point-to-point course
+    this.laps = this.open ? 1 : (def.laps || 3);
+    this.cpCount = def.cpCount || 10;
+    this.finishS = this.open ? path.length - (def.runoff || 120) : 0;   // finish line (open tracks), run-off after it
 
     // ---- per-station drivable limits & surface extras -----------------
     var minLat = this.minLat = new Float32Array(N), maxLat = this.maxLat = new Float32Array(N);
@@ -355,8 +385,36 @@
     this._buildRoad();
     this._buildScenery();
     this._buildPortals();
+    if (this.open) this._buildFinish();
     scene.add(this.group);
   }
+
+  /** open (point-to-point) tracks: finish line + gate at finishS, numbered checkpoint arches, end barrier */
+  Track.prototype._buildFinish = function () {
+    var path = this.path, N = path.N, th = this.theme, self = this, tex = U.tex, g = this.group, tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3();
+    function edge(latFn) { return function (j, out) { self.surfacePoint(j, latFn(j), out); }; }
+    var half = function (j) { return path.W[j] / 2; };
+    var jf = path.idxOf(this.finishS);
+    var checker = tex.checker(); checker.repeat.set(6, 1);
+    var line = new THREE.Mesh(stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 1, [jf - 1, jf + 3]), new THREE.MeshBasicMaterial({ map: checker }));
+    line.position.y = 0.05; g.add(line);
+    var gateMat = new THREE.MeshStandardMaterial({ color: th.gate, emissive: th.gateEm, emissiveIntensity: 0.8 });
+    function arch(j, label, color, big) {
+      var gw = path.W[j] + 8, gh = big ? 12 : 8, grp = new THREE.Group();
+      [-gw / 2, gw / 2].forEach(function (lat) { var post = new THREE.Mesh(new THREE.BoxGeometry(1, gh, 1), gateMat); post.position.set(lat, gh / 2, 0); post.castShadow = true; grp.add(post); });
+      var bar = new THREE.Mesh(new THREE.BoxGeometry(gw + 1, big ? 3 : 2, 1), gateMat); bar.position.set(0, gh, 0); grp.add(bar);
+      var lab = new THREE.Mesh(new THREE.BoxGeometry(gw * 0.8, big ? 2.6 : 1.7, 1.1), new THREE.MeshBasicMaterial({ map: tex.label('cpgate' + j, label, '#ffffff', color) })); lab.position.set(0, gh, 0); grp.add(lab);
+      self.surfacePoint(j, 0, tmp); tmp2.copy(tmp).add(path.T[j]);
+      grp.position.copy(tmp); grp.lookAt(tmp2); g.add(grp);
+      return grp;
+    }
+    arch(Math.max(2, jf), 'FINISH', '#ff2f6d', true);
+    for (var c = 1; c < this.cpCount; c++) arch(path.idxOf(this.cpS[c]), 'CHECKPOINT ' + c + ' / ' + this.cpCount, '#1a3d6d', false);
+    // end barrier so nobody drives off the end of the world
+    var je = N - 3; self.surfacePoint(je, 0, tmp); tmp2.copy(tmp).add(path.T[je]);
+    var wall = new THREE.Mesh(new THREE.BoxGeometry(path.W[je] + 10, 6, 1.5), new THREE.MeshStandardMaterial({ color: 0x222633, emissive: th.gateEm, emissiveIntensity: 0.6, transparent: true, opacity: 0.85 }));
+    wall.position.copy(tmp); wall.position.y += 3; wall.lookAt(tmp2); g.add(wall);
+  };
 
   /** teleport portals: def.portals = [{ a, lat, r, to, toLat }] (fractions of the lap) */
   Track.prototype._buildPortals = function () {
@@ -415,7 +473,7 @@
     var row = Math.floor(i / cols), col = i % cols;
     var wStart = path.W[0], spread = (wStart - 6) / cols;
     var lat = -wStart / 2 + 3 + spread * (col + 0.5);
-    var s = path.length - 10 - row * 7 - (col % 2) * 2.5;
+    var s = this.open ? 14 + row * 7 + (col % 2) * 2.5 : path.length - 10 - row * 7 - (col % 2) * 2.5;
     return { s: s, lat: lat };
   };
 
@@ -429,11 +487,12 @@
       return function (j, out) { self.surfacePoint(j, latFn(j), out); };
     }
     var half = function (j) { return path.W[j] / 2; };
+    var FULL = this.open ? [0, N - 1] : undefined;   // open tracks: never join the last station back to the first
 
     // asphalt
     var roadTex = tex[th.road](); roadTex.repeat.set(1, 1);
     var road = new THREE.Mesh(
-      stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 10),
+      stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 10, FULL),
       new THREE.MeshStandardMaterial({ map: roadTex, color: th.roadTint, roughness: th.road === 'ice' ? 0.35 : 0.9, metalness: th.road === 'ice' ? 0.2 : 0.05 })
     );
     road.receiveShadow = true; g.add(road);
@@ -441,7 +500,7 @@
     // centre dashed line
     var dashTex = U.canvasTexture('dash', 32, function (c, w, h) { c.fillStyle = 'rgba(255,255,255,0)'; c.fillRect(0, 0, w, h); c.fillStyle = '#ffe66d'; c.fillRect(0, 0, w, h / 2); }, { height: 64 });
     var center = new THREE.Mesh(
-      stripGeom(path, edge(function () { return -0.25; }), edge(function () { return 0.25; }), 12),
+      stripGeom(path, edge(function () { return -0.25; }), edge(function () { return 0.25; }), 12, FULL),
       new THREE.MeshBasicMaterial({ map: dashTex, transparent: true, depthWrite: false })
     );
     center.position.y = 0.03; g.add(center);
@@ -449,13 +508,13 @@
     // rumble strips (both edges)
     var rumbleTex = tex.rumble();
     var rumbleMat = new THREE.MeshStandardMaterial({ map: rumbleTex, roughness: 0.7, emissive: th.railEm, emissiveIntensity: th.railEm ? 0.25 : 0 });
-    var rumL = stripGeom(path, edge(function (j) { return -half(j) - 0.9; }), edge(function (j) { return -half(j) + 0.4; }), 3);
-    var rumR = stripGeom(path, edge(function (j) { return half(j) - 0.4; }), edge(function (j) { return half(j) + 0.9; }), 3);
+    var rumL = stripGeom(path, edge(function (j) { return -half(j) - 0.9; }), edge(function (j) { return -half(j) + 0.4; }), 3, FULL);
+    var rumR = stripGeom(path, edge(function (j) { return half(j) - 0.4; }), edge(function (j) { return half(j) + 0.9; }), 3, FULL);
     var rum = new THREE.Mesh(mergeGeoms([rumL, rumR]), rumbleMat); rum.position.y = 0.02; g.add(rum);
 
     // dirt shoulders (shortcuts)
-    var dirtTex = tex.dirt(); dirtTex.repeat.set(2, 1);
-    var dirtMat = new THREE.MeshStandardMaterial({ map: dirtTex, roughness: 1 });
+    var dirtTex = tex[th.zoneTex || 'dirt'](); dirtTex.repeat.set(2, 1);
+    var dirtMat = new THREE.MeshStandardMaterial({ map: dirtTex, roughness: 1, color: th.zoneTint || 0xffffff, emissive: th.zoneEm || 0x000000, emissiveIntensity: th.zoneEm ? 0.5 : 0 });
     var dirtGeos = [];
     this.zones.forEach(function (z) {
       var inner, outer;
@@ -468,8 +527,8 @@
     // guard rails
     var railMat = new THREE.MeshStandardMaterial({ color: th.rail, roughness: 0.4, metalness: 0.5, emissive: th.railEm, emissiveIntensity: th.railEm ? 0.9 : 0, side: THREE.DoubleSide });
     function railEdge(latFn, h) { return function (j, out) { self.surfacePoint(j, latFn(j), out); out.y += h; }; }
-    var rl = stripGeom(path, railEdge(function (j) { return minLat[j] - 0.7; }, 0.35), railEdge(function (j) { return minLat[j] - 0.7; }, 0.95), 4);
-    var rr = stripGeom(path, railEdge(function (j) { return maxLat[j] + 0.7; }, 0.35), railEdge(function (j) { return maxLat[j] + 0.7; }, 0.95), 4);
+    var rl = stripGeom(path, railEdge(function (j) { return minLat[j] - 0.7; }, 0.35), railEdge(function (j) { return minLat[j] - 0.7; }, 0.95), 4, FULL);
+    var rr = stripGeom(path, railEdge(function (j) { return maxLat[j] + 0.7; }, 0.35), railEdge(function (j) { return maxLat[j] + 0.7; }, 0.95), 4, FULL);
     var rails = new THREE.Mesh(mergeGeoms([rl, rr]), railMat); rails.castShadow = true; g.add(rails);
     // rail posts
     var postGeo = new THREE.BoxGeometry(0.25, 1.0, 0.25);
@@ -486,10 +545,10 @@
 
     // skirts (embankment) & pillars for elevated parts
     var groundY = -0.3;
-    var skirtMat = new THREE.MeshStandardMaterial({ map: tex[th.skirt](), roughness: 1, side: THREE.DoubleSide });
-    var skirtL = stripGeom(path, railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { self.surfacePoint(j, minLat[j] - 1.2 - Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
-    var skirtR = stripGeom(path, railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { self.surfacePoint(j, maxLat[j] + 1.2 + Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
-    var skirt = new THREE.Mesh(mergeGeoms([skirtL, skirtR]), skirtMat); skirt.receiveShadow = true; g.add(skirt);
+    var skirtMat = new THREE.MeshStandardMaterial({ map: tex[th.skirt === 'none' ? 'concrete' : th.skirt](), roughness: 1, side: THREE.DoubleSide });
+    var skirtL = stripGeom(path, railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { self.surfacePoint(j, minLat[j] - 1.2 - Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6, FULL);
+    var skirtR = stripGeom(path, railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { self.surfacePoint(j, maxLat[j] + 1.2 + Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6, FULL);
+    if (th.skirt !== 'none') { var skirt = new THREE.Mesh(mergeGeoms([skirtL, skirtR]), skirtMat); skirt.receiveShadow = true; g.add(skirt); }
     // under-deck & pillars where high
     var pillarGeo = new THREE.CylinderGeometry(1.2, 1.5, 1, 10);
     var pillars = [];
@@ -508,7 +567,7 @@
         });
       }
     }
-    if (pillars.length) {
+    if (pillars.length && !th.noPillars) {
       var pm = new THREE.Mesh(mergeGeoms(pillars), new THREE.MeshStandardMaterial({ color: th.pillar, roughness: 0.8 }));
       pm.castShadow = true; g.add(pm);
     }
@@ -573,7 +632,8 @@
 
     // checkpoints visual (thin light beams for neon, flags for coast) - subtle
     this.cpS = [];
-    for (var c = 0; c < this.cpCount; c++) this.cpS.push(c * path.length / this.cpCount);
+    if (this.open) { this.cpS.push(this.finishS); for (var c = 1; c < this.cpCount; c++) this.cpS.push(this.finishS * c / this.cpCount); }
+    else for (c = 0; c < this.cpCount; c++) this.cpS.push(c * path.length / this.cpCount);
   };
 
   // --------------------------------------------------------------- scenery
@@ -616,9 +676,14 @@
   Track.prototype._buildScenery = function () {
     var th = this.theme, g = this.group;
     var rng = U.rng(th.seed);
-    g.add(skyDome(th.sky[0], th.sky[1], th.stars));
+    // sky dome centred on the course and big enough to contain all of it (point-to-point courses are several km long)
+    var cxs = 0, czs = 0, Ps = this.path.P;
+    for (var si = 0; si < Ps.length; si++) { cxs += Ps[si].x; czs += Ps[si].z; }
+    cxs /= Ps.length; czs /= Ps.length;
+    var ext = 0; for (si = 0; si < Ps.length; si++) ext = Math.max(ext, Math.hypot(Ps[si].x - cxs, Ps[si].z - czs));
+    var sky = skyDome(th.sky[0], th.sky[1], th.stars, Math.max(1800, ext + 1500)); sky.position.set(cxs, 0, czs); g.add(sky);
     var groundY = -0.3;
-    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab }[th.mood] || this._sceneryCoast;
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab, space: this._scenerySpace }[th.mood] || this._sceneryCoast;
     fn.call(this, rng, this.envelope, null, groundY);
   };
 
@@ -1606,11 +1671,11 @@
     // ---- holographic rings above the start straight and the finish straight, drones, laser fence
     var holos = [];
     for (var j = Math.round(0.005 * N); j < Math.round(0.045 * N); j += 14) {
-      var ring = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(CYAN, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 3, path.P[j].z);
+      var ring = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(CYAN, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 8.5, path.P[j].z);
       ring.rotation.x = Math.PI / 2; ring.castShadow = false; g.add(ring); holos.push(ring);
     }
     for (j = Math.round(0.93 * N); j < Math.round(0.985 * N); j += 14) {
-      var ring2 = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(PURPLE, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 3, path.P[j].z);
+      var ring2 = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(PURPLE, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 8.5, path.P[j].z);
       ring2.rotation.x = Math.PI / 2; ring2.castShadow = false; g.add(ring2); holos.push(ring2);
     }
     var drones = [];
@@ -1651,6 +1716,164 @@
       for (i = 0; i < holos.length; i++) { holos[i].rotation.z += dt * 0.8; holos[i].material.opacity = 0.35 + Math.sin(t * 2 + i) * 0.25; }
       for (i = 0; i < drones.length; i++) { var dr = drones[i], u = dr.userData; u.j = ((u.j + u.v * dt / path.ds) % N + N) % N; var jj = Math.floor(u.j); self.surfacePoint(jj, u.side * (path.W[jj] / 2 + 6), tmp); dr.position.set(tmp.x, tmp.y + u.h + Math.sin(t * 2 + i) * 1.2, tmp.z); dr.rotation.y += dt; }
       for (i = 0; i < lasers.length; i++) lasers[i].material.emissiveIntensity = 1.4 + Math.sin(t * 9 + i * 2) * 0.6;
+    });
+  };
+
+
+  // ------------------------------------------------------------- ORBITAL RUN (point-to-point through space)
+  Track.prototype._scenerySpace = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this, N = path.N;
+    var tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), e = new THREE.Euler();
+    function mesh(geo, mat, x, y, z) { var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; }
+    function emis(color, i, extra) { var o = { color: color, emissive: color, emissiveIntensity: i === undefined ? 0.9 : i, roughness: 0.3, metalness: 0.2 }; if (extra) for (var k in extra) o[k] = extra[k]; return new THREE.MeshStandardMaterial(o); }
+    var CYAN = 0x35e6ff, ORANGE = 0xff9a3c, PURPLE = 0xb388ff, GREEN = 0x7bffb0, PINK = 0xff5c8a, WHITE = 0xe8f0ff;
+    var hullMat = new THREE.MeshStandardMaterial({ color: 0x8a94a8, roughness: 0.45, metalness: 0.7 });
+    var hullDark = new THREE.MeshStandardMaterial({ color: 0x2a3246, roughness: 0.6, metalness: 0.5 });
+    var panelMat = new THREE.MeshStandardMaterial({ color: 0x223a7a, roughness: 0.3, metalness: 0.6, emissive: 0x102050, emissiveIntensity: 0.4, side: THREE.DoubleSide });
+    var glassMat = new THREE.MeshStandardMaterial({ color: 0xbfe8ff, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false });
+    var J = function (f) { return Math.max(0, Math.min(N - 1, Math.round(f * N))); };
+    function edge(latFn, dy) { return function (j, out) { self.surfacePoint(j, latFn(j), out); if (dy) out.y += dy; }; }
+    function strip(latA, latB, dyA, dyB, f0, f1, mat, vs) { var m = new THREE.Mesh(stripGeom(path, edge(latA, dyA), edge(latB, dyB), vs || 8, [J(f0), J(f1)]), mat); m.receiveShadow = true; g.add(m); return m; }
+    var minLat = this.minLat, maxLat = this.maxLat;
+    function faceAlong(o, j) { o.lookAt(o.position.x + path.T[j].x, o.position.y, o.position.z + path.T[j].z); return o; }
+
+    // ---- starfield + nebulae + sun (fog-free)
+    var starPos = [], starCol = [], cx = -130, cz = 1500, cy = 0;
+    for (var i = 0; i < 6000; i++) { var th = rng() * 6.283, ph = Math.acos(rng() * 2 - 1), r = 2600 + rng() * 600; starPos.push(cx + r * Math.sin(ph) * Math.cos(th), cy + r * Math.cos(ph), cz + r * Math.sin(ph) * Math.sin(th)); var c = 0.6 + rng() * 0.4, tint = rng(); starCol.push(c, c * (0.85 + tint * 0.15), c * (0.8 + tint * 0.2)); }
+    var starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3)); starGeo.setAttribute('color', new THREE.Float32BufferAttribute(starCol, 3));
+    var stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 4.5, vertexColors: true, sizeAttenuation: true, fog: false, transparent: true, opacity: 0.95 })); g.add(stars);
+    var nebMat = function (c) { return new THREE.SpriteMaterial({ map: tex.smoke(), color: c, transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }); };
+    // nebulae + sun sit on the sky dome (far from every part of the course, so they never read as nearby surfaces)
+    var SR = 2800;
+    [[0x5b2bd6, -0.9, 0.25, -0.35, 1500], [0x1f5fbf, 0.6, -0.05, 0.8, 1400], [0xd2408a, 0.2, 0.55, -0.8, 1200], [0x2bb5c9, -0.5, -0.2, 0.85, 1100]].forEach(function (n) {
+      var sp = new THREE.Sprite(nebMat(n[0])); var v = new THREE.Vector3(n[1], n[2], n[3]).normalize().multiplyScalar(SR); sp.position.set(cx + v.x, cy + v.y, cz + v.z); sp.scale.set(n[4], n[4] * 0.7, 1); g.add(sp);
+    });
+    var sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xfff4d6, transparent: true, fog: false })); sun.position.set(cx + 2100, cy + 1400, cz - 1500); sun.scale.set(560, 560, 1); g.add(sun);
+
+    // ---- 1. space station interior (f 0 .. 0.088): corridor floor, walls, ceiling, light strips, docked shuttles
+    var wallMat = new THREE.MeshStandardMaterial({ map: tex.labFloor(), color: 0xb8c4dc, roughness: 0.5, metalness: 0.5, side: THREE.DoubleSide });
+    var floorTex = tex.labFloor(); var floorMat = new THREE.MeshStandardMaterial({ map: floorTex, color: 0x9aa6c0, roughness: 0.6, metalness: 0.4, side: THREE.DoubleSide });
+    strip(function (j) { return minLat[j] - 16; }, function (j) { return maxLat[j] + 16; }, -0.15, -0.15, 0, 0.09, floorMat, 16);
+    strip(function (j) { return minLat[j] - 16; }, function (j) { return minLat[j] - 16; }, 0, 14, 0, 0.09, wallMat, 14);
+    strip(function (j) { return maxLat[j] + 16; }, function (j) { return maxLat[j] + 16; }, 0, 14, 0, 0.09, wallMat, 14);
+    strip(function (j) { return minLat[j] - 16; }, function (j) { return maxLat[j] + 16; }, 14, 14, 0, 0.09, new THREE.MeshStandardMaterial({ color: 0x1b2136, roughness: 0.8, side: THREE.DoubleSide }), 16);
+    strip(function (j) { return minLat[j] - 15.6; }, function (j) { return minLat[j] - 15.6; }, 5.5, 6.3, 0, 0.09, emis(CYAN, 1.4), 8);
+    strip(function (j) { return maxLat[j] + 15.6; }, function (j) { return maxLat[j] + 15.6; }, 5.5, 6.3, 0, 0.09, emis(CYAN, 1.4), 8);
+    for (var j = 6; j < J(0.088); j += 10) { self.surfacePoint(j, 0, tmp); var lamp = mesh(new THREE.BoxGeometry(path.W[j] + 20, 0.3, 1.2), emis(WHITE, 1.6), tmp.x, tmp.y + 13.6, tmp.z); faceAlong(lamp, j); lamp.castShadow = false; g.add(lamp); }
+    function shuttle(x, y, z, yaw, s) {
+      var sh = new THREE.Group(); sh.position.set(x, y, z); sh.rotation.y = yaw; sh.scale.setScalar(s);
+      sh.add(mesh(new THREE.CylinderGeometry(1.4, 1.8, 7, 10).rotateX(Math.PI / 2), hullMat, 0, 1.8, 0));
+      sh.add(mesh(new THREE.ConeGeometry(1.4, 3, 10).rotateX(Math.PI / 2), hullMat, 0, 1.8, 5));
+      sh.add(mesh(new THREE.BoxGeometry(7, 0.25, 2.2), hullDark, 0, 1.4, -1));
+      sh.add(mesh(new THREE.SphereGeometry(0.9, 8, 6), emis(ORANGE, 1.6), 0, 1.8, -3.7));
+      [[-1.5, 0.4], [1.5, 0.4]].forEach(function (lp) { sh.add(mesh(new THREE.BoxGeometry(0.3, 1.2, 0.3), hullDark, lp[0], 0.6, lp[1])); });
+      g.add(sh); return sh;
+    }
+    for (j = 20; j < J(0.083); j += 46) { self.surfacePoint(j, minLat[j] - 9.5, tmp); shuttle(tmp.x, tmp.y, tmp.z, Math.atan2(path.T[j].x, path.T[j].z) + 0.4, 1.1); if (j % 92 === 20) { self.surfacePoint(j, maxLat[j] + 9.5, tmp); shuttle(tmp.x, tmp.y, tmp.z, Math.atan2(path.T[j].x, path.T[j].z) - 0.4, 1.0); } }
+    function sign(key, text, f, lat, color, w, dy) {
+      w = w || 16; var j = J(f), jb = Math.max(0, j - 30), grp = new THREE.Group();
+      grp.add(mesh(new THREE.BoxGeometry(w, w * 0.25, 0.4), new THREE.MeshBasicMaterial({ map: tex.label('sp' + key, text, '#ffffff', '#' + color.toString(16).padStart(6, '0')) }), 0, 7, 0));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.25, 0.25), emis(color, 1.4), 0, 7 + w * 0.125 + 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.25, 0.25), emis(color, 1.4), 0, 7 - w * 0.125 - 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(0.5, 6.5, 0.5), hullDark, 0, 3.2, -0.1));
+      self.surfacePoint(j, lat, tmp); grp.position.set(tmp.x, tmp.y - 0.3 + (dy || 0), tmp.z); grp.lookAt(path.P[jb].x, grp.position.y, path.P[jb].z); g.add(grp); return grp;
+    }
+    sign('hangar', 'HANGAR 01 · DEPARTURE', 0.012, maxLat[J(0.012)] + 6, CYAN, 18);
+    sign('air', 'AIRLOCK → LAUNCH TUNNEL', 0.078, minLat[J(0.078)] - 6, ORANGE, 18);
+
+    // ---- 2. launch tunnel (0.09 .. 0.17): speed rings
+    var rings = [];
+    for (j = J(0.10); j < J(0.165); j += 9) { self.surfacePoint(j, 0, tmp); var rg = mesh(new THREE.TorusGeometry(path.W[j] / 2 + 2.2, 0.3, 6, 40), emis([CYAN, PURPLE][(j / 9 | 0) % 2], 1.5), tmp.x, tmp.y + 2.5, tmp.z); faceAlong(rg, j); rg.castShadow = false; g.add(rg); rings.push(rg); }
+    sign('launch', 'LAUNCH SEQUENCE · HOLD BOOST', 0.095, maxLat[J(0.095)] + 5, PINK, 20, 3);
+
+    // ---- 3. zero-gravity (0.176 .. 0.296): energy bridge glow, asteroids + debris drifting, gravity generators
+    var glowMat = new THREE.MeshBasicMaterial({ color: CYAN, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+    strip(function (j) { return minLat[j] - 1; }, function (j) { return maxLat[j] + 1; }, 0.08, 0.08, 0.176, 0.296, glowMat, 8);
+    var rockGeo = new THREE.IcosahedronGeometry(1, 1), rocks = [], rockCount = 260;
+    var rockMesh = new THREE.InstancedMesh(rockGeo, new THREE.MeshStandardMaterial({ color: 0x8b8f9c, roughness: 1, flatShading: true }), rockCount);
+    for (i = 0; i < rockCount; i++) {
+      var jr = J(0.176 + rng() * 0.12), side = rng() < 0.5 ? -1 : 1; self.surfacePoint(jr, side * (path.W[jr] / 2 + rng.range(14, 90)), tmp);
+      rocks.push({ p: tmp.clone().add(new THREE.Vector3(0, rng.range(-40, 50), 0)), s: rng.range(1.5, 9), rot: new THREE.Vector3(rng(), rng(), rng()).multiplyScalar(0.6), ph: rng() * 6.28, amp: rng.range(1, 4) });
+    }
+    rockMesh.castShadow = true; g.add(rockMesh);
+    for (j = J(0.19); j < J(0.29); j += 40) { self.surfacePoint(j, maxLat[j] + 8, tmp); var gen = mesh(new THREE.TorusGeometry(4, 0.6, 8, 24), emis(GREEN, 1.3), tmp.x, tmp.y + 6, tmp.z); gen.userData.spin = 1; g.add(gen); rings.push(gen); g.add(mesh(new THREE.CylinderGeometry(0.5, 0.8, 6, 8), hullDark, tmp.x, tmp.y + 3, tmp.z)); }
+    sign('zerog', 'ZERO-G SECTOR · GRAVITY OFF', 0.18, minLat[J(0.18)] - 6, GREEN, 20);
+
+    // ---- 4. orbital highway (0.296 .. 0.445): planet below, moon, satellites
+    var planet = mesh(new THREE.SphereGeometry(760, 48, 32), new THREE.MeshStandardMaterial({ color: 0x3f7fd6, roughness: 0.9, emissive: 0x0a2a5a, emissiveIntensity: 0.35 }), -520, -1050, 1300); planet.castShadow = false; g.add(planet);
+    var cloudsP = mesh(new THREE.SphereGeometry(772, 48, 32), new THREE.MeshStandardMaterial({ map: tex.smoke(), color: 0xffffff, transparent: true, opacity: 0.35, roughness: 1, depthWrite: false }), -520, -1050, 1300); cloudsP.castShadow = false; g.add(cloudsP);
+    var atmo = mesh(new THREE.SphereGeometry(800, 48, 32), new THREE.MeshBasicMaterial({ color: 0x6fb8ff, transparent: true, opacity: 0.08, side: THREE.BackSide, depthWrite: false }), -520, -1050, 1300); g.add(atmo);
+    var moon = mesh(new THREE.SphereGeometry(130, 28, 20), new THREE.MeshStandardMaterial({ color: 0xc9c4b8, roughness: 1 }), 700, 260, 1500); moon.castShadow = false; g.add(moon);
+    function satellite(x, y, z, s) {
+      var st = new THREE.Group(); st.position.set(x, y, z); st.scale.setScalar(s);
+      st.add(mesh(new THREE.BoxGeometry(4, 4, 6), hullMat, 0, 0, 0));
+      st.add(mesh(new THREE.BoxGeometry(22, 0.2, 6), panelMat, -14, 0, 0)); st.add(mesh(new THREE.BoxGeometry(22, 0.2, 6), panelMat, 14, 0, 0));
+      st.add(mesh(new THREE.CylinderGeometry(0.1, 2.5, 2.5, 10), hullDark, 0, 3.2, 0));
+      st.add(mesh(new THREE.SphereGeometry(0.6, 6, 5), emis(PINK, 1.8), 0, -2.8, 0));
+      g.add(st); st.userData.spin = rng.range(0.1, 0.3); rings.push(st); return st;
+    }
+    for (j = J(0.30); j < J(0.445); j += 55) { var sd = (j / 55 | 0) % 2 ? 1 : -1; self.surfacePoint(j, sd * (path.W[j] / 2 + rng.range(30, 70)), tmp); satellite(tmp.x, tmp.y + rng.range(10, 40), tmp.z, rng.range(1.2, 2.2)); }
+    sign('orbit', 'ORBITAL HIGHWAY · 300 KM/H ZONE', 0.30, maxLat[J(0.30)] + 6, CYAN, 22);
+    // 5. planet orbit (0.445 .. 0.571): ringed gas giant inside the 200° arc
+    var GX = -847, GZ = 1912;
+    var giant = mesh(new THREE.SphereGeometry(105, 40, 28), new THREE.MeshStandardMaterial({ color: 0xd9a066, roughness: 0.9, emissive: 0x4a2a10, emissiveIntensity: 0.3 }), GX, -60, GZ); giant.castShadow = false; g.add(giant);
+    [[0xc98a55, 0.35], [0xf0d0a0, 0.55], [0xb07040, 0.75]].forEach(function (b, i) { var band = mesh(new THREE.CylinderGeometry(106 * Math.sqrt(1 - b[1] * b[1]), 106 * Math.sqrt(1 - b[1] * b[1]), 8, 40, 1, true), new THREE.MeshStandardMaterial({ color: b[0], roughness: 1, side: THREE.DoubleSide }), GX, -60 + 105 * b[1] * (i % 2 ? -1 : 1), GZ); band.castShadow = false; g.add(band); });
+    var pring = mesh(new THREE.RingGeometry(125, 165, 64).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xe8d8b8, roughness: 0.9, side: THREE.DoubleSide, transparent: true, opacity: 0.75 }), GX, -40, GZ); pring.rotation.z = 0.12; pring.castShadow = false; g.add(pring);
+    for (i = 0; i < 3; i++) { var mo = mesh(new THREE.SphereGeometry(rng.range(8, 16), 12, 10), new THREE.MeshStandardMaterial({ color: 0xc0c4d0, roughness: 1, emissive: 0x303848, emissiveIntensity: 0.6 }), GX, rng.range(40, 120), GZ); mo.userData = { orbit: true, r: rng.range(230, 330), ph: rng() * 6.28, v: rng.range(0.05, 0.12), cx: GX, cz: GZ }; g.add(mo); rings.push(mo); }
+    sign('giant', 'GAS GIANT KEPLER-9 · ORBIT LANE', 0.455, maxLat[J(0.455)] + 6, ORANGE, 22);
+
+    // ---- 6. spacecraft traffic (0.571 .. 0.674): ships crossing over the track, beacons
+    var ships = [];
+    function ship(color) {
+      var s2 = new THREE.Group();
+      s2.add(mesh(new THREE.BoxGeometry(3, 1.6, 12), hullMat, 0, 0, 0)); s2.add(mesh(new THREE.ConeGeometry(1.6, 4, 8).rotateX(Math.PI / 2), hullMat, 0, 0, 8));
+      s2.add(mesh(new THREE.BoxGeometry(10, 0.3, 3), hullDark, 0, 0, -3)); s2.add(mesh(new THREE.SphereGeometry(1.1, 8, 6), emis(color, 2.0), 0, 0, -6.4));
+      s2.add(mesh(new THREE.SphereGeometry(0.4, 6, 5), emis(0xff3030, 2), -5, 0.3, -3)); s2.add(mesh(new THREE.SphereGeometry(0.4, 6, 5), emis(0x30ff60, 2), 5, 0.3, -3));
+      g.add(s2); return s2;
+    }
+    for (i = 0; i < 14; i++) {
+      var jt = J(0.575 + (i / 14) * 0.095); self.surfacePoint(jt, 0, tmp);
+      var dir = new THREE.Vector3(path.R[jt].x, 0, path.R[jt].z).normalize().multiplyScalar(i % 2 ? 1 : -1);
+      ships.push({ m: ship([CYAN, ORANGE, PURPLE, GREEN][i % 4]), c: tmp.clone(), dir: dir, h: rng.range(9, 26), span: rng.range(120, 220), v: rng.range(25, 60), ph: rng() * 6.28 });
+    }
+    for (j = J(0.575); j < J(0.67); j += 18) { [minLat[j] - 4, maxLat[j] + 4].forEach(function (lat, si) { self.surfacePoint(j, lat, tmp); var bc = mesh(new THREE.SphereGeometry(0.5, 8, 6), emis(si ? 0xff3030 : 0x30ff60, 2), tmp.x, tmp.y + 2.5, tmp.z); bc.userData.blink = si; g.add(bc); rings.push(bc); g.add(mesh(new THREE.CylinderGeometry(0.12, 0.2, 2.4, 6), hullDark, tmp.x, tmp.y + 1.2, tmp.z)); }); }
+    sign('traffic', 'TRAFFIC ZONE · WATCH FOR SHIPS', 0.572, minLat[J(0.572)] - 6, PINK, 22);
+
+    // ---- 7. gravity-flip tunnel (0.68 .. 0.76): rotating gravity rings, warning
+    for (j = J(0.685); j < J(0.758); j += 6) { self.surfacePoint(j, 0, tmp); var gr = mesh(new THREE.TorusGeometry(path.W[j] / 2 + 5.2, 0.5, 6, 36, Math.PI * 1.2), emis([PURPLE, PINK][(j / 6 | 0) % 2], 1.6), tmp.x, tmp.y + 1.5, tmp.z); faceAlong(gr, j); gr.userData.roll = ((j / 6 | 0) % 2 ? 1 : -1) * 2.2; g.add(gr); rings.push(gr); }
+    sign('grav', 'GRAVITY FLIP · BRACE', 0.676, maxLat[J(0.676)] + 6, PURPLE, 18);
+
+    // ---- 8. massive station exterior (0.768 .. 0.899): hull plates, giant ring, docking arms, solar arrays, towers
+    strip(function (j) { return minLat[j] - 60; }, function (j) { return maxLat[j] + 60; }, -0.4, -0.4, 0.766, 0.9, new THREE.MeshStandardMaterial({ map: tex.labFloor(), color: 0x6f7a92, roughness: 0.5, metalness: 0.7, side: THREE.DoubleSide }), 40);
+    var bigRing = mesh(new THREE.TorusGeometry(300, 26, 16, 64), hullMat, 60, 120, 2560); bigRing.rotation.y = 0.9; bigRing.castShadow = false; g.add(bigRing);
+    var ringLights = mesh(new THREE.TorusGeometry(300, 27.5, 8, 64, Math.PI * 2), emis(CYAN, 1.2, { transparent: true, opacity: 0.35 }), 60, 120, 2560); ringLights.rotation.y = 0.9; ringLights.castShadow = false; g.add(ringLights);
+    g.add(mesh(new THREE.CylinderGeometry(40, 40, 260, 24), hullMat, 60, 120, 2560).rotateZ(Math.PI / 2));
+    for (i = 0; i < 6; i++) { var aa = i / 6 * Math.PI * 2; g.add(mesh(new THREE.BoxGeometry(8, 8, 300), hullDark, 60 + Math.cos(aa) * 150 * Math.cos(0.9), 120 + Math.sin(aa) * 150, 2560 - Math.cos(aa) * 150 * Math.sin(0.9)).rotateY(0.9)); }
+    for (j = J(0.78); j < J(0.895); j += 30) { var sd2 = (j / 30 | 0) % 2 ? 1 : -1; self.surfacePoint(j, sd2 * (path.W[j] / 2 + rng.range(28, 52)), tmp); var tw = mesh(new THREE.BoxGeometry(rng.range(8, 16), rng.range(20, 70), rng.range(8, 16)), hullMat, tmp.x, tmp.y + 10, tmp.z); tw.position.y += tw.geometry.parameters.height / 2 - 10; g.add(tw); var wl = mesh(new THREE.BoxGeometry(tw.geometry.parameters.width + 0.4, 0.5, tw.geometry.parameters.depth + 0.4), emis(ORANGE, 1.4), tmp.x, tmp.y + tw.geometry.parameters.height - 2, tmp.z); g.add(wl); }
+    for (i = 0; i < 10; i++) { var js = J(0.775 + i * 0.012), sd3 = i % 2 ? 1 : -1; self.surfacePoint(js, sd3 * (path.W[js] / 2 + 70 + (i % 3) * 25), tmp); var sp2 = mesh(new THREE.BoxGeometry(60, 0.4, 22), panelMat, tmp.x, tmp.y + 6, tmp.z); sp2.rotation.z = sd3 * 0.35; g.add(sp2); }
+    sign('station', 'STATION HELIOS · OUTER HULL', 0.772, minLat[J(0.772)] - 6, CYAN, 22);
+
+    // ---- 9. final straight + finish arena (0.899 .. 1): orbital gate, holo rings, stands, floodlights, dome
+    var jg = J(0.907); self.surfacePoint(jg, 0, tmp); var ogate = mesh(new THREE.TorusGeometry(30, 3, 12, 48), emis(PINK, 1.3), tmp.x, tmp.y + 18, tmp.z); faceAlong(ogate, jg); ogate.castShadow = false; g.add(ogate);
+    for (j = J(0.915); j < J(0.975); j += 12) { self.surfacePoint(j, 0, tmp); var hr = mesh(new THREE.TorusGeometry(16, 0.35, 6, 48), emis([CYAN, PINK][(j / 12 | 0) % 2], 1.4, { transparent: true, opacity: 0.6 }), tmp.x, tmp.y + 9.5, tmp.z); hr.rotation.x = Math.PI / 2; hr.userData.spin = 0.8; hr.castShadow = false; g.add(hr); rings.push(hr); }
+    var jf = path.idxOf(this.finishS);
+    for (j = jf - 90; j < jf + 40; j += 12) { [minLat[j] - 16.5, maxLat[j] + 16.5].forEach(function (lat, si) { self.surfacePoint(j, lat, tmp); var st = mesh(new THREE.BoxGeometry(12, 6, 11), hullDark, tmp.x, tmp.y + 3, tmp.z); st.lookAt(path.P[j].x, tmp.y + 3, path.P[j].z); g.add(st); var seat = mesh(new THREE.BoxGeometry(12, 0.6, 11), emis(si ? CYAN : PINK, 0.8), tmp.x, tmp.y + 6.3, tmp.z); seat.lookAt(path.P[j].x, tmp.y + 6.3, path.P[j].z); g.add(seat); }); }
+    for (j = jf - 80; j < jf + 40; j += 30) { [minLat[j] - 22, maxLat[j] + 22].forEach(function (lat) { self.surfacePoint(j, lat, tmp); g.add(mesh(new THREE.CylinderGeometry(0.6, 0.9, 26, 8), hullDark, tmp.x, tmp.y + 13, tmp.z)); g.add(mesh(new THREE.BoxGeometry(6, 2.5, 1.5), emis(WHITE, 2.2), tmp.x, tmp.y + 26, tmp.z)); }); }
+    self.surfacePoint(jf + 20, 0, tmp);
+    // arena: glowing landing-pad rings under the finish + a halo of light pylons around it
+    [[120, PINK], [90, CYAN], [60, PINK]].forEach(function (rr, i) { var ar = mesh(new THREE.TorusGeometry(rr[0], 1.6, 8, 72).rotateX(Math.PI / 2), emis(rr[1], 1.2), tmp.x, tmp.y - 6 - i * 2, tmp.z); ar.castShadow = false; g.add(ar); });
+    for (i = 0; i < 16; i++) { var pa = i / 16 * Math.PI * 2, px = tmp.x + Math.cos(pa) * 120, pz = tmp.z + Math.sin(pa) * 120; if (self.distToPath(px, pz) < 16) continue; g.add(mesh(new THREE.CylinderGeometry(0.8, 1.2, 40, 8), hullDark, px, tmp.y + 14, pz)); g.add(mesh(new THREE.SphereGeometry(2.2, 10, 8), emis(i % 2 ? PINK : CYAN, 2), px, tmp.y + 35, pz)); }
+    sign('arena', 'FINISH ARENA · WELCOME', 0.94, maxLat[J(0.94)] + 6, PINK, 20);
+    sign('final', 'FINAL SECTOR · FULL THROTTLE', 0.902, minLat[J(0.902)] - 6, CYAN, 22);
+
+    // ---- animation
+    var dq = new THREE.Quaternion();
+    this.animated.push(function (dt, t) {
+      for (var i = 0; i < rings.length; i++) { var r = rings[i], u = r.userData; if (u.roll) r.rotateZ(dt * u.roll); else if (u.spin) r.rotation.y += dt * u.spin; else if (u.blink !== undefined) r.material.emissiveIntensity = (Math.sin(t * 6 + (u.blink ? 3 : 0)) > 0 ? 2.2 : 0.2); else if (u.orbit) { u.ph += dt * u.v; r.position.set(u.cx + Math.cos(u.ph) * u.r, r.position.y, u.cz + Math.sin(u.ph) * u.r); } else { r.rotation.z += dt * 1.5; } }
+      for (i = 0; i < rocks.length; i++) { var rk = rocks[i]; e.set(rk.rot.x * t, rk.rot.y * t, rk.rot.z * t); q.setFromEuler(e); tmp.copy(rk.p); tmp.y += Math.sin(t * 0.5 + rk.ph) * rk.amp; sc.setScalar(rk.s); m4.compose(tmp, q, sc); rockMesh.setMatrixAt(i, m4); }
+      rockMesh.instanceMatrix.needsUpdate = true;
+      for (i = 0; i < ships.length; i++) { var sh = ships[i], u2 = Math.sin(t * sh.v / sh.span + sh.ph); sh.m.position.copy(sh.c).addScaledVector(sh.dir, u2 * sh.span); sh.m.position.y = sh.c.y + sh.h; var fwd = Math.cos(t * sh.v / sh.span + sh.ph) >= 0 ? 1 : -1; sh.m.rotation.y = Math.atan2(sh.dir.x * fwd, sh.dir.z * fwd); }
+      cloudsP.rotation.y += dt * 0.01; moon.rotation.y += dt * 0.02;
     });
   };
 

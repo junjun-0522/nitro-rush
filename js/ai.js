@@ -10,7 +10,7 @@
     if (track.curvSigned) return track.curvSigned;
     var path = track.path, N = path.N, C = new Float32Array(N), t = new THREE.Vector3();
     for (var j = 0; j < N; j++) {
-      t.subVectors(path.T[(j + 8) % N], path.T[(j - 8 + N) % N]);
+      t.subVectors(path.T[path.open ? Math.min(N - 1, j + 8) : (j + 8) % N], path.T[path.open ? Math.max(0, j - 8) : (j - 8 + N) % N]);
       C[j] = t.dot(path.R[j]) / (16 * path.ds); // >0 turning right
     }
     track.curvSigned = C;
@@ -37,6 +37,7 @@
 
   AIDriver.prototype.update = function (dt, world) {
     var k = this.k, inp = k.input, path = world.path, track = world.track, L = path.length;
+    if (track.open && k.finished) { inp.throttle = 0; inp.steer = 0; inp.drift = false; inp.boost = false; inp.item = false; inp.brake = k.s > track.finishS + 45 ? 1 : 0; return; }
     var rng = this.rng;
     inp.respawn = false; inp.boost = false;
     if (!world.raceOn) { inp.throttle = 0; inp.brake = 0; inp.steer = 0; inp.drift = false; return; }

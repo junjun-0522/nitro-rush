@@ -89,6 +89,22 @@ const DESIGNS = {
     ],
     closeStraight: 90,
     profile: [[0.06, 0.10, 0, 18], [0.27, 0.30, 18, 2], [0.30, 0.34, 2, 0], [0.50, 0.53, 0, 8], [0.56, 0.60, 8, 0], [0.78, 0.81, 0, 5], [0.85, 0.88, 5, 0]]
+  },
+  space: {  // ORBITAL RUN: point-to-point (open). station interior → launch tunnel → zero-g → orbital → planet orbit → traffic → gravity tunnel → station exterior → final straight
+    open: true, width: 20,
+    segs: [
+      ['S', 120], ['A', 60, 60], ['S', 80], ['A', 50, -90], ['S', 150], ['A', 45, 45],            // 1. 우주정거장 내부 (격납고 복도)
+      ['S', 520],                                                                             // 2. 발사 터널 (직선, 오르막)
+      ['A', 120, -70], ['A', 120, 70], ['S', 100], ['A', 90, -110], ['S', 150],                // 3. 무중력 구간 (큰 스위퍼, 고도 파동)
+      ['S', 300], ['A', 200, 60], ['S', 250], ['A', 150, -50],                                  // 4. 궤도 고속 구간
+      ['A', 180, 200], ['S', 120],                                                              // 5. 행성 궤도 (3/4 바퀴)
+      ['A', 40, -60], ['A', 40, 60], ['S', 80], ['A', 40, 60], ['A', 40, -60], ['S', 120], ['A', 60, -90], ['S', 150],   // 6. 우주선 교통 구역 (시케인)
+      ['S', 120], ['A', 70, 120], ['A', 70, -120], ['S', 150],                                  // 7. 중력 반전 터널 (S자 코크스크루)
+      ['A', 90, -80], ['S', 200], ['A', 60, 90], ['S', 150], ['A', 80, 60], ['S', 100],          // 8. 거대 정거장 외부
+      ['A', 50, -30], ['S', 600]                                                                // 9. 최종 직선 → FINISH (마지막 120m 는 런오프)
+    ],
+    closeStraight: 0,
+    profile: [[0.09, 0.17, 0, 25], [0.17, 0.21, 25, 5], [0.21, 0.25, 5, 30], [0.25, 0.29, 30, 0], [0.32, 0.40, 0, -25], [0.40, 0.48, -25, -25], [0.48, 0.56, -25, 10], [0.60, 0.66, 10, 0], [0.70, 0.73, 0, 35], [0.73, 0.78, 35, -10], [0.78, 0.82, -10, 0], [0.86, 0.90, 0, 8], [0.92, 0.96, 8, 0]]
   }
 };
 const name = process.argv[2] || 'korea';
@@ -111,8 +127,9 @@ D.segs.forEach((sg, i) => {
   else { const r = sg[1], ang = sg[2] * Math.PI / 180; const sg0 = Math.sign(ang); centre = [+(x + r * Math.cos(th) * sg0).toFixed(1), +(z - r * Math.sin(th) * sg0).toFixed(1)]; step(Math.abs(ang) * r, sg0 / r); }
   segInfo.push({ i, sg, s0, s1: s, x: +x.toFixed(1), z: +z.toFixed(1), headingDeg: +(th * 180 / Math.PI).toFixed(1), centre });
 });
-// ---- closure: Hermite from (x,z,th) to (0, -closeStraight, heading 0), then straight to (0,0)
+// ---- closure: Hermite from (x,z,th) to (0, -closeStraight, heading 0), then straight to (0,0)   (skipped for open / point-to-point designs)
 const p1 = { x, z }, d1 = { x: Math.sin(th), z: Math.cos(th) };
+if (D.open) { D.closeStraight = 0; }
 const p0 = { x: 0, z: -D.closeStraight }, d0 = { x: 0, z: 1 };
 const L = Math.hypot(p0.x - p1.x, p0.z - p1.z);
 const m1 = { x: d1.x * L, z: d1.z * L }, m0 = { x: d0.x * L, z: d0.z * L };
@@ -122,21 +139,21 @@ function herm(t) {
 }
 let closeMinR = 1e9, closeLen = 0, prev = herm(0), prevDir = null;
 const closeStart = s;
-for (let i = 1; i <= 400; i++) {
+for (let i = 1; i <= (D.open ? 0 : 400); i++) {
   const q = herm(i / 400), dx = q.x - prev.x, dz = q.z - prev.z, dl = Math.hypot(dx, dz);
   if (dl < 1e-6) continue;
   const dir = { x: dx / dl, z: dz / dl };
   if (prevDir) { const dth = Math.atan2(prevDir.x * dir.z - prevDir.z * dir.x, prevDir.x * dir.x + prevDir.z * dir.z); const r = Math.abs(dth) > 1e-9 ? dl / Math.abs(dth) : 1e9; if (r < closeMinR) closeMinR = r; }
   prevDir = dir; s += dl; closeLen += dl; dense.push({ x: q.x, z: q.z, s }); prev = q;
 }
-x = p0.x; z = p0.z; th = 0;
+if (!D.open) { x = p0.x; z = p0.z; th = 0; }
 const straightStart = s;
-step(D.closeStraight, 0);
+if (!D.open) step(D.closeStraight, 0);
 const total = s;
 // ---- self-distance check (points at least 70m apart along the lap must be >= 45m apart in space)
 let minSep = 1e9, minAt = null;
 for (let i = 0; i < dense.length; i += 4) for (let j = i + 1; j < dense.length; j += 4) {
-  const ds = Math.min(Math.abs(dense[i].s - dense[j].s), total - Math.abs(dense[i].s - dense[j].s));
+  const ds = D.open ? Math.abs(dense[i].s - dense[j].s) : Math.min(Math.abs(dense[i].s - dense[j].s), total - Math.abs(dense[i].s - dense[j].s));
   if (ds < 70) continue;
   const d = Math.hypot(dense[i].x - dense[j].x, dense[i].z - dense[j].z);
   if (d < minSep) { minSep = d; minAt = [dense[i].s / total, dense[j].s / total]; }
@@ -156,8 +173,9 @@ const isStraightAt = (ss) => { const sg = segInfo.find(g => ss >= g.s0 && ss < g
 let lastS = -1e9;
 for (let i = 0; i < dense.length; i++) {
   const d = dense[i]; const spacing = isStraightAt(d.s) ? 28 : 16;
-  if (d.s - lastS >= spacing && total - d.s > 8) { pts.push([+d.x.toFixed(1), +d.z.toFixed(1), +yAt(d.s / total).toFixed(1)]); lastS = d.s; }
+  if (d.s - lastS >= spacing && (D.open ? true : total - d.s > 8)) { pts.push([+d.x.toFixed(1), +d.z.toFixed(1), +yAt(d.s / total).toFixed(1)]); lastS = d.s; }
 }
+if (D.open) { const e = dense[dense.length - 1]; if (e.s - lastS > 4) pts.push([+e.x.toFixed(1), +e.z.toFixed(1), +yAt(1).toFixed(1)]); }
 // ---- report
 console.log('segments (fraction ranges):');
 segInfo.forEach(g => console.log(`  #${g.i} ${g.sg.join(' ')}  f=${(g.s0 / total).toFixed(3)}..${(g.s1 / total).toFixed(3)}  end=(${g.x},${g.z}) heading=${g.headingDeg}${g.centre ? '  centre=(' + g.centre.join(',') + ')' : ''}`));

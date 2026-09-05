@@ -62,7 +62,7 @@
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.3, 2600);
+    camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.3, 7000);
     hemi = new THREE.HemisphereLight(0xbfe9ff, 0x6c8f4a, 0.75); scene.add(hemi);
     sun = new THREE.DirectionalLight(0xfff3d6, 1.5); sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
@@ -251,7 +251,7 @@
       var name = document.createElement('div'); name.className = 'name';
       name.innerHTML = def.name + ' <span class="tag ' + (def.tag === 'EXPERT' ? 'expert' : '') + '">' + def.tag + '</span>';
       var desc = document.createElement('div'); desc.className = 'desc'; desc.textContent = def.desc;
-      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = def.laps + ' LAPS · ' + def.theme.time;
+      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = (def.open ? 'POINT-TO-POINT · ' + (def.lengthKm || '') + 'KM' : def.laps + ' LAPS') + ' · ' + def.theme.time;
       var pr = document.createElement('div'); pr.className = 'pr';
       var rec = Progress.record(def.id, settings.mode);
       pr.innerHTML = rec && (rec.race || rec.lap)
@@ -271,7 +271,7 @@
   function drawTrackPreview(cv, def) {
     var g = cv.getContext('2d'), n = def.pts.length, pts = [];
     for (var i = 0; i < n; i++) pts.push(new THREE.Vector3(def.pts[i][0], 0, def.pts[i][1]));
-    var curve = new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
+    var curve = new THREE.CatmullRomCurve3(pts, !def.open, 'catmullrom', 0.5);
     var sp = curve.getPoints(200);
     var minX = 1e9, maxX = -1e9, minZ = 1e9, maxZ = -1e9;
     sp.forEach(function (p) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minZ = Math.min(minZ, p.z); maxZ = Math.max(maxZ, p.z); });
@@ -279,12 +279,13 @@
     var ox = cv.width / 2 - (minX + maxX) / 2 * sc, oy = cv.height / 2 - (minZ + maxZ) / 2 * sc;
     g.clearRect(0, 0, cv.width, cv.height);
     g.lineCap = 'round'; g.lineJoin = 'round';
-    function path() { g.beginPath(); sp.forEach(function (p, i) { var x = p.x * sc + ox, y = p.z * sc + oy; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); g.closePath(); }
+    function path() { g.beginPath(); sp.forEach(function (p, i) { var x = p.x * sc + ox, y = p.z * sc + oy; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); if (!def.open) g.closePath(); }
     var pc = def.theme.preview;
     path(); g.strokeStyle = pc[0]; g.lineWidth = 14; g.stroke();
     path(); g.strokeStyle = pc[1]; g.lineWidth = 9; g.stroke();
     path(); g.strokeStyle = pc[2]; g.lineWidth = 1.2; g.setLineDash([4, 6]); g.stroke(); g.setLineDash([]);
     g.fillStyle = '#fff'; g.fillRect(sp[0].x * sc + ox - 3, sp[0].z * sc + oy - 6, 6, 12);
+    if (def.open) { var pe = sp[Math.round(sp.length * 0.965)]; g.fillStyle = '#ff2f6d'; g.fillRect(pe.x * sc + ox - 5, pe.z * sc + oy - 5, 10, 10); }
   }
 
   // ---------------------------------------------------------------- input
@@ -396,7 +397,8 @@
     $('resultsWait').classList.toggle('hidden', !(isOnline && !online.isHost));
     $('btnRestart').classList.toggle('hidden', isOnline);
     $('finishBanner').classList.add('hidden'); $('countdown').classList.remove('hidden'); $('countdown').innerHTML = '';
-    $('hudLapT').textContent = track.laps; $('hudPosTotal').textContent = '/' + n;
+    $('hudLapT').textContent = track.open ? track.cpCount : track.laps; $('hudLapLabel').textContent = track.open ? 'CP' : 'LAP'; $('hudLapTimeLabel').textContent = track.open ? 'TO FINISH' : 'LAP';
+    $('hudPosTotal').textContent = '/' + n;
     $('hudLap').classList.remove('final');
     $('hudBoard').innerHTML = ''; lastItemShown = null; updateItemSlot(true);
     showScreen(null); state = 'countdown';
@@ -671,6 +673,9 @@
           case 'shieldBreak':
             if (isP || near) { audio.shield(); fx.sparks(k.pos, 20, 0x66ccff, 10); if (isP) showMsg('SHIELD BROKEN', 'cyan'); }
             break;
+          case 'cp':
+            if (isP && track.open) { showMsg('CHECKPOINT ' + x.n + ' / ' + x.of, 'cyan'); audio.lap(); }
+            break;
           case 'portal':
             if (isP) { audio.respawn(); flash('rgba(80,230,255,0.7)'); showMsg('WARP!', 'cyan'); fx.addShake(0.4); cam.init = false; }
             if (near || isP) fx.sparks(k.pos, 30, 0x35e6ff, 12);
@@ -764,6 +769,15 @@
       cam.fov = U.damp(cam.fov, 64, 3, dt); camera.fov = cam.fov; camera.updateProjectionMatrix();
       return;
     }
+    if (track.open && k.finished && k.speed < 4) {
+      // cinematic: slow orbit around the stopped kart in the finish arena
+      var oa = clock.t * 0.35;
+      _v.set(k.pos.x + Math.sin(oa) * 9, k.pos.y + 3.2, k.pos.z + Math.cos(oa) * 9);
+      cam.pos.lerp(_v, 1 - Math.exp(-2 * dt)); camera.position.copy(cam.pos);
+      cam.look.lerp(_v2.set(k.pos.x, k.pos.y + 1, k.pos.z), 1 - Math.exp(-4 * dt)); camera.lookAt(cam.look);
+      cam.fov = U.damp(cam.fov, 58, 3, dt); camera.fov = cam.fov; camera.updateProjectionMatrix();
+      return;
+    }
     k.forward(_v3);
     var dir = _v2.copy(_v3);
     if (k.speed > 3 && k.vf > 0) { _v4.copy(k.vel).normalize(); dir.lerp(_v4, 0.45).normalize(); }
@@ -804,9 +818,9 @@
     var H = hudEls, k = player;
     var rank = k.rank;
     H.pos.textContent = rank; H.sfx.textContent = U.ordinal(rank).replace(String(rank), '');
-    H.lapN.textContent = Math.min(k.lapsCompleted + 1, track.laps);
+    H.lapN.textContent = track.open ? (k.finished ? track.cpCount : k.cpPassed) : Math.min(k.lapsCompleted + 1, track.laps);
     H.time.textContent = U.fmtTime(race.time);
-    H.lapTime.textContent = U.fmtTime(k.finished ? (k.lapTimes[k.lapTimes.length - 1] || 0) : race.time - k.lapStart);
+    H.lapTime.textContent = track.open ? (k.finished ? 'FINISHED' : (Math.max(0, track.finishS - k.s) / 1000).toFixed(2) + ' KM') : U.fmtTime(k.finished ? (k.lapTimes[k.lapTimes.length - 1] || 0) : race.time - k.lapStart);
     var best = k.lapTimes.length ? Math.min.apply(null, k.lapTimes) : null;
     H.best.textContent = U.fmtTime(best);
     var kmh = Math.round(k.speed * 4.2);
@@ -1234,10 +1248,11 @@
     g.lineCap = 'round'; g.lineJoin = 'round';
     g.beginPath();
     for (var i = 0; i < m.pts.length; i++) { var p = m.pts[i]; var x = p.x * m.scale + m.ox, y = p.z * m.scale + m.oy; if (i) g.lineTo(x, y); else g.moveTo(x, y); }
-    g.closePath();
+    if (!track.open) g.closePath();
     g.strokeStyle = 'rgba(255,255,255,0.15)'; g.lineWidth = 11; g.stroke();
     g.strokeStyle = track.theme.mood === 'neon' ? '#2a2d4a' : '#4a4e5a'; g.lineWidth = 7; g.stroke();
     var s0 = m.pts[0]; g.fillStyle = '#fff'; g.fillRect(s0.x * m.scale + m.ox - 2, s0.z * m.scale + m.oy - 5, 4, 10);
+    if (track.open) { var pf = track.path.P[track.path.idxOf(track.finishS)]; g.fillStyle = '#ff2f6d'; g.fillRect(pf.x * m.scale + m.ox - 4, pf.z * m.scale + m.oy - 4, 8, 8); }
     for (i = 0; i < karts.length; i++) {
       var k = karts[i]; if (k.isPlayer) continue;
       g.fillStyle = '#' + k.color.toString(16).padStart(6, '0');
@@ -1299,7 +1314,7 @@
       if (k.finished) timeStr = U.fmtTime(k.finishTime);
       else {
         // estimate from average pace so the board still reads like a race result
-        var done = Math.max(1, k.progress(L)), remaining = track.laps * L - done;
+        var done = Math.max(1, k.progress(L)), remaining = (track.open ? track.finishS : track.laps * L) - done;
         var pace = done / Math.max(1, race.time);
         timeStr = '<span class="dim">' + U.fmtTime(race.time + remaining / Math.max(pace, 0.008)) + ' *</span>';
       }

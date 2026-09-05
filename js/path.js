@@ -14,8 +14,9 @@
   function TrackPath(cps, opts) {
     opts = opts || {};
     this.cps = cps;
+    var open = this.open = !!opts.open;   // point-to-point: no wrap-around, start != finish
     var pts = cps.map(function (c) { return new THREE.Vector3(c.x, c.y, c.z); });
-    var curve = new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
+    var curve = new THREE.CatmullRomCurve3(pts, !open, 'catmullrom', 0.5);
     this.curve = curve;
 
     var n = cps.length;
@@ -42,15 +43,17 @@
       P[j] = raw[k].clone().lerp(raw[k + 1], f);
       var t = (k + f) / M;
       Tt[j] = t;
-      // width from control points (closed catmull: cp i sits at t = i/n)
-      var fi = t * n, i0 = Math.floor(fi) % n, i1 = (i0 + 1) % n, ff = fi - Math.floor(fi);
+      // width from control points (closed catmull: cp i sits at t = i/n; open: t = i/(n-1))
+      var fi = open ? t * (n - 1) : t * n, i0 = open ? Math.min(n - 1, Math.floor(fi)) : Math.floor(fi) % n, i1 = open ? Math.min(n - 1, i0 + 1) : (i0 + 1) % n, ff = fi - Math.floor(fi);
       W[j] = cps[i0].w * (1 - ff) + cps[i1].w * ff;
     }
 
     // --- frames ---------------------------------------------------------
     var T = new Array(N), R = new Array(N), U = new Array(N), B = new Float32Array(N);
+    function nb(j, o) { return open ? Math.max(0, Math.min(N - 1, j + o)) : ((j + o) % N + N) % N; }
+    this.nb = nb;
     for (j = 0; j < N; j++) {
-      var a = P[(j + N - 1) % N], b = P[(j + 1) % N];
+      var a = P[nb(j, -1)], b = P[nb(j, 1)];
       T[j] = new THREE.Vector3().subVectors(b, a).normalize();
     }
     for (j = 0; j < N; j++) {
@@ -60,7 +63,7 @@
     var gain = opts.bankGain === undefined ? 30 : opts.bankGain;
     var maxB = opts.maxBank === undefined ? 0.16 : opts.maxBank;
     for (j = 0; j < N; j++) {
-      var tPrev = T[(j + N - 1) % N], tNext = T[(j + 1) % N];
+      var tPrev = T[nb(j, -1)], tNext = T[nb(j, 1)];
       _v1.subVectors(tNext, tPrev).multiplyScalar(1 / (2 * this.ds));
       var bank = -_v1.dot(R[j]) * gain;
       B[j] = Math.max(-maxB, Math.min(maxB, bank));
@@ -69,7 +72,7 @@
     var Bs = new Float32Array(N);
     for (j = 0; j < N; j++) {
       var acc = 0, cnt = 0;
-      for (var o = -12; o <= 12; o++) { acc += B[(j + o + N * 2) % N]; cnt++; }
+      for (var o = -12; o <= 12; o++) { acc += B[nb(j, o)]; cnt++; }
       Bs[j] = acc / cnt;
     }
     B = Bs;
@@ -90,7 +93,7 @@
     // curvature magnitude per station (for AI speed planning)
     var C = new Float32Array(N);
     for (j = 0; j < N; j++) {
-      var t0 = T[(j - 6 + N) % N], t2 = T[(j + 6) % N];
+      var t0 = T[nb(j, -6)], t2 = T[nb(j, 6)];
       C[j] = Math.acos(Math.max(-1, Math.min(1, t0.dot(t2)))) / (12 * this.ds);
     }
     // forward-looking worst curvature (used by AI braking)
@@ -99,11 +102,13 @@
 
   TrackPath.prototype.idxOf = function (s) {
     var j = Math.floor(s / this.ds);
+    if (this.open) return Math.max(0, Math.min(this.N - 1, j));
     return ((j % this.N) + this.N) % this.N;
   };
 
   TrackPath.prototype.wrap = function (s) {
     var L = this.length;
+    if (this.open) return Math.max(0, Math.min(L - 0.001, s));
     return ((s % L) + L) % L;
   };
 
@@ -112,6 +117,7 @@
     out = out || {};
     s = this.wrap(s);
     var fi = s / this.ds, i0 = Math.floor(fi) % this.N, i1 = (i0 + 1) % this.N, f = fi - Math.floor(fi);
+    if (this.open) { i0 = Math.min(this.N - 2, Math.floor(fi)); i1 = i0 + 1; f = Math.max(0, Math.min(1, fi - i0)); }
     out.pos = (out.pos || new THREE.Vector3()).copy(this.P[i0]).lerp(this.P[i1], f);
     out.tan = (out.tan || new THREE.Vector3()).copy(this.T[i0]).lerp(this.T[i1], f).normalize();
     out.right = (out.right || new THREE.Vector3()).copy(this.R[i0]).lerp(this.R[i1], f).normalize();
@@ -149,7 +155,7 @@
     } else {
       var win = 90;
       for (var o = -win; o <= win; o++) {
-        j = ((hint + o) % N + N) % N;
+        j = this.open ? Math.max(0, Math.min(N - 1, hint + o)) : ((hint + o) % N + N) % N;
         d = this.P[j].distanceToSquared(pos);
         if (d < bestD) { bestD = d; best = j; }
       }
@@ -164,7 +170,7 @@
     // refine along the two neighbouring segments
     var bi = best, bf = 0, bq = Infinity;
     for (var k = -1; k <= 0; k++) {
-      var a = ((best + k) % N + N) % N, b = (a + 1) % N;
+      var a = this.open ? Math.max(0, Math.min(N - 2, best + k)) : ((best + k) % N + N) % N, b = this.open ? a + 1 : (a + 1) % N;
       _v1.subVectors(this.P[b], this.P[a]);
       var len2 = _v1.lengthSq();
       _v2.subVectors(pos, this.P[a]);
@@ -194,7 +200,7 @@
     var steps = Math.max(1, Math.round(dist / this.ds));
     var m = 0;
     for (var i = 0; i < steps; i++) {
-      var c = this.curv[(idx + i) % this.N];
+      var c = this.curv[this.open ? Math.min(this.N - 1, idx + i) : (idx + i) % this.N];
       var w = 1 - i / (steps * 1.6);
       if (c * w > m) m = c * w;
     }
