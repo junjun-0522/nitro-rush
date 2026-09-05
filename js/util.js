@@ -358,6 +358,47 @@
         g.strokeStyle = '#7bffb0'; g.lineWidth = 3; g.beginPath(); for (var x = 20; x < w - 20; x += 4) { var y = h - 70 + Math.sin(x * 0.05) * 25; if (x === 20) g.moveTo(x, y); else g.lineTo(x, y); } g.stroke();
       }, { clamp: true });
     },
+    basalt: function () {   // black volcanic rock: dark grey plates, grain, thin dark cracks
+      return U.canvasTexture('basalt', 256, function (g, w, h) {
+        var rng = U.rng(313);
+        g.fillStyle = '#17161a'; g.fillRect(0, 0, w, h);
+        for (var i = 0; i < 260; i++) { var v = rng.int(18, 48); g.fillStyle = 'rgba(' + v + ',' + (v - 2) + ',' + (v + 4) + ',0.9)'; g.beginPath(); g.arc(rng() * w, rng() * h, rng.range(3, 16), 0, 7); g.fill(); }
+        grain(g, w, h, rng, 6000, 0.25);
+        g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 1.2;
+        for (i = 0; i < 24; i++) { g.beginPath(); var x = rng() * w, y = rng() * h; g.moveTo(x, y); for (var k = 0; k < 5; k++) { x += rng.range(-24, 24); y += rng.range(-24, 24); g.lineTo(x, y); } g.stroke(); }
+      });
+    },
+    basaltRoad: function () {   // cooled-lava road: near black with faint orange cracks (doubles as the emissive map)
+      return U.canvasTexture('basaltRoad', 256, function (g, w, h) {
+        var rng = U.rng(317);
+        g.fillStyle = '#1d1a1c'; g.fillRect(0, 0, w, h);
+        grain(g, w, h, rng, 7000, 0.22);
+        g.fillStyle = 'rgba(0,0,0,0.25)'; for (var i = 0; i < 16; i++) g.fillRect(rng() * w, 0, rng.range(1, 3), h);
+        g.lineWidth = 1.4; g.lineCap = 'round';
+        for (i = 0; i < 14; i++) { g.strokeStyle = 'rgba(255,' + rng.int(70, 130) + ',20,' + rng.range(0.35, 0.8).toFixed(2) + ')'; g.beginPath(); var x = rng() * w, y = rng() * h; g.moveTo(x, y); for (var k = 0; k < 4; k++) { x += rng.range(-20, 20); y += rng.range(-20, 20); g.lineTo(x, y); } g.stroke(); }
+      });
+    },
+    lava: function () {   // molten lava: dark crust plates floating on glowing yellow-orange
+      return U.canvasTexture('lava', 256, function (g, w, h) {
+        var rng = U.rng(331);
+        var gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#ff9a1a'); gr.addColorStop(0.5, '#ffd23a'); gr.addColorStop(1, '#ff6a10');
+        g.fillStyle = gr; g.fillRect(0, 0, w, h);
+        for (var i = 0; i < 90; i++) { g.fillStyle = 'rgba(' + rng.int(30, 70) + ',' + rng.int(8, 20) + ',5,' + rng.range(0.55, 0.9).toFixed(2) + ')'; g.beginPath(); var x = rng() * w, y = rng() * h; g.moveTo(x, y); for (var k = 0; k < 6; k++) g.lineTo(x + rng.range(-22, 22), y + rng.range(-22, 22)); g.closePath(); g.fill(); }
+        g.fillStyle = 'rgba(255,255,200,0.5)'; for (i = 0; i < 40; i++) { g.beginPath(); g.arc(rng() * w, rng() * h, rng.range(1, 4), 0, 7); g.fill(); }
+      });
+    },
+    lavaCracks: function () {   // transparent glowing crack network for additive decals
+      return U.canvasTexture('lavaCracks', 256, function (g, w, h) {
+        var rng = U.rng(337);
+        g.clearRect(0, 0, w, h); g.lineCap = 'round'; g.lineJoin = 'round';
+        var lines = [];
+        for (var i = 0; i < 10; i++) { var x = rng() * w, y = rng() * h, ln = [[x, y]]; for (var k = 0; k < 6; k++) { x += rng.range(-28, 28); y += rng.range(-28, 28); ln.push([x, y]); } lines.push(ln); }
+        [['rgba(255,90,20,0.55)', 5], ['rgba(255,240,150,0.95)', 1.5]].forEach(function (st) {
+          g.strokeStyle = st[0]; g.lineWidth = st[1];
+          lines.forEach(function (ln) { g.beginPath(); ln.forEach(function (p, i) { if (i) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.stroke(); });
+        });
+      }, { clamp: true });
+    },
     label: function (key, text, color, bg) {
       return U.canvasTexture('label' + key, 256, function (g, w, h) {
         g.fillStyle = bg || 'rgba(0,0,0,0)'; g.fillRect(0, 0, w, h);

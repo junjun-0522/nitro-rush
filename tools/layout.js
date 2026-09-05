@@ -119,6 +119,21 @@ const DESIGNS = {
     ],
     closeStraight: 0,
     profile: [[0.04, 0.08, 0, 14], [0.13, 0.17, 14, -10], [0.17, 0.22, -10, 6], [0.23, 0.26, 6, 0], [0.30, 0.33, 0, 4], [0.36, 0.42, 4, -18], [0.42, 0.47, -18, 12], [0.47, 0.52, 12, 0], [0.56, 0.58, 0, 5], [0.62, 0.64, 5, 0], [0.70, 0.75, 0, 22], [0.75, 0.82, 22, -8], [0.82, 0.86, -8, 10], [0.88, 0.93, 10, 0]]
+  },
+  volcano: {   // VOLCANIC INFERNO: point-to-point escape. wasteland → canyon (split routes) → lava falls → rockfall path → volcano climb → eruption (route change) → lava bridge (gaps) → final jump → plateau FINISH
+    open: true, width: 20,
+    segs: [
+      ['S', 160], ['A', 80, 40], ['S', 60], ['A', 60, -70], ['S', 80], ['A', 55, 90], ['S', 70], ['A', 70, -45], ['S', 60],   // 1 wasteland drift corners
+      ['A', 45, 60], ['S', 180], ['A', 50, -80], ['S', 100], ['A', 60, 70], ['S', 130], ['A', 40, -60],                       // 2 canyon: narrow, split 1 (corner), split 2 (straight)
+      ['S', 180], ['A', 70, 50], ['S', 160], ['A', 70, -50], ['S', 60],                                                        // 3 lava waterfalls
+      ['S', 120], ['A', 50, 70], ['S', 140], ['A', 50, -70], ['S', 100], ['A', 45, -45],                                       // 4 collapsing rock path
+      ['S', 150], ['A', 60, 80], ['S', 120], ['A', 60, 80], ['S', 100], ['A', 50, -60],                                        // 5 climb toward the crater
+      ['S', 80], ['S', 220], ['A', 55, -70], ['S', 80],                                                                        // 6 eruption: trigger, split (old road / new path), turn away, descent
+      ['S', 340], ['A', 60, 35], ['S', 60],                                                                                    // 7 lava bridge (3 gaps)
+      ['S', 240], ['S', 40], ['S', 60], ['S', 60], ['A', 70, -30], ['S', 200], ['S', 120]                                      // 8 boost straight, ramp, gap, landing, plateau, finish + runoff
+    ],
+    closeStraight: 0,
+    profile: [[0.517, 0.549, 0, 30], [0.567, 0.593, 30, 55], [0.593, 0.611, 55, 62], [0.611, 0.633, 62, 72], [0.724, 0.741, 72, 44], [0.741, 0.80, 44, 42], [0.897, 0.910, 42, 24], [0.923, 0.931, 24, 20]]
   }
 };
 const name = process.argv[2] || 'korea';

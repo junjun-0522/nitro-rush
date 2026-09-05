@@ -54,7 +54,7 @@ setTimeout(() => { console.log('[watchdog] forcing exit'); chrome.kill('SIGKILL'
     else { if (e.act === 'press') { await key(e.code, 'keyDown'); await sleep(60); await key(e.code, 'keyUp'); } else await key(e.code, e.act === 'down' ? 'keyDown' : 'keyUp'); console.log('[key]', e.code, e.act, 'at', ((Date.now() - t0) / 1000).toFixed(1) + 's'); }
   }
   const rem = dur * 1000 - (Date.now() - t0); if (rem > 0) await sleep(rem);
-  if (evalArg) { const r = await send('Runtime.evaluate', { expression: evalArg, returnByValue: true, awaitPromise: true }); console.log('[eval]', JSON.stringify(r && r.result && r.result.value)); }
+  if (evalArg) { const r = await send('Runtime.evaluate', { expression: evalArg, returnByValue: true, awaitPromise: true }); const v = r && r.result && r.result.value; if (process.env.EVAL_OUT) { fs.writeFileSync(process.env.EVAL_OUT, typeof v === 'string' ? v : JSON.stringify(v)); console.log('[eval] written to ' + process.env.EVAL_OUT + ' (' + String(v).length + ' chars)'); } else console.log('[eval]', JSON.stringify(v)); }
   if (process.env.SHOT_AFTER) { await sleep(parseInt(process.env.SHOT_AFTER_MS || '600', 10)); const r2 = await send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1100, height: 700, scale: 1 } }); if (r2 && r2.data) { fs.writeFileSync(process.env.SHOT_AFTER, Buffer.from(r2.data, 'base64')); console.log('[shot-after]', process.env.SHOT_AFTER); } }
   const err = await send('Runtime.evaluate', { expression: "document.getElementById('err') ? document.getElementById('err').textContent : ''", returnByValue: true });
   if (err && err.result && err.result.value) console.log('[#err]', err.result.value);

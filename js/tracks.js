@@ -211,6 +211,44 @@
         time: 'DAY', stars: false, seed: 5150, gripMul: 0.96, preview: ['rgba(160,230,255,0.65)', '#9fd8ff', '#ffffff']
       }
     }
+    ,{
+      id: 'volcano', name: 'VOLCANIC INFERNO', tag: 'EXPERT', mood: 'volcano', laps: 1, open: true, runoff: 120, cpCount: 8, lengthKm: '4.6',
+      desc: '분화하는 화산에서 탈출하는 4.6km 포인트-투-포인트. 검은 황무지 → 용암 협곡(안전/고속 갈림길) → 용암 폭포 → 낙석 붕괴 구간 → 화산 등반 → 대분화(도로가 무너지고 새 길이 열림) → 용암 다리(틈 점프) → 최종 용암 대점프 → 안전 고원 FINISH.',
+      pts: [[0,0,0],[0,28,0],[0,56,0],[0,84,0],[0,112,0],[0,140,0],[0,160,0],[1.5,175.9,0],[6.2,191.2,0],[13.8,205.2,0],[31.5,226.9,0],[49.6,248.3,0],[59.8,260.6,0],[67.5,274.6,0],[71.3,290.1,0],[70.8,306,0],[66.1,321.3,0],[52.3,345.7,0],[38.3,369.9,0],[24.3,394.1,0],[17.9,408.7,0],[16,424.6,0],[18.7,440.3,0],[25.8,454.6,0],[36.7,466.2,0],[60.6,480.7,0],[84.9,494.7,0],[103.9,505.7,0],[116.8,515.1,0],[127.2,527.3,0],[134.6,541.4,0],[142.2,568.4,0],[149.4,595.4,0],[153.8,610.8,0],[162.1,624.4,0],[174.5,634.3,0],[201.2,642.7,0],[228.2,650,0],[255.2,657.3,0],[282.3,664.6,0],[309.3,672,0],[336.3,679.3,0],[357.6,685,0],[372.1,691.5,0],[383.9,702.2,0],[391.7,716.1,0],[394.7,731.8,0],[392.5,759.7,0],[389.9,787.5,0],[387.2,815.4,0],[385.2,837.3,0],[385.8,853.3,0],[390.5,868.5,0],[399.1,881.9,0],[410.9,892.6,0],[435.9,905.2,0],[461.2,917.2,0],[486.6,929.1,0],[511.9,941,0],[536.8,952.7,0],[549.6,962.1,0],[557.8,975.7,0],[561.3,1003.4,0],[563.6,1031.3,0],[565.9,1059.2,0],[568.2,1087.1,0],[570.5,1115,0],[572.7,1142.9,0],[574.5,1164.9,0],[577.6,1180.5,0],[584.1,1195.1,0],[593.7,1207.8,0],[615.8,1225,0],[638.6,1241.3,0],[661.4,1257.5,0],[684.2,1273.7,0],[707.1,1289.9,0],[729.9,1306.1,0],[742.4,1316.1,0],[752.5,1328.4,0],[759.6,1342.7,0],[763.2,1358.3,0],[765.5,1386.2,0],[767.8,1414.1,0],[770,1442,0],[772.3,1469.9,0],[774.6,1497.8,0],[776.9,1525.7,0],[778.2,1541.7,0],[782.6,1557,0],[791.5,1570.2,0],[804.1,1579.9,0],[830.7,1588.5,0],[857.7,1596,0],[884.7,1603.4,0],[911.7,1610.9,0],[938.7,1618.3,0],[954,1622.8,0],[967.8,1630.8,0],[978.4,1642.7,0],[984.7,1657.3,0],[987.6,1685.1,0],[989.9,1713,0],[992.2,1741,0],[994.2,1764.9,0],[992.7,1780.7,0],[985.8,1795.1,0],[967.8,1816.5,1.8],[949.6,1837.7,8.1],[931.4,1859,16.4],[913.2,1880.3,24.3],[895,1901.6,29.3],[884.6,1913.8,30],[876.5,1927.5,30],[872.2,1942.9,30],[872.2,1958.8,30],[876.3,1974.2,30],[884.4,1988,30],[902.2,2009.5,33.4],[920.1,2031.1,41.1],[938,2052.6,49.5],[955.9,2074.2,54.7],[966.3,2086.3,55.2],[979.1,2095.8,56.4],[994,2101.6,58.3],[1009.8,2103.4,60.2],[1025.6,2100.8,61.6],[1050.5,2088.3,62.7],[1074.8,2074.3,66.1],[1099.1,2060.4,70],[1123.4,2046.4,72],[1138.1,2040.3,72],[1153.9,2039.1,72],[1169.4,2042.9,72],[1193.8,2056.7,72],[1218,2070.8,72],[1242.1,2084.9,72],[1266.3,2099,72],[1290.5,2113.1,72],[1314.7,2127.2,72],[1338.9,2141.3,72],[1363.1,2155.5,72],[1387.2,2169.6,72],[1411.4,2183.7,72],[1433.9,2196.8,72],[1446.4,2206.7,72],[1455.5,2219.7,72],[1460.5,2234.9,72],[1461,2250.8,72],[1456.2,2278.4,65.1],[1451.3,2306,50.8],[1446.4,2333.5,44],[1441.5,2361.1,43.9],[1436.6,2388.7,43.8],[1431.8,2416.2,43.5],[1426.9,2443.8,43.2],[1422,2471.4,42.9],[1417.1,2499,42.6],[1412.2,2526.5,42.4],[1407.3,2554.1,42.1],[1402.4,2581.7,42],[1397.5,2609.2,42],[1392.6,2636.8,42],[1387.7,2664.4,42],[1386.3,2680.3,42],[1389,2696,42],[1400.3,2721.6,42],[1412,2747,42],[1423.7,2772.4,42],[1435.5,2797.9,42],[1447.2,2823.3,42],[1459,2848.7,42],[1470.7,2874.1,42],[1482.4,2899.5,42],[1494.2,2924.9,42],[1505.9,2950.4,42],[1517.7,2975.8,42],[1529.4,3001.2,42],[1541.2,3026.6,39.1],[1552.9,3052,27.4],[1564.6,3077.5,24],[1576.4,3102.9,24],[1584.6,3120.6,24],[1589.6,3135.7,22.6],[1591.1,3151.6,20.3],[1588.8,3179.5,20],[1586.3,3207.4,20],[1583.8,3235.3,20],[1581.3,3263.2,20],[1578.9,3291.1,20],[1576.4,3319,20],[1573.9,3346.9,20],[1571.4,3374.8,20],[1568.9,3402.6,20],[1566.5,3430.5,20],[1564,3458.4,20],[1562.5,3474.9,20]],
+      width: 20, narrow: [[0.163, 0.198, 15], [0.737, 0.822, 12]],
+      zones: [
+        { a: 0.061, b: 0.076, side: -1, extra: 7, kind: 'ash' },      // 황무지 드리프트 코너 안쪽 (재 길)
+        { a: 0.094, b: 0.112, side: 1, extra: 8, kind: 'ash' },
+        { a: 0.199, b: 0.219, side: -1, extra: 9, kind: 'fast' },     // 협곡 갈림길 1: 안쪽 좁은 고속 차선 (오른쪽)
+        { a: 0.256, b: 0.280, side: 1, extra: 8, kind: 'fast' },      // 협곡 갈림길 2: 부스터 차선 + 용암 분출 (왼쪽)
+        { a: 0.664, b: 0.708, side: 1, extra: 12, kind: 'oldroad' }   // 분화 구간: 원래 산길(왼쪽, 분화 후 붕괴) 옆에 새 길(본선)
+      ],
+      ramps: [{ a: 0.888, b: 0.897, h: 9 }],
+      gaps: [{ a: 0.760, b: 0.7615, h: 1.2, retry: 0.749 }, { a: 0.782, b: 0.7835, h: 1.2, retry: 0.771 }, { a: 0.803, b: 0.8045, h: 1.2, retry: 0.792 }, { a: 0.897, b: 0.9083, retry: 0.832, big: true }],
+      boostPads: [{ s: 0.03, lat: 0 }, { s: 0.182, lat: 0 }, { s: 0.206, lat: -14, w: 5 }, { s: 0.262, lat: 14, w: 5 }, { s: 0.273, lat: 14, w: 5 }, { s: 0.36, lat: 0 }, { s: 0.53, lat: 0 }, { s: 0.60, lat: 0 }, { s: 0.754, lat: 0, w: 6 }, { s: 0.776, lat: 0, w: 6 }, { s: 0.797, lat: 0, w: 6 }, { s: 0.842, lat: 0, w: 10, len: 9 }, { s: 0.856, lat: 0, w: 10, len: 9 }, { s: 0.870, lat: 0, w: 10, len: 9 }],
+      itemRows: [0.03, 0.1, 0.18, 0.27, 0.35, 0.43, 0.53, 0.63, 0.75, 0.85],
+      hazards: {
+        crater: [930, 285, 2430],
+        dividers: [{ a: 0.203, b: 0.217, lat: -10.2 }, { a: 0.260, b: 0.277, lat: 10.2 }],
+        splashes: [{ a: 0.172, lat: -9 }, { a: 0.190, lat: 8 }, { a: 0.209, lat: -14 }, { a: 0.267, lat: 14, period: 4 }, { a: 0.305, lat: -8 }, { a: 0.358, lat: 8 }, { a: 0.385, lat: -7 }, { a: 0.545, lat: 8 }, { a: 0.585, lat: -8 }],
+        rockfalls: [{ a: 0.413, lat: 4, r: 1.6, warn: 1.5, trigger: 90 }, { a: 0.423, lat: -5, r: 1.3, warn: 1.3, trigger: 85 }, { a: 0.452, lat: 6, r: 3.6, warn: 2.2, trigger: 125 }, { a: 0.463, lat: -4, r: 3.0, warn: 2.0, trigger: 115 }, { a: 0.470, behind: 14, r: 4 }, { a: 0.492, lat: 0, r: 2.3, warn: 1.9, trigger: 105 }, { a: 0.503, behind: 16, r: 5 }],
+        rockStreams: [{ a: 0.406, b: 0.43, side: 1 }, { a: 0.446, b: 0.485, side: 1 }],
+        cracks: { a: 0.438, b: 0.482, trigger: 0.430 },
+        cliffs: [{ a: 0.497, side: -1, trigger: 0.489 }],
+        tremors: [0.52, 0.66],
+        eruption: { trigger: 0.655, zone: { a: 0.664, b: 0.708 }, wall: 0.669, bombsAt: [[0.730, 5], [0.736, -5]] },
+        bridgeShake: [0.741, 0.816],
+        sparks: [{ a: 0.300, lat: -17 }, { a: 0.315, lat: 17 }, { a: 0.35, lat: 0 }, { a: 0.372, lat: 17 }, { a: 0.39, lat: -17 }]
+      },
+      theme: {
+        sky: [0x120608, 0xff6a1a], fog: 0x2a100a, fogNear: 260, fogFar: 1700,
+        sun: 0xff8a4a, sunInt: 1.05, sunDir: [-0.4, 0.7, 0.5], hemi: [0x7a3a22, 0x24100a], hemiInt: 0.95, exposure: 1.15,
+        road: 'basaltRoad', roadTint: 0xffffff, roadEm: 0xff5a14, roadEmI: 0.55, roadRough: 0.85, roadMetal: 0.05, dash: false, rumble: false, railGlow: true,
+        rail: 0x2a2022, railEm: 0xff5a1a, ground: 'basalt', skirt: 'basalt', noPillars: true, zoneTex: 'basalt', zoneTint: 0x9a9a9a, zoneEm: 0x000000,
+        tunnel: 0x1a1416, tunnelLight: 0xff7a2a, portal: 0x2a1a1a, portalEm: 0xff5a1a, pillar: 0x241c1c, gate: 0x2a1c1a, gateEm: 0xff6a1a,
+        time: 'NIGHT', stars: false, seed: 6660, gripMul: 1, preview: ['rgba(255,90,20,0.55)', '#2a1c1a', '#ffb347']
+      }
+    }
   ];
 
   // fill theme defaults (older two tracks used mood-based choices)
@@ -323,6 +361,25 @@
     return geo;
   }
 
+  /** flat ribbon along a polyline of [x, z(, y)] points (lava rivers); uv.y runs along the length */
+  function ribbonGeom(pts, width, y, uvLen) {
+    var pos = [], uv = [], idx = [], n = pts.length, acc = 0;
+    for (var i = 0; i < n; i++) {
+      var p = pts[i], q = pts[Math.min(n - 1, i + 1)], o = pts[Math.max(0, i - 1)];
+      var dx = q[0] - o[0], dz = q[1] - o[1], l = Math.hypot(dx, dz) || 1, nx = -dz / l, nz = dx / l;
+      var w = (typeof width === 'function' ? width(i / Math.max(1, n - 1)) : width) / 2, yy = p[2] !== undefined ? p[2] : y;
+      if (i > 0) acc += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]);
+      pos.push(p[0] + nx * w, yy, p[1] + nz * w, p[0] - nx * w, yy, p[1] - nz * w);
+      uv.push(0, acc / (uvLen || 40), 1, acc / (uvLen || 40));
+      if (i < n - 1) { var b = i * 2; idx.push(b, b + 1, b + 2, b + 1, b + 3, b + 2); }
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx); geo.computeVertexNormals();
+    return geo;
+  }
+
   function skyDome(colTop, colBot, stars, radius) {
     var geo = new THREE.SphereGeometry(radius || 1800, 24, 12);
     var mat = new THREE.ShaderMaterial({
@@ -418,6 +475,17 @@
     this.boostPads = (def.boostPads || []).map(function (bp) {
       return { s: bp.s * path.length, lat: bp.lat, len: bp.len || 7, w: bp.w || 4 };
     }).concat(ringPads);
+    // road gaps (broken bridge / canyon jump): no road, lava far below; an optional launch ramp is generated right before each gap.
+    // karts that drop 2.5m under road level inside a gap fall into the lava and respawn at the gap's retry point (before the run-up)
+    var gapMask = this.gapMask = new Uint8Array(N), ramps = this.ramps;
+    this.gaps = (def.gaps || []).map(function (gp) {
+      var a = Math.round(gp.a * N), b = Math.round(gp.b * N), rl = Math.max(4, Math.round((gp.rampLen || 0.0016) * N));
+      for (var j = a; j < b; j++) gapMask[j] = 1;
+      if (gp.h) { for (j = a - rl; j < a; j++) hExtra[j] = gp.h * (j - (a - rl)) / rl; ramps.push({ a: a - rl, b: a, h: gp.h, slope: gp.h / (rl * path.ds) }); }
+      return { a: a, b: b, s: a * path.ds, e: b * path.ds, retryS: (gp.retry !== undefined ? gp.retry : (a - rl) / N - 0.01) * path.length, big: !!gp.big, depth: gp.depth || 40 };
+    });
+    this.obstacles = [];                                   // solid rocks etc. (hazards.js): {x,z,y,r,s,lat,off}
+    this.baseMinLat = new Float32Array(minLat); this.baseMaxLat = new Float32Array(maxLat);
 
     this._buildRoad();
     this._buildScenery();
@@ -483,10 +551,33 @@
     });
   };
 
-  /** ground height (world y) at station idx, lateral lat (shoulders beyond the road edge are flat) */
-  Track.prototype.groundY = function (idx, lat, right, center) {
+  /** road surface height (world y) at station idx, lateral lat (shoulders beyond the road edge are flat) */
+  Track.prototype.roadY = function (idx, lat, right, center) {
     var hw = this.path.W[idx] / 2, lc = lat < -hw ? -hw : (lat > hw ? hw : lat);
     return center.y + lc * right.y + this.hExtra[idx];
+  };
+  /** ground height for the physics: inside a road gap the ground is the lava far below */
+  Track.prototype.groundY = function (idx, lat, right, center) {
+    var y = this.roadY(idx, lat, right, center);
+    return (this.gapMask && this.gapMask[idx]) ? y - 40 : y;
+  };
+  /** the gap that contains station idx (or null) */
+  Track.prototype.gapAt = function (idx) { for (var i = 0; i < this.gaps.length; i++) { var gp = this.gaps[i]; if (idx >= gp.a && idx < gp.b) return gp; } return null; };
+  /** dynamic drivable band for stations a..b (absolute laterals; null = restore the built limit), funnelled over `ramp` stations at both ends */
+  Track.prototype.setLimits = function (a, b, min, max, ramp) {
+    ramp = ramp || 16;
+    for (var j = Math.max(0, a - ramp); j <= Math.min(this.path.N - 1, b + ramp); j++) {
+      var f = 1; if (j < a) f = (j - (a - ramp)) / ramp; else if (j > b) f = ((b + ramp) - j) / ramp;
+      f = U.smooth(Math.max(0, Math.min(1, f)));
+      var bm = this.baseMinLat[j], bM = this.baseMaxLat[j];
+      this.minLat[j] = min === null ? bm : bm + (min - bm) * f;
+      this.maxLat[j] = max === null ? bM : bM + (max - bM) * f;
+    }
+  };
+  /** road-following strip between two laterals (numbers or functions of j) over stations [a,b] */
+  Track.prototype.strip = function (latA, latB, range, vScale) {
+    var self = this;
+    return stripGeom(this.path, function (j, out) { self.surfacePoint(j, typeof latA === 'function' ? latA(j) : latA, out); }, function (j, out) { self.surfacePoint(j, typeof latB === 'function' ? latB(j) : latB, out); }, vScale || 8, range);
   };
 
   /** world position of the drivable surface at station j, lateral lat */
@@ -527,9 +618,10 @@
     var half = function (j) { return path.W[j] / 2; };
     var FULL = this.open ? [0, N - 1] : undefined;   // open tracks: never join the last station back to the first
     // station runs that carry a road (flight sections have none)
-    var flightMask = this.flightMask, runs = [];
-    if (!this.flights.length) runs = [FULL];
-    else { var inRun = false, rs = 0; for (j = 0; j < N; j++) { if (!flightMask[j] && !inRun) { inRun = true; rs = j; } if (inRun && (flightMask[j] || j === N - 1)) { inRun = false; runs.push([rs, flightMask[j] ? j - 1 : j]); } } }
+    var flightMask = this.flightMask, gapMask = this.gapMask, runs = [];
+    var skip = function (j) { return flightMask[j] || gapMask[j]; };
+    if (!this.flights.length && !this.gaps.length) runs = [FULL];
+    else { var inRun = false, rs = 0; for (j = 0; j < N; j++) { if (!skip(j) && !inRun) { inRun = true; rs = j; } if (inRun && (skip(j) || j === N - 1)) { inRun = false; runs.push([rs, skip(j) ? j - 1 : j]); } } }
     function strips(fnA, fnB, vs) { return mergeGeoms(runs.map(function (r) { return stripGeom(path, fnA, fnB, vs, r); })); }
     this.roadRuns = runs;
 
@@ -587,7 +679,7 @@
     var posts = new THREE.InstancedMesh(postGeo, new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.6 }), postCount);
     var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(1, 1, 1), pi = 0;
     for (j = 0; j < N; j += 8) {
-      if (flightMask[j]) continue;
+      if (skip(j)) continue;
       [minLat[j] - 0.7, maxLat[j] + 0.7].forEach(function (lat) {
         self.surfacePoint(j, lat, tmp); tmp.y += 0.5;
         m4.compose(tmp, q, sc); posts.setMatrixAt(pi++, m4);
@@ -606,7 +698,7 @@
     var pillars = [];
     for (j = 0; j < N; j += 14) {
       var h = path.P[j].y + hExtra[j];
-      if (h > 5 && !flightMask[j]) {
+      if (h > 5 && !skip(j)) {
         [-path.W[j] / 3, path.W[j] / 3].forEach(function (lat) {
           // pillar top stays 0.6m under the real (banked) road surface at that lateral, so it never pokes through the deck
           self.surfacePoint(j, lat, tmp);
@@ -748,8 +840,9 @@
     cxs /= Ps.length; czs /= Ps.length;
     var ext = 0; for (si = 0; si < Ps.length; si++) ext = Math.max(ext, Math.hypot(Ps[si].x - cxs, Ps[si].z - czs));
     var sky = skyDome(th.sky[0], th.sky[1], th.stars, Math.max(1800, ext + 1500)); sky.position.set(cxs, 0, czs); g.add(sky);
+    this.skyDome = sky; this.center = { x: cxs, z: czs, ext: ext };
     var groundY = -0.3;
-    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab, space: this._scenerySpace, sky: this._scenerySky }[th.mood] || this._sceneryCoast;
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab, space: this._scenerySpace, sky: this._scenerySky, volcano: this._sceneryVolcano }[th.mood] || this._sceneryCoast;
     fn.call(this, rng, this.envelope, null, groundY);
   };
 
@@ -2066,6 +2159,210 @@
     });
   };
 
+  Track.prototype._sceneryVolcano = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this, N = path.N, hz = this.def.hazards || {};
+    var tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), i, j;
+    function mesh(geo, mat, x, y, z) { var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; }
+    function emis(color, it, extra) { var o = { color: color, emissive: color, emissiveIntensity: it === undefined ? 0.9 : it, roughness: 0.4, metalness: 0.05 }; if (extra) for (var k in extra) o[k] = extra[k]; return new THREE.MeshStandardMaterial(o); }
+    var J = function (f) { return Math.max(0, Math.min(N - 1, Math.round(f * N))); };
+    function faceAlong(o, j) { o.lookAt(o.position.x + path.T[j].x, o.position.y, o.position.z + path.T[j].z); return o; }
+    var minLat = this.minLat, maxLat = this.maxLat, gapMask = this.gapMask;
+    var cx = this.center.x, cz = this.center.z;
+    var OR = 0xff6a1a, YL = 0xffc23a;
+    var rockMat = new THREE.MeshStandardMaterial({ color: 0x1e1a1d, roughness: 0.95, flatShading: true });
+    var rockMat2 = new THREE.MeshStandardMaterial({ color: 0x2c2528, roughness: 0.9, flatShading: true });
+    var lavaTex = tex.lava();
+    var lavaMat = this.lavaMat = new THREE.MeshBasicMaterial({ map: lavaTex, side: THREE.DoubleSide });
+    var lavaGlow = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xff7a20, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false });
+    var smokeMat = new THREE.SpriteMaterial({ map: tex.smoke(), color: 0x2a201e, transparent: true, opacity: 0.6, depthWrite: false });
+    var smokeLight = new THREE.SpriteMaterial({ map: tex.smoke(), color: 0x6a5850, transparent: true, opacity: 0.45, depthWrite: false });
+    var focus = this.focus = new THREE.Vector3(path.P[0].x, path.P[0].y, path.P[0].z);
+
+    // ---- ground: endless black basalt
+    var gt = tex.basalt().clone(); gt.needsUpdate = true; gt.repeat.set(90, 90);
+    var ground = mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ map: gt, roughness: 1 }), cx, groundY - 0.05, cz);
+    ground.castShadow = false; g.add(ground);
+
+    // ---- lava rivers / lakes (unlit, texture scrolls)
+    var lavaGeos = [];
+    function river(pts, w, y, uvLen) { lavaGeos.push(ribbonGeom(pts, w, y, uvLen || 30)); }
+    river([[380, -150], [430, 200], [360, 520], [420, 800]], 34, 0.15);
+    river([[-320, 100], [-260, 450], [-360, 800], [-300, 1150]], 40, 0.15);
+    river([[120, 760], [260, 900], [330, 1080], [420, 1250], [560, 1420]], 14, 0.15);
+    var VX = 930, VZ = 2430, VR = 300, VH = 280, VT = 70;
+    [-0.75, 1.3, 2.4, 3.5].forEach(function (ang, k) {
+      var dx = Math.cos(ang), dz = Math.sin(ang), far = k === 0 ? 0 : 260;
+      var pts = [[VX + dx * VT * 0.92, VZ + dz * VT * 0.92, VH - 1], [VX + dx * (VT + (VR - VT) * 0.5), VZ + dz * (VT + (VR - VT) * 0.5), VH * 0.5], [VX + dx * VR, VZ + dz * VR, 0.3]];
+      if (far) pts.push([VX + dx * (VR + far) + 30, VZ + dz * (VR + far) + 40, 0.15]);
+      river(pts, function (f) { return 9 + f * 26; }, 0, 40);
+      if (!far) { var pool = mesh(new THREE.CircleGeometry(42, 24).rotateX(-Math.PI / 2), lavaMat, VX + dx * (VR + 18), 0.2, VZ + dz * (VR + 18)); pool.castShadow = false; g.add(pool); }
+    });
+    // glowing lava seams down the near flank of the volcano (the side the climb looks at) + rivers beside the climbing road
+    [-1.5, -1.1, -0.4, 0.2].forEach(function (ang) { var dx = Math.cos(ang), dz = Math.sin(ang); river([[VX + dx * VT * 0.95, VZ + dz * VT * 0.95, VH - 1], [VX + dx * (VT + (VR - VT) * 0.45), VZ + dz * (VT + (VR - VT) * 0.45), VH * 0.55], [VX + dx * (VR - 6), VZ + dz * (VR - 6), 0.6]], 5, 0, 30); var pool2 = mesh(new THREE.CircleGeometry(14, 16).rotateX(-Math.PI / 2), lavaMat, VX + dx * (VR + 6), 0.25, VZ + dz * (VR + 6)); pool2.castShadow = false; g.add(pool2); });
+    [[0.528, 0.562, 1], [0.583, 0.612, -1], [0.63, 0.655, -1]].forEach(function (rv) { var pts = []; for (var jj = J(rv[0]); jj <= J(rv[1]); jj += 8) { var lat = rv[2] > 0 ? maxLat[jj] + 9 : minLat[jj] - 9; self.surfacePoint(jj, lat, tmp); pts.push([tmp.x, tmp.z, tmp.y - 1.4]); } river(pts, 7, 0, 20); });
+    river([[535, 2347], [1000, 2427], [1417, 2500], [1850, 2575], [2299, 2653]], 430, 0.2, 120);       // lake under the lava bridge
+    river([[910, 3333], [1230, 3200], [1547, 3039], [1860, 2895], [2184, 2745]], 74, 0.2, 60);          // canyon under the final jump
+    river([[1150, 3450], [1220, 3700], [1260, 3950]], 26, 0.15); river([[2050, 3250], [2120, 3500], [2160, 3760]], 30, 0.15);
+    // thin lava streams that cross the canyon road (decals on the surface)
+    [0.176, 0.187, 0.196].forEach(function (f) { var j0 = J(f); self.surfacePoint(j0 - 7, -30, tmp); self.surfacePoint(j0 + 7, 30, tmp2); river([[tmp.x, tmp.z, tmp.y + 0.05], [(tmp.x + tmp2.x) / 2 + 2, (tmp.z + tmp2.z) / 2, (tmp.y + tmp2.y) / 2 + 0.05], [tmp2.x, tmp2.z, tmp2.y + 0.05]], 2.2, 0, 12); });
+    var lavaMesh = new THREE.Mesh(mergeGeoms(lavaGeos), lavaMat); lavaMesh.receiveShadow = false; g.add(lavaMesh);
+
+    // ---- the volcano (truncated cone, lava lake in the crater, rim, glow, smoke column) + distant volcanoes + mountain ring
+    var cone = mesh(new THREE.CylinderGeometry(VT, VR, VH, 36, 1), rockMat2, VX, VH / 2 - 0.5, VZ); g.add(cone);
+    g.add(mesh(new THREE.TorusGeometry(VT, 9, 8, 30).rotateX(Math.PI / 2), rockMat, VX, VH - 2, VZ));
+    var lake = mesh(new THREE.CircleGeometry(VT - 4, 32).rotateX(-Math.PI / 2), lavaMat, VX, VH - 0.5, VZ); lake.castShadow = false; g.add(lake);
+    var craterGlow = new THREE.Sprite(lavaGlow.clone()); craterGlow.position.set(VX, VH + 30, VZ); craterGlow.scale.set(300, 220, 1); g.add(craterGlow);
+    var craterLight = new THREE.PointLight(0xff5a1a, 2.5, 900, 1.2); craterLight.position.set(VX, VH + 20, VZ); g.add(craterLight);
+    var column = [];
+    for (i = 0; i < 12; i++) { var sp = new THREE.Sprite(smokeMat.clone()); sp.userData = { f: rng(), v: rng.range(0.5, 0.9), ph: rng() * 6.28 }; g.add(sp); column.push(sp); }
+    function distantVolcano(x, z, r, h) {
+      g.add(mesh(new THREE.ConeGeometry(r, h, 18), rockMat2, x, h / 2 - 1, z));
+      var gl = new THREE.Sprite(lavaGlow.clone()); gl.position.set(x, h + 6, z); gl.scale.set(r * 0.9, r * 0.6, 1); g.add(gl);
+      for (var k = 0; k < 3; k++) { var sm = new THREE.Sprite(smokeMat.clone()); sm.position.set(x + rng.range(-20, 20), h + 40 + k * 55, z + rng.range(-20, 20)); sm.scale.set(120 + k * 50, 90 + k * 40, 1); sm.material.opacity = 0.5 - k * 0.1; g.add(sm); }
+    }
+    distantVolcano(-950, 900, 340, 260); distantVolcano(-700, 2900, 300, 240); distantVolcano(2500, 700, 380, 300); distantVolcano(2750, 2100, 320, 260); distantVolcano(250, 4300, 360, 280); distantVolcano(2450, 4100, 300, 230);
+    var mtn = [], tries = 0;
+    while (mtn.length < 30 && tries++ < 3000) {
+      var mx = cx + rng.range(-1700, 1700), mz = cz + rng.range(-2300, 2300);
+      if (self.distToPath(mx, mz) < 280 || Math.hypot(mx - VX, mz - VZ) < 520) continue;
+      var mr = rng.range(90, 230), mg = new THREE.IcosahedronGeometry(mr, 1); mg.scale(1, rng.range(0.45, 0.8), 1); mg.translate(mx, -mr * 0.15, mz); mtn.push(mg);
+    }
+    g.add(mesh(mergeGeoms(mtn), rockMat, 0, 0, 0));
+
+    // ---- roadside debris (instanced) + boulders, never inside the drivable band
+    var debris = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), rockMat2, 700);
+    var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), eu = new THREE.Euler(), di = 0;
+    for (i = 0; i < 700; i++) {
+      j = (rng() * N) | 0; if (gapMask[j]) continue;
+      var sd = rng() < 0.5 ? -1 : 1, lat = sd > 0 ? maxLat[j] + rng.range(2.5, 14) : minLat[j] - rng.range(2.5, 14);
+      self.surfacePoint(j, lat, tmp); var s1 = rng.range(0.5, 2.6);
+      q.setFromEuler(eu.set(rng() * 3, rng() * 3, rng() * 3)); sc.set(s1, s1 * rng.range(0.6, 1), s1);
+      tmp.y += s1 * 0.3; m4.compose(tmp, q, sc); debris.setMatrixAt(di++, m4);
+    }
+    debris.count = di; debris.castShadow = true; g.add(debris);
+    var bould = [];
+    for (i = 0; i < 70; i++) { j = (rng() * N) | 0; var sd2 = rng() < 0.5 ? -1 : 1, lat2 = sd2 > 0 ? maxLat[j] + rng.range(9, 32) : minLat[j] - rng.range(9, 32); self.surfacePoint(j, lat2, tmp); var br = rng.range(3, 9), bg = new THREE.IcosahedronGeometry(br, 1); bg.scale(1, rng.range(0.6, 0.9), 1); bg.translate(tmp.x, tmp.y + br * 0.2, tmp.z); bould.push(bg); }
+    g.add(mesh(mergeGeoms(bould), rockMat, 0, 0, 0));
+    // glowing lava cracks on the wasteland ground beside the road
+    var crackMat = new THREE.MeshBasicMaterial({ map: tex.lavaCracks(), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false });
+    var cracks = [];
+    for (j = J(0.01); j < J(0.15); j += 9) { var sd3 = rng() < 0.5 ? -1 : 1; self.surfacePoint(j, sd3 * (path.W[j] / 2 + rng.range(4, 20)), tmp); var cg = new THREE.PlaneGeometry(rng.range(8, 16), rng.range(8, 16)).rotateX(-Math.PI / 2); cg.rotateY(rng() * 6.28); cg.translate(tmp.x, tmp.y + 0.06, tmp.z); cracks.push(cg); }
+    var crackMesh = new THREE.Mesh(mergeGeoms(cracks), crackMat); crackMesh.castShadow = false; g.add(crackMesh);
+
+    // ---- walls: canyon (0.152-0.291), waterfall cliffs (0.291-0.404), rockfall cliffs (0.404-0.517), eruption zone wall, plateau columns
+    var walls = [], seams = [];
+    function wall(j, sd, off, w, h, tilt) {
+      var lat = sd > 0 ? maxLat[j] + off : minLat[j] - off; self.surfacePoint(j, lat, tmp);
+      var wg = new THREE.BoxGeometry(w, h, 11); wg.rotateZ(tilt || 0); wg.rotateY(Math.atan2(path.T[j].x, path.T[j].z)); wg.translate(tmp.x, tmp.y + h / 2 - 8, tmp.z); walls.push(wg);
+      return tmp;
+    }
+    function seam(j, sd, off, h) { var lat = sd > 0 ? maxLat[j] + off : minLat[j] - off; self.surfacePoint(j, lat, tmp); var sg = new THREE.BoxGeometry(0.5, h, 0.7); sg.rotateY(Math.atan2(path.T[j].x, path.T[j].z)); sg.translate(tmp.x, tmp.y + h / 2 + 1, tmp.z); seams.push(sg); }
+    var pools = [];
+    for (j = J(0.152); j < J(0.291); j += 9) { [-1, 1].forEach(function (sd) { var off = rng.range(6, 11), w = rng.range(10, 20); wall(j, sd, off + w / 2, w, rng.range(38, 80), rng.range(-0.05, 0.05)); if (rng() < 0.6) seam(j, sd, off - 0.3, rng.range(14, 34)); if (rng() < 0.3) { var latp = sd > 0 ? maxLat[j] + off - 1 : minLat[j] - off + 1; self.surfacePoint(j, latp, tmp); var pg2 = new THREE.CircleGeometry(rng.range(2.5, 5), 12).rotateX(-Math.PI / 2); pg2.translate(tmp.x, tmp.y + 0.08, tmp.z); pools.push(pg2); } }); }
+    if (pools.length) { var poolMesh = new THREE.Mesh(mergeGeoms(pools), lavaMat); poolMesh.castShadow = false; g.add(poolMesh); }
+    for (j = J(0.291); j < J(0.404); j += 9) { [-1, 1].forEach(function (sd) { var off = rng.range(9, 15), w = rng.range(14, 24); wall(j, sd, off + w / 2, w, rng.range(70, 120)); }); }
+    for (j = J(0.404); j < J(0.517); j += 9) { var wl = rng.range(12, 20); wall(j, 1, rng.range(7, 11) + wl / 2, wl, rng.range(55, 90)); wall(j, -1, rng.range(8, 14), rng.range(8, 14), rng.range(16, 34)); if (j % 27 === 0) { var lat3 = maxLat[j] + 6; self.surfacePoint(j, lat3, tmp); var shelf = new THREE.BoxGeometry(9, 4, 10); shelf.rotateY(Math.atan2(path.T[j].x, path.T[j].z)); shelf.translate(tmp.x, tmp.y + 42, tmp.z); walls.push(shelf); } }
+    for (j = J(0.664); j < J(0.712); j += 9) wall(j, -1, rng.range(7, 10) + 8, 16, rng.range(28, 55));
+    g.add(mesh(mergeGeoms(walls), rockMat, 0, 0, 0));
+    g.add(mesh(mergeGeoms(seams), emis(OR, 1.6), 0, 0, 0));
+    // smoke vents on the shoulders (canyon + wasteland + climb)
+    var vents = [];
+    function vent(x, y, z, size, mat) { for (var k = 0; k < 3; k++) { var sp2 = new THREE.Sprite(mat || smokeLight); sp2.position.set(x, y, z); sp2.userData = { x: x, y: y, z: z, size: size, f: k / 3, v: rng.range(0.25, 0.4) }; g.add(sp2); vents.push(sp2); } }
+    for (i = 0; i < 26; i++) { j = J(rng() < 0.5 ? rng.range(0.01, 0.15) : rng.range(0.16, 0.29)); var sdv = rng() < 0.5 ? -1 : 1; self.surfacePoint(j, sdv * (path.W[j] / 2 + rng.range(3, 12)), tmp); vent(tmp.x, tmp.y, tmp.z, rng.range(6, 12)); }
+
+    // ---- lava waterfalls
+    var falls = [], fallLights = 0;
+    function waterfall(f, sd, w, h) {
+      var jj = J(f), lat = sd > 0 ? maxLat[jj] + 7.5 : minLat[jj] - 7.5; self.surfacePoint(jj, lat, tmp);
+      var pl = new THREE.Mesh(new THREE.PlaneGeometry(w, h), lavaMat); pl.position.set(tmp.x, tmp.y + h / 2 - 0.5, tmp.z);
+      self.surfacePoint(jj, 0, tmp2); pl.lookAt(tmp2.x, pl.position.y, tmp2.z); g.add(pl); falls.push(pl);
+      for (var k = 0; k < 3; k++) { var gl = new THREE.Sprite(lavaGlow); gl.position.set(tmp.x, tmp.y + h * (0.15 + k * 0.35), tmp.z); gl.scale.set(w * 2.2, w * 2.2, 1); g.add(gl); }
+      var pool = mesh(new THREE.CircleGeometry(w * 0.7, 20).rotateX(-Math.PI / 2), lavaMat, tmp.x, tmp.y + 0.1, tmp.z); pool.castShadow = false; g.add(pool);
+      vent(tmp.x, tmp.y + 2, tmp.z, w * 0.8, smokeMat); vent(tmp.x + 4, tmp.y + 2, tmp.z + 3, w * 0.6, smokeMat);
+      if (fallLights++ < 4) { var pl2 = new THREE.PointLight(0xff6a1a, 2.2, 150, 1.4); pl2.position.set(tmp.x, tmp.y + 8, tmp.z); g.add(pl2); }
+    }
+    waterfall(0.300, -1, 18, 78); waterfall(0.315, 1, 22, 86); waterfall(0.335, -1, 16, 70); waterfall(0.372, 1, 24, 90); waterfall(0.390, -1, 18, 76);
+    var ja = J(0.35); self.surfacePoint(ja, 0, tmp);
+    var arch = mesh(new THREE.TorusGeometry(path.W[ja] / 2 + 7, 4.5, 8, 26, Math.PI), rockMat, tmp.x, tmp.y + 0.5, tmp.z); faceAlong(arch, ja); g.add(arch);
+    [-1, 1].forEach(function (sd) { var lat = sd * (path.W[ja] / 2 + 9.5); self.surfacePoint(ja, lat, tmp); var pl = new THREE.Mesh(new THREE.PlaneGeometry(9, 52), lavaMat); pl.position.set(tmp.x, tmp.y + 26, tmp.z); self.surfacePoint(ja, 0, tmp2); pl.lookAt(tmp2.x, pl.position.y, tmp2.z); g.add(pl); falls.push(pl); var pool = mesh(new THREE.CircleGeometry(7, 16).rotateX(-Math.PI / 2), lavaMat, tmp.x, tmp.y + 0.1, tmp.z); pool.castShadow = false; g.add(pool); var gl = new THREE.Sprite(lavaGlow); gl.position.set(tmp.x, tmp.y + 12, tmp.z); gl.scale.set(26, 30, 1); g.add(gl); });
+
+    // ---- mountain massing under the climb / spur / plateau, bridge pillars + under-deck, gap rubble
+    var mass = [];
+    function massing(fa, fb, extra) { for (var jj = J(fa); jj < J(fb); jj += 6) { if (gapMask[jj]) continue; self.surfacePoint(jj, 0, tmp); var top = tmp.y - 0.45, h = top - (groundY - 1); if (h < 1.5) continue; var bg2 = new THREE.BoxGeometry(path.W[jj] + (extra || 16), h, 7); bg2.rotateY(Math.atan2(path.T[jj].x, path.T[jj].z)); bg2.translate(tmp.x, groundY - 1 + h / 2, tmp.z); mass.push(bg2); } }
+    massing(0.517, 0.742, 20); massing(0.822, 0.8975, 16); massing(0.9095, 1.0, 24);
+    g.add(mesh(mergeGeoms(mass), rockMat, 0, 0, 0));
+    var pil = [];
+    for (j = J(0.7415); j < J(0.817); j += 22) {
+      if (gapMask[j] || gapMask[Math.min(N - 1, j + 4)] || gapMask[Math.max(0, j - 4)]) continue;
+      [-1, 1].forEach(function (sd) { self.surfacePoint(j, sd * (path.W[j] / 2 - 1.6), tmp); var h = tmp.y - 0.6 - (groundY - 1); var pg = new THREE.CylinderGeometry(1.8, 2.8, h, 8); pg.translate(tmp.x, groundY - 1 + h / 2, tmp.z); pil.push(pg); });
+    }
+    g.add(mesh(mergeGeoms(pil), rockMat2, 0, 0, 0));
+    var decks = [], ja2 = J(0.7415), jb2 = J(0.817), inRun = false, rs = 0;
+    for (j = ja2; j <= jb2; j++) { if (!gapMask[j] && !inRun) { inRun = true; rs = j; } if (inRun && (gapMask[j] || j === jb2)) { inRun = false; decks.push(self.strip(function (k) { return -path.W[k] / 2 - 0.8; }, function (k) { return path.W[k] / 2 + 0.8; }, [rs, gapMask[j] ? j - 1 : j], 6)); } }
+    var deck = new THREE.Mesh(mergeGeoms(decks), rockMat2); deck.position.y = -1.1; g.add(deck);
+    var rubble = [];
+    this.gaps.forEach(function (gp) {
+      [gp.a - 1, gp.b].forEach(function (jj) { for (var k = 0; k < 7; k++) { var sdr = rng() < 0.5 ? -1 : 1; self.surfacePoint(jj, sdr * rng.range(0, path.W[jj] / 2 + 1), tmp); var rr = rng.range(0.6, 1.7), rg = new THREE.IcosahedronGeometry(rr, 0); rg.translate(tmp.x, tmp.y - rng.range(0, 6) + (k < 3 ? rr * 0.4 : 0), tmp.z + rng.range(-1.5, 1.5)); rubble.push(rg); } });
+      self.surfacePoint(Math.round((gp.a + gp.b) / 2), 0, tmp); var gl2 = new THREE.Sprite(lavaGlow); gl2.position.set(tmp.x, tmp.y - 9, tmp.z); gl2.scale.set(gp.big ? 90 : 34, gp.big ? 60 : 26, 1); g.add(gl2);
+    });
+    g.add(mesh(mergeGeoms(rubble), rockMat, 0, 0, 0));
+    // landing platform + glowing landing strip
+    var jl = J(0.916); self.surfacePoint(jl, 0, tmp);
+    var slab = mesh(new THREE.BoxGeometry(64, 6, 84), rockMat, tmp.x, tmp.y - 3.4, tmp.z); faceAlong(slab, jl); g.add(slab);
+    var landMat = new THREE.MeshBasicMaterial({ color: 0xffa040, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
+    var strip = new THREE.Mesh(self.strip(function (k) { return -path.W[k] / 2; }, function (k) { return path.W[k] / 2; }, [J(0.9095), J(0.921)], 4), landMat); strip.position.y = 0.1; g.add(strip);
+    for (i = 0; i < 4; i++) { var jc = J(0.910) + i * 12; self.surfacePoint(jc, 0, tmp); var chev = mesh(new THREE.BoxGeometry(path.W[jc] * 0.5, 0.3, 1.2), emis(YL, 1.4), tmp.x, tmp.y + 0.15, tmp.z); faceAlong(chev, jc); chev.castShadow = false; g.add(chev); }
+
+    // ---- plateau rock formations, stone arches, finish torches
+    var cols = [];
+    for (j = J(0.935); j < N - 6; j += 13) { [-1, 1].forEach(function (sd) { if (rng() < 0.35) return; var lat = sd > 0 ? maxLat[j] + rng.range(10, 34) : minLat[j] - rng.range(10, 34); self.surfacePoint(j, lat, tmp); var r = rng.range(2.5, 6), h = rng.range(10, 26); var cg2 = new THREE.CylinderGeometry(r, r * 1.35, h, 7); cg2.translate(tmp.x, tmp.y + h / 2 - 1, tmp.z); cols.push(cg2); }); }
+    g.add(mesh(mergeGeoms(cols), rockMat2, 0, 0, 0));
+    [0.945, 0.965].forEach(function (f) { var jj = J(f); self.surfacePoint(jj, 0, tmp); var ar = mesh(new THREE.TorusGeometry(path.W[jj] / 2 + 7, 3.4, 8, 24, Math.PI), rockMat, tmp.x, tmp.y + 0.5, tmp.z); faceAlong(ar, jj); g.add(ar); });
+    var jf = path.idxOf(this.finishS), torches = [];
+    [-1, 1].forEach(function (sd) { self.surfacePoint(jf, sd * (path.W[jf] / 2 + 4.6), tmp); var fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.flame(), color: 0xffb060, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.position.set(tmp.x, tmp.y + 10.5, tmp.z); fl.scale.set(5, 9, 1); g.add(fl); torches.push(fl); var gl3 = new THREE.Sprite(lavaGlow); gl3.position.copy(fl.position); gl3.scale.set(22, 22, 1); g.add(gl3); });
+
+    // ---- signs
+    var postMat = new THREE.MeshStandardMaterial({ color: 0x2a2224, roughness: 0.8 });
+    function sign(key, text, f, lat, color, w) {
+      w = w || 16; var jj = J(f), jb = Math.max(0, jj - 30), grp = new THREE.Group();
+      grp.add(mesh(new THREE.BoxGeometry(w, w * 0.25, 0.4), new THREE.MeshBasicMaterial({ map: tex.label('vl' + key, text, '#ffffff', '#' + color.toString(16).padStart(6, '0')) }), 0, 7, 0));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.3, 0.3), emis(OR, 1.4), 0, 7 + w * 0.125 + 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.3, 0.3), emis(OR, 1.4), 0, 7 - w * 0.125 - 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(0.6, 6.5, 0.6), postMat, 0, 3.2, -0.1));
+      self.surfacePoint(jj, lat, tmp); grp.position.set(tmp.x, tmp.y - 0.3, tmp.z); grp.lookAt(path.P[jb].x, grp.position.y, path.P[jb].z); g.add(grp); return grp;
+    }
+    sign('waste', 'VOLCANIC WASTELAND', 0.012, maxLat[J(0.012)] + 6, 0x5a1a08, 20);
+    sign('canyon', 'CANYON ENTRY · NARROW', 0.145, minLat[J(0.145)] - 6, 0x5a1a08, 18);
+    sign('split1', 'SPLIT:  SAFE ←   FAST →', 0.192, maxLat[J(0.192)] + 6, 0x8a2a08, 22);
+    sign('split2', 'SPLIT:  FAST ←   SAFE →', 0.248, minLat[J(0.248)] - 6, 0x8a2a08, 22);
+    sign('falls', 'LAVA FALLS', 0.288, maxLat[J(0.288)] + 6, 0x5a1a08, 14);
+    sign('rocks', 'ROCKFALL ZONE  !!', 0.400, minLat[J(0.400)] - 6, 0xaa2a08, 18);
+    sign('peak', 'INFERNO PEAK  CLIMB', 0.512, maxLat[J(0.512)] + 6, 0x5a1a08, 18);
+    sign('bridge', 'LAVA BRIDGE · JUMP THE GAPS', 0.728, minLat[J(0.728)] - 6, 0x8a2a08, 22);
+    sign('jump', 'FINAL JUMP · FULL SPEED!', 0.826, maxLat[J(0.826)] + 6, 0xaa2a08, 22);
+    sign('land', 'LANDING ZONE', 0.913, minLat[J(0.913)] - 7, 0x2a6a1a, 16);
+    sign('safe', 'SAFE ZONE · FINISH AHEAD', 0.94, maxLat[J(0.94)] + 6, 0x2a6a1a, 22);
+
+    // ---- ambient particles: ash falling, embers rising, both kept around the focus point (player / camera)
+    var ashMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0x8a8080, transparent: true, opacity: 0.7, depthWrite: false });
+    var emberMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffa040, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+    var ash = [], embers = [];
+    for (i = 0; i < 240; i++) { var a = new THREE.Sprite(ashMat); a.scale.set(0.45, 0.45, 1); a.position.set(focus.x + rng.range(-120, 120), rng.range(2, 60), focus.z + rng.range(-120, 120)); a.userData = { v: rng.range(1.2, 2.8), ph: rng() * 6.28 }; g.add(a); ash.push(a); }
+    for (i = 0; i < 110; i++) { var em = new THREE.Sprite(emberMat); em.scale.set(0.35, 0.35, 1); em.position.set(focus.x + rng.range(-120, 120), rng.range(0, 30), focus.z + rng.range(-120, 120)); em.userData = { v: rng.range(2, 5), ph: rng() * 6.28 }; g.add(em); embers.push(em); }
+
+    this.animated.push(function (dt, t) {
+      lavaTex.offset.y = (t * 0.08) % 1;
+      for (var k = 0; k < falls.length; k++) falls[k].material = lavaMat;
+      for (k = 0; k < column.length; k++) { var c = column[k], u = c.userData; u.f += dt * u.v * 0.05; if (u.f > 1) u.f -= 1; var f = u.f; c.position.set(VX + Math.sin(t * 0.3 + u.ph) * 30 * f, VH + 10 + f * 380, VZ + Math.cos(t * 0.25 + u.ph) * 30 * f); var s = 90 + f * 260; c.scale.set(s, s * 0.8, 1); c.material.opacity = 0.55 * (1 - f * f); }
+      for (k = 0; k < vents.length; k++) { var v = vents[k], vu = v.userData; vu.f += dt * vu.v; if (vu.f > 1) vu.f -= 1; v.position.set(vu.x + Math.sin(t + k) * vu.f * 3, vu.y + vu.f * vu.size * 4, vu.z); var vs = vu.size * (0.4 + vu.f * 1.6); v.scale.set(vs, vs, 1); v.material.opacity = 0.5 * (1 - vu.f); }
+      for (k = 0; k < ash.length; k++) { var ap = ash[k]; ap.position.y -= ap.userData.v * dt; ap.position.x += Math.sin(t * 0.7 + ap.userData.ph) * dt * 2.5; if (ap.position.y < -2 || Math.abs(ap.position.x - focus.x) > 150 || Math.abs(ap.position.z - focus.z) > 150) { ap.position.set(focus.x + (Math.random() - 0.5) * 240, 30 + Math.random() * 40, focus.z + (Math.random() - 0.5) * 240); } }
+      for (k = 0; k < embers.length; k++) { var ep = embers[k]; ep.position.y += ep.userData.v * dt; ep.position.x += Math.sin(t * 1.3 + ep.userData.ph) * dt * 3; ep.material.opacity = 0.5 + Math.sin(t * 6 + ep.userData.ph) * 0.4; if (ep.position.y > 34 || Math.abs(ep.position.x - focus.x) > 150 || Math.abs(ep.position.z - focus.z) > 150) { ep.position.set(focus.x + (Math.random() - 0.5) * 240, -1 + Math.random() * 3, focus.z + (Math.random() - 0.5) * 240); } }
+      craterGlow.material.opacity = 0.45 + Math.sin(t * 2.1) * 0.1; craterLight.intensity = 2.3 + Math.sin(t * 3.7) * 0.4;
+      landMat.opacity = 0.3 + Math.sin(t * 4) * 0.12;
+      for (k = 0; k < torches.length; k++) { var tf = torches[k]; tf.scale.set(4.5 + Math.sin(t * 9 + k) * 0.8, 8.5 + Math.sin(t * 7 + k * 2) * 1.5, 1); }
+    });
+  };
+
   Track.prototype.update = function (dt, t) {
     for (var i = 0; i < this.animated.length; i++) this.animated[i](dt, t);
     if (this.padMat) this.padMat.map.offset.y = -(t * 1.5) % 1;
@@ -2073,4 +2370,5 @@
 
   global.TRACKS = TRACKS;
   global.Track = Track;
+  global.mergeGeoms = mergeGeoms;
 })(window);

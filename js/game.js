@@ -57,6 +57,7 @@
   var _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _v3 = new THREE.Vector3(), _v4 = new THREE.Vector3();
   var boardTimer = 0, shadowTimer = 0, rouletteTimer = 0, rouletteIdx = 0, lastItemShown = null;
   var minimap = { pts: null, scale: 1, ox: 0, oy: 0 };
+  var hazards = null, camEvent = null, camJump = 0, lightBlend = 0, _col = new THREE.Color(), msgCool = 0;
 
   // ---------------------------------------------------------------- init
   function init() {
@@ -128,10 +129,11 @@
         console.log('[AUTOTEST] online mode ' + on[1] + ' room=' + (room ? room[1] : '?'));
       }
       if (/norender/.test(qs)) { window.__renderSkip = 1e9; }
+      var ha = /holdAt=([0-9.]+)/.exec(qs); if (ha) window.__holdAt = parseFloat(ha[1]);   // freeze the loop when the player reaches this fraction (GPU screenshots)
       var st = /steps=(\d+)/.exec(qs); if (st) { window.__steps = parseInt(st[1], 10); window.__timerLoop = true; }
       document.body.classList.add('autotest');
       console.log('[AUTOTEST] init ok, track=' + trackIndex + ' racers=' + settings.racers);
-      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; }, get progress() { return Progress.p; }, get award() { return race.award; }, get account() { return { user: Account.user, status: Account.status }; }, get ta() { return ta; }, get race() { return race; }, teamScores: teamScores, get social() { return { friends: Social.friends, incoming: Social.incoming, outgoing: Social.outgoing, status: Social.status, state: Social.state, room: Social.room }; } };
+      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; }, get progress() { return Progress.p; }, get award() { return race.award; }, get account() { return { user: Account.user, status: Account.status }; }, get ta() { return ta; }, get race() { return race; }, teamScores: teamScores, get hazards() { return hazards; }, get social() { return { friends: Social.friends, incoming: Social.incoming, outgoing: Social.outgoing, status: Social.status, state: Social.state, room: Social.room }; } };
       if (!on && !/garage/.test(qs) && !/accscreen/.test(qs) && !/[?&]friends/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
     }
   }
@@ -159,6 +161,9 @@
     trackIndex = i;
     track = new Track(TRACKS[i], scene, settings.quality);
     items = new ItemManager(scene, track, fx, audio);
+    if (hazards) { hazards.dispose(); hazards = null; }
+    lightBlend = 0; camEvent = null; camJump = 0;
+    if (track.def.hazards) hazards = new Hazards(track, scene, fx, audio, { onEvent: onHazardEvent });
     var th = track.theme;
     scene.fog = new THREE.Fog(th.fog, th.fogNear, th.fogFar);
     scene.background = new THREE.Color(th.sky[1]);
@@ -434,6 +439,8 @@
     // remove old karts
     karts.forEach(removeKart); clearGhost();
     karts = []; ais = []; playerAI = null;
+    if (track.def.hazards) { if (hazards) hazards.dispose(); hazards = new Hazards(track, scene, fx, audio, { onEvent: onHazardEvent }); }
+    camEvent = null; camJump = 0; msgCool = 0; applyLighting(1, true);
     var mode = isOnline ? onlineMode(cfg.mode) : settings.mode, mi = modeInfo(mode);
     var solo = !isOnline && !!mi.solo;                               // time attack: player only
     var teamOn = isOnline ? !!cfg.team : (!!settings.team && !solo);   // red vs blue
@@ -542,6 +549,7 @@
     audio.stopEngine(); audio.stopMusic();
     karts.forEach(removeKart); clearGhost(); karts = []; ais = []; player = null;
     fx.clear(); items.clear();
+    if (hazards) applyLighting(1, true);
     $('countdown').classList.add('hidden'); $('finishBanner').classList.add('hidden');
     showScreen('menu');
   }
@@ -629,7 +637,43 @@
     camera.lookAt(cam.look);
     cam.fov = U.damp(cam.fov, 60, 3, dt); camera.fov = cam.fov; camera.updateProjectionMatrix();
     if (player) { player.root.visible = false; }
+    if (track.focus) track.focus.copy(camera.position);
     updateShadowCamera();
+  }
+
+  // ---------------------------------------------------------------- hazards: events, eruption lighting, cinematic camera
+  function onHazardEvent(name, data) {
+    switch (name) {
+      case 'eruption': showMsg('ERUPTION!', 'pink'); flash('rgba(255,80,20,0.6)'); camEvent = { t: 0, dur: 3.6, target: data.crater.clone() }; break;
+      case 'newroute': showMsg('ROAD COLLAPSED · NEW ROUTE →', 'yellow'); flash('rgba(255,120,40,0.35)'); break;
+      case 'rockwarn': if (msgCool <= 0) { showMsg('⚠ ROCKFALL!', 'yellow'); msgCool = 3; } break;
+      case 'crushed': showMsg('CRUSHED!', 'pink'); flash('rgba(120,80,60,0.6)'); break;
+      case 'cracks': showMsg('THE ROAD IS BREAKING!', 'yellow'); break;
+      case 'cliff': showMsg('CLIFF COLLAPSE!', 'pink'); break;
+    }
+    if (window.__autotest) console.log('[AUTOTEST] hazard ' + name + ' t=' + (race.time / 1000).toFixed(1) + 's');
+  }
+  /** blend the scene lighting toward the eruption look (hazards.light 0..1) */
+  function applyLighting(dt, reset) {
+    var target = (hazards && !reset) ? hazards.light : 0;
+    if (reset) lightBlend = 0;
+    if (target === 0 && lightBlend < 0.001) { lightBlend = 0; if (!reset) return; }
+    lightBlend = reset ? 0 : U.damp(lightBlend, target, 2, dt);
+    var b = lightBlend, th = track.theme;
+    sun.color.setHex(th.sun).lerp(_col.setHex(0xff3a10), b); sun.intensity = U.lerp(th.sunInt, 1.5, b);
+    hemi.color.setHex(th.hemi[0]).lerp(_col.setHex(0xff4a20), b); hemi.groundColor.setHex(th.hemi[1]).lerp(_col.setHex(0x3a0a00), b); hemi.intensity = U.lerp(th.hemiInt, 1.0, b);
+    scene.fog.color.setHex(th.fog).lerp(_col.setHex(0x3a0d05), b); scene.fog.near = U.lerp(th.fogNear, 180, b); scene.fog.far = U.lerp(th.fogFar, 1300, b);
+    scene.background.setHex(th.sky[1]).lerp(_col.setHex(0x6a1a08), b);
+    renderer.toneMappingExposure = U.lerp(th.exposure, 1.28, b);
+    if (track.skyDome) { var u = track.skyDome.children[0].material.uniforms; u.top.value.setHex(th.sky[0]).lerp(_col.setHex(0x3a0a06), b); u.bot.value.setHex(th.sky[1]).lerp(_col.setHex(0xff3a08), b); }
+  }
+  /** 0..1 strength of the eruption camera event (widen + look at the volcano, then ease back) */
+  function camEventBlend(dt) {
+    if (!camEvent) return 0;
+    camEvent.t += dt;
+    var t = camEvent.t, d = camEvent.dur;
+    if (t >= d) { camEvent = null; return 0; }
+    return U.smooth(U.clamp(Math.min(t / 0.5, (d - t) / 1.0), 0, 1));
   }
 
   // ---------------------------------------------------------------- race step
@@ -676,6 +720,11 @@
     // sparkle trails while flying
     for (i = 0; i < karts.length; i++) { var fk = karts[i]; if (fk.flying && fk.speed > 8 && camDist(fk.pos) < 140 && Math.random() < 0.5) { _v.copy(fk.pos); _v.y += 0.9; fx.sparks(_v, 1, fk.isPlayer ? 0x9ff7ff : 0xffffff, 2); } }
     resolveCollisions(dt);
+    if (hazards) { hazards.update(dt, clock.t, world); if (!background) applyLighting(dt); }
+    if (window.__holdAt && player.s >= window.__holdAt * L && race.raceOn) { window.__hold = true; window.__holdAt = 0; console.log('[AUTOTEST] hold at s=' + player.s.toFixed(0)); }
+    if (track.focus) track.focus.copy(player.pos);
+    if (track.gaps && track.gaps.length) { var gpj = player.airborne ? track.gapAt(player.idx) : null; camJump = (gpj && gpj.big) ? Math.min(1, camJump + dt * 3) : Math.max(0, camJump - dt * 1.3); }
+    if (msgCool > 0) msgCool -= dt;
     if (ta.on && !background) taStep(dt);
     items.update(dt, world);
     if (online && !background) netTick(dt);
@@ -784,7 +833,11 @@
             break;
           case 'spin':
             if (near) { fx.explosion(k.pos, false); }
-            if (isP) { audio.spin(); flash('rgba(255,80,80,0.5)'); fx.addShake(1); showMsg('SPIN OUT!', 'pink'); } else if (near) audio.spin();
+            if (isP) { audio.spin(); flash(x.source === 'lava' ? 'rgba(255,120,20,0.6)' : 'rgba(255,80,80,0.5)'); fx.addShake(1); showMsg(x.source === 'lava' ? 'LAVA!' : x.source === 'rock' ? 'ROCK HIT!' : 'SPIN OUT!', 'pink'); } else if (near) audio.spin();
+            break;
+          case 'lava':
+            if (isP) { audio.explode(); flash('rgba(255,90,10,0.75)'); fx.addShake(0.8); showMsg('FELL INTO LAVA!', 'pink'); cam.init = false; }
+            if (near || isP) fx.explosion(k.pos, true);
             break;
           case 'stun':
             if (isP) { audio.zap(); }
@@ -907,7 +960,8 @@
     var dir = _v2.copy(_v3);
     if (k.speed > 3 && k.vf > 0) { _v4.copy(k.vel).normalize(); dir.lerp(_v4, 0.45).normalize(); }
     var boost = k.boostTime > 0;
-    var dist = 7.0 + k.speed * 0.04 + (boost ? 1.0 : 0), h = 2.9 + k.speed * 0.012;
+    var evb = camEventBlend(dt), jb = camJump;
+    var dist = 7.0 + k.speed * 0.04 + (boost ? 1.0 : 0) + 4 * evb + 6 * jb, h = 2.9 + k.speed * 0.012 + 2.5 * evb + 3.5 * jb;
     _v.copy(k.pos).addScaledVector(dir, -dist); _v.y = k.pos.y + h;
     if (k.drifting) { _v4.set(dir.z, 0, -dir.x); _v.addScaledVector(_v4, -k.driftDir * 1.4); }
     if (!cam.init) { cam.pos.copy(_v); cam.look.copy(k.pos); cam.init = true; camera.position.copy(_v); }
@@ -924,9 +978,11 @@
     camera.position.copy(cam.pos);
     if (fx.shake > 0) { var s = fx.shake * 0.25; camera.position.x += (Math.random() - 0.5) * s; camera.position.y += (Math.random() - 0.5) * s; camera.position.z += (Math.random() - 0.5) * s; }
     _v4.copy(k.pos).addScaledVector(_v3, 5.5); _v4.y += 1.1;
+    if (evb > 0 && camEvent) { _v2.copy(camEvent.target).sub(k.pos); _v2.y = 0; _v2.normalize(); _v4.addScaledVector(_v2, 30 * evb); _v4.y += 16 * evb; }
+    if (jb > 0) _v4.y -= 2.5 * jb;
     cam.look.lerp(_v4, 1 - Math.exp(-12 * dt));
     camera.lookAt(cam.look);
-    var targetFov = 72 + k.speed * 0.14 + (boost ? 13 : 0) + (k.drifting ? 3 : 0);
+    var targetFov = 72 + k.speed * 0.14 + (boost ? 13 : 0) + (k.drifting ? 3 : 0) + 8 * evb + 10 * jb;
     cam.fov = U.damp(cam.fov, targetFov, 5, dt); camera.fov = cam.fov; camera.updateProjectionMatrix();
   }
 

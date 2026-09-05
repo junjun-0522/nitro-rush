@@ -86,6 +86,18 @@
         if (dp > 0 && dp < 75) { latT = U.lerp(latT, po.lat, Math.min(1, (75 - dp) / 40)); break; }
       }
     }
+    // solid obstacles ahead (fallen rocks, lane dividers, active lava splashes): pass on the freer side
+    var obs = track.obstacles;
+    if (obs && obs.length) {
+      var mnO = track.minLat[idxT] + 2.2, mxO = track.maxLat[idxT] - 2.2;
+      for (var oi = 0; oi < obs.length; oi++) {
+        var ob = obs[oi]; if (ob.off) continue;
+        var dso = ob.s - k.s; if (dso < -2 || dso > 30 + k.speed * 0.8) continue;
+        var rr = ob.r + 2.6; if (Math.abs(latT - ob.lat) >= rr && !(dso < 9 && Math.abs(k.lat - ob.lat) < rr)) continue;
+        var lft = ob.lat + rr, rgt = ob.lat - rr, canL = lft <= mxO, canR = rgt >= mnO;
+        if (canL && (!canR || Math.abs(lft - k.lat) <= Math.abs(rgt - k.lat))) latT = lft; else if (canR) latT = rgt; else inp.brake = 0.6;
+      }
+    }
     latT = U.clamp(latT, track.minLat[idxT] + 2.2, track.maxLat[idxT] - 2.2);
 
     // avoidance: karts just ahead in a similar lane

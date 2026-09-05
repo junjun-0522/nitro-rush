@@ -239,6 +239,14 @@
     this.events.push({ type: 'respawn' });
   };
 
+  /** fell into a lava gap: respawn at the gap's retry point (with the boost pads before the jump) */
+  Kart.prototype.lavaDeath = function (path, track, idx) {
+    var gp = track.gapAt(idx);
+    this.lastGoodS = gp ? gp.retryS : Math.max(0, this.lastGoodS - 20);
+    this.respawn(path, track);
+    this.events.push({ type: 'lava' }); this.hits++;
+  };
+
   /** portal teleport: jump to (toS, toLat) keeping speed, mark skipped checkpoints as passed */
   Kart.prototype.teleport = function (path, track, po) {
     var sp = Math.max(this.vf, 14);
@@ -489,8 +497,10 @@
     var gy = track.groundY(idx, this.lat, pr.right, pr.center);
     if (!this.airborne) {
       var dy = this.pos.y - gy;
-      var climb = (this.pos.y - prevY) / Math.max(dt, 1e-4);
-      if (dy > 0.45 && climb > 2) { this.airborne = true; this.vy = climb * 0.9 + 1; ev.push({ type: 'jump' }); this.stats.jumps++; }
+      // vertical speed while following the ground over the last frame (ramps launch the kart when the road drops away)
+      var climb = (this.pos.y - this.prevY) / Math.max(dt, 1e-4);
+      if (dy > 0.45 && climb > 1.5) { this.airborne = true; this.vy = climb * 0.9 + 1; ev.push({ type: 'jump' }); this.stats.jumps++; }
+      else if (dy > 0.6 && this.speed > 6) { this.airborne = true; this.vy = Math.max(0, climb); ev.push({ type: 'jump' }); this.stats.jumps++; }   // drove off an edge: fall instead of snapping down
       else this.pos.y = gy;
     }
     if (this.airborne) {
@@ -502,6 +512,10 @@
         this.vy = 0;
       }
     }
+    this.prevY = prevY;   // last frame's settled height (climb rate needs two frames)
+
+    // ---- lava gaps: dropping under the deck inside a gap means falling into the lava; retry from before the run-up
+    if (raceOn && track.gapMask && track.gapMask[idx] && this.pos.y < track.roadY(idx, this.lat, pr.right, pr.center) - 2.5) { this.lavaDeath(path, track, idx); return; }
 
     // ---- boost pads -------------------------------------------------------------------------
     if (raceOn && !this.airborne) {
