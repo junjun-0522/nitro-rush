@@ -1225,6 +1225,8 @@
     trackSign('119', '영어교육도시 119센터', 0.91, out(0.91, 8), 16, '#ffffff', '#c8201a');
     trackSign('nr', 'NITRO RUSH · JEJU', 0.15, out(0.15, 8), 16, '#ffffff', '#ff2f6d');
 
+    function nearSign(x, z, r) { for (var i = 0; i < signs.length; i++) { var sp = signs[i].position; if (Math.hypot(sp.x - x, sp.z - z) < r) return true; } return false; }
+
     // ---- buildings
     var blocks = [];   // rects to keep trees out: [x0,z0,x1,z1]
     var skipped = 0;
@@ -1340,17 +1342,18 @@
       var tx = rng.range(-340, 400), tz = rng.range(-780, 330);
       var inn2 = inside(tx, tz);
       if (self.distToPath(tx, tz) < (inn2 ? 15 : 13)) continue;
-      if (blocked(tx, tz)) continue;
+      if (blocked(tx, tz) || nearSign(tx, tz, 30)) continue;
       if (inn2 && rng() < 0.75) continue;                 // blocks are mostly built up
       if (inn2 && tz > -60 && tz < 120 && tx > 5 && tx < 100) continue;   // 이노에듀타운
       spots.push({ x: tx, y: groundY, z: tz, s: rng.range(0.8, 1.5), rot: rng() * 6.28, c: rng() });
     }
     // dense line of trees just beside the narrow forest section of the spine
+    function roadTree(j, lat, s0, s1) { self.surfacePoint(j, lat, tmp); if (blocked(tmp.x, tmp.z) || nearSign(tmp.x, tmp.z, 34)) return; spots.push({ x: tmp.x, y: Math.max(groundY, tmp.y - 1.5), z: tmp.z, s: rng.range(s0, s1), rot: rng() * 6.28, c: rng() }); }
     for (j = Math.round(0.2 * N); j < Math.round(0.345 * N); j += 3) {
-      self.surfacePoint(j, self.maxLat[j] + rng.range(7, 12), tmp); spots.push({ x: tmp.x, y: Math.max(groundY, tmp.y - 1.5), z: tmp.z, s: rng.range(1.0, 1.5), rot: rng() * 6.28, c: rng() });
-      if (rng() < 0.6) { self.surfacePoint(j, self.minLat[j] - rng.range(6, 10), tmp); if (!blocked(tmp.x, tmp.z)) spots.push({ x: tmp.x, y: Math.max(groundY, tmp.y - 1.5), z: tmp.z, s: rng.range(0.9, 1.3), rot: rng() * 6.28, c: rng() }); }
+      roadTree(j, self.maxLat[j] + rng.range(7, 12), 1.0, 1.5);
+      if (rng() < 0.6) roadTree(j, self.minLat[j] - rng.range(6, 10), 0.9, 1.3);
     }
-    for (j = Math.round(0.36 * N); j < Math.round(0.6 * N); j += 4) { self.surfacePoint(j, self.maxLat[j] + rng.range(6, 14), tmp); spots.push({ x: tmp.x, y: Math.max(groundY, tmp.y - 1.5), z: tmp.z, s: rng.range(0.9, 1.5), rot: rng() * 6.28, c: rng() }); }
+    for (j = Math.round(0.36 * N); j < Math.round(0.6 * N); j += 4) roadTree(j, self.maxLat[j] + rng.range(6, 14), 0.9, 1.5);
     var trunks = new THREE.InstancedMesh(trunkGeo, new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 1 }), spots.length);
     var canopy = new THREE.InstancedMesh(canopyGeo, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95 }), spots.length);
     var col = new THREE.Color(), gA = new THREE.Color(0x2c6b2f), gB = new THREE.Color(0x5aa441);
@@ -1360,7 +1363,7 @@
     var pTrunk = new THREE.CylinderGeometry(0.25, 0.42, 7, 6); pTrunk.translate(0, 3.5, 0);
     var pFrond = new THREE.PlaneGeometry(5, 2.2); pFrond.translate(2.5, 0, 0);
     var palms = [];
-    function palmAt(j, lat) { self.surfacePoint(j, lat, tmp); palms.push({ p: new THREE.Vector3(tmp.x, Math.max(groundY, tmp.y - 1.2), tmp.z), s: rng.range(0.85, 1.25), rot: rng() * 6.28 }); }
+    function palmAt(j, lat) { self.surfacePoint(j, lat, tmp); if (nearSign(tmp.x, tmp.z, 22)) return; palms.push({ p: new THREE.Vector3(tmp.x, Math.max(groundY, tmp.y - 1.2), tmp.z), s: rng.range(0.85, 1.25), rot: rng() * 6.28 }); }
     for (j = Math.round(0.92 * N); j < N + Math.round(0.19 * N); j += 22) { var j2 = j % N; palmAt(j2, self.maxLat[j2] + 3.2); palmAt(j2, self.minLat[j2] - 3.2); }
     for (j = Math.round(0.56 * N); j < Math.round(0.86 * N); j += 24) { palmAt(j, self.maxLat[j] + 3.2); if (j % 48 === 0) palmAt(j, self.minLat[j] - 3.2); }
     var pt = new THREE.InstancedMesh(pTrunk, new THREE.MeshStandardMaterial({ color: 0x9c6b3c, roughness: 1 }), palms.length);
