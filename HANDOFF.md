@@ -3,7 +3,8 @@
 브라우저용 카트라이더풍 3D 아케이드 레이싱. 로컬 `~/nitro-rush`, GitHub `junjun-0522/nitro-rush`, 배포 **https://junjun-0522.github.io/nitro-rush/** (main에 push하면 ~1분 내 반영).
 
 ## 현재 상태 (전부 동작·배포됨)
-- 트랙 5개: AZURE COAST(입문), NEON METROPOLIS(고수), SUNSET CANYON(중급), FROST PEAK(고수·빙판 그립 0.86), **SEOUL BLOSSOM(중급, 한국 테마: 광화문·경복궁·한강 대교/잠수교·롯데타워·63빌딩·DDP·남산 N타워·북촌 한옥·벚꽃길·태극기)**
+- 트랙 6개: AZURE COAST(입문), NEON METROPOLIS(고수), SUNSET CANYON(중급), FROST PEAK(고수·빙판 그립 0.86), **SEOUL BLOSSOM(중급, 한국 테마: 광화문·경복궁·한강 대교/잠수교·롯데타워·63빌딩·DDP·남산 N타워·북촌 한옥·벚꽃길·태극기)**
+- **JEJU EDU CITY(중급, 2026-09-05)**: 사용자가 보낸 네이버 지도 스크린샷(제주영어교육도시)을 픽셀 단위로 따라 그린 1712m 순환로(`tools/jeju_map.js`, 실축척 39%). 북쪽 = -z 라서 미니맵/미리보기가 지도와 같은 방향. 지도 위치대로 이노에듀타운(안쪽 남쪽, 음식점 간판 거리)·한신더휴·SJA·BHA·KIS(안쪽), 삼정 G.edu·곶자왈도립공원·라온 타운하우스·꿈에그린·119센터(바깥 서쪽), 노리매공원·유채꽃밭(동쪽), 감귤밭+돌담, 돌하르방, 곶자왈 숲(instanced 900그루), 야자수, 오름, 한라산, 풍력발전기. 이름 간판은 `trackSign(key,text,f,lat,...)` 로 트랙 옆에 세우고 30 스테이션 뒤를 바라보게 해 다가오면서 읽힘. `box()` 는 도로와 너무 가까우면 건물을 건너뜀(autotest 로그 `jeju buildings skipped`).
 - 모드 3개: ITEM + SPEED(기본) / SPEED RACE(아이템 없음, 부스터 2개 저장, 게이지 1.5배) / ITEM RACE(게이지·드리프트 부스터 없음)
 - 카트 6종(`js/karts.js`: nitro/bullet/bigfoot/formula/hover/geobukseon — 차체 빌드 함수 + 능력치 배수 + 질량 + 바퀴 배치) × 캐릭터 8 + 펫 6 (`js/chars.js`). GARAGE 화면에서 선택, 온라인 프로필(hello/players)에 kart 포함, AI는 공유 RNG로 랜덤(aiLook). 능력치 = 카트 × 캐릭터 × 펫.
 - 드리프트(Space+←→, 3단계 부스터), 자동 게이지 충전(속도 비례), 순위별 아이템 확률(선두=실드/트랩, 후미=라이트닝/로켓/스피드)

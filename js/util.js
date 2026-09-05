@@ -289,7 +289,9 @@
       return U.canvasTexture('label' + key, 256, function (g, w, h) {
         g.fillStyle = bg || 'rgba(0,0,0,0)'; g.fillRect(0, 0, w, h);
         g.fillStyle = color || '#fff'; g.font = 'bold 48px sans-serif'; g.textAlign = 'center';
-        g.fillText(text, w / 2, h / 2 + 16);
+        var tw = g.measureText(text).width, fs = 48;
+        if (tw > w - 14) { fs = Math.max(14, Math.floor(48 * (w - 14) / tw)); g.font = 'bold ' + fs + 'px sans-serif'; }
+        g.fillText(text, w / 2, h / 2 + fs / 3);
       }, { clamp: true, height: 64 });
     }
   };
