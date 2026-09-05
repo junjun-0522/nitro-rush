@@ -560,6 +560,8 @@
 
     // physics
     for (i = 0; i < karts.length; i++) karts[i].update(dt, world);
+    // sparkle trails while flying
+    for (i = 0; i < karts.length; i++) { var fk = karts[i]; if (fk.flying && fk.speed > 8 && camDist(fk.pos) < 140 && Math.random() < 0.5) { _v.copy(fk.pos); _v.y += 0.9; fx.sparks(_v, 1, fk.isPlayer ? 0x9ff7ff : 0xffffff, 2); } }
     resolveCollisions(dt);
     items.update(dt, world);
     if (online && !background) netTick(dt);
@@ -672,6 +674,12 @@
             break;
           case 'shieldBreak':
             if (isP || near) { audio.shield(); fx.sparks(k.pos, 20, 0x66ccff, 10); if (isP) showMsg('SHIELD BROKEN', 'cyan'); }
+            break;
+          case 'takeoff':
+            if (isP) { showMsg('TAKE OFF!', 'cyan'); audio.boost(1); fx.addShake(0.2); }
+            break;
+          case 'landing':
+            if (isP) { showMsg('LANDING', 'yellow'); }
             break;
           case 'cp':
             if (isP && track.open) { showMsg('CHECKPOINT ' + x.n + ' / ' + x.of, 'cyan'); audio.lap(); }

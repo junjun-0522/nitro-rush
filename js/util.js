@@ -285,6 +285,28 @@
         });
       }, { clamp: true, height: 128 });
     },
+    crystal: function () {   // icy translucent road: pale blue facets, bright edge lines, chevrons
+      return U.canvasTexture('crystal', 256, function (g, w, h) {
+        g.fillStyle = '#9fe3ff'; g.fillRect(0, 0, w, h);
+        var rng = U.rng(61);
+        for (var i = 0; i < 40; i++) { g.fillStyle = 'rgba(255,255,255,' + (0.08 + rng() * 0.18).toFixed(2) + ')'; g.beginPath(); var x = rng() * w, y = rng() * h; g.moveTo(x, y); for (var k = 0; k < 4; k++) g.lineTo(x + rng.range(-40, 40), y + rng.range(-40, 40)); g.closePath(); g.fill(); }
+        g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 2;
+        for (i = 0; i < 12; i++) { g.beginPath(); g.moveTo(rng() * w, rng() * h); g.lineTo(rng() * w, rng() * h); g.stroke(); }
+        g.fillStyle = 'rgba(255,255,255,0.75)'; g.fillRect(0, 0, 10, h); g.fillRect(w - 10, 0, 10, h);
+        g.fillStyle = 'rgba(255,255,255,0.45)';
+        for (var y = 20; y < h; y += 64) { g.beginPath(); g.moveTo(w / 2 - 22, y + 22); g.lineTo(w / 2, y); g.lineTo(w / 2 + 22, y + 22); g.lineTo(w / 2 + 22, y + 32); g.lineTo(w / 2, y + 10); g.lineTo(w / 2 - 22, y + 32); g.closePath(); g.fill(); }
+      });
+    },
+    energy: function () {   // dark translucent energy road with glowing grid and edge lines
+      return U.canvasTexture('energy', 256, function (g, w, h) {
+        g.fillStyle = '#0b1636'; g.fillRect(0, 0, w, h);
+        g.strokeStyle = 'rgba(53,230,255,0.35)'; g.lineWidth = 2;
+        for (var i = 0; i <= w; i += 64) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.stroke(); g.beginPath(); g.moveTo(0, i); g.lineTo(w, i); g.stroke(); }
+        g.fillStyle = 'rgba(53,230,255,0.9)'; g.fillRect(0, 0, 8, h); g.fillRect(w - 8, 0, 8, h);
+        g.fillStyle = 'rgba(120,240,255,0.5)';
+        for (var y = 24; y < h; y += 64) { g.beginPath(); g.moveTo(w / 2 - 18, y + 18); g.lineTo(w / 2, y); g.lineTo(w / 2 + 18, y + 18); g.lineTo(w / 2 + 18, y + 26); g.lineTo(w / 2, y + 8); g.lineTo(w / 2 - 18, y + 26); g.closePath(); g.fill(); }
+      });
+    },
     swirl: function () {
       return U.canvasTexture('swirl', 256, function (g, w, h) {
         g.clearRect(0, 0, w, h);

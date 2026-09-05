@@ -169,25 +169,46 @@
       width: 20, narrow: [[0.04, 0.06, 16], [0.571, 0.613, 16], [0.694, 0.743, 17]],
       zones: [
         { a: 0.044, b: 0.057, side: -1, extra: 12, kind: 'dirt' },   // 격납고 코너 안쪽 정비 바닥
-        { a: 0.47, b: 0.53, side: 1, extra: 18, kind: 'dirt' },      // 행성 궤도 안쪽 (소행성 먼지)
         { a: 0.633, b: 0.649, side: -1, extra: 12, kind: 'dirt' },   // 교통 구역 코너
         { a: 0.768, b: 0.789, side: -1, extra: 14, kind: 'dirt' },   // 정거장 외벽 코너
         { a: 0.823, b: 0.839, side: 1, extra: 14, kind: 'dirt' }
       ],
       ramps: [{ a: 0.170, b: 0.178, h: 2.4 }, { a: 0.250, b: 0.257, h: 2.0 }, { a: 0.763, b: 0.770, h: 2.2 }, { a: 0.900, b: 0.906, h: 1.8 }],
       tunnels: [{ a: 0.092, b: 0.168 }, { a: 0.68, b: 0.76 }],
-      portals: [
-        { a: 0.566, lat: 6, r: 4.2, to: 0.616, toLat: 0 },          // 교통 시케인 건너뛰기
-        { a: 0.792, lat: -6, r: 4.2, to: 0.842, toLat: 0 }          // 정거장 외벽 코너 건너뛰기
-      ],
+      flights: [{ a: 0.178, b: 0.294, w: 70 }, { a: 0.45, b: 0.565, w: 70 }],   // 무중력 활공, 행성 궤도 활공 (도로 없음, 링 통과)
       boostPads: [{ s: 0.10, lat: -3 }, { s: 0.12, lat: 3 }, { s: 0.14, lat: -3 }, { s: 0.16, lat: 3 }, { s: 0.31, lat: 0 }, { s: 0.36, lat: 0 }, { s: 0.40, lat: 0 }, { s: 0.66, lat: 0 }, { s: 0.85, lat: 0 }, { s: 0.91, lat: 0 }, { s: 0.93, lat: 0 }, { s: 0.95, lat: 0 }],
       itemRows: [0.03, 0.07, 0.15, 0.22, 0.30, 0.38, 0.46, 0.55, 0.62, 0.71, 0.80, 0.87, 0.93],
       theme: {
         sky: [0x02040c, 0x070b22], fog: 0x05081a, fogNear: 600, fogFar: 2200,
         sun: 0xffffff, sunInt: 1.35, sunDir: [0.4, 0.8, -0.5], hemi: [0x3346aa, 0x080a14], hemiInt: 0.75, exposure: 1.1,
-        road: 'asphaltNight', roadTint: 0xa8b8e8, rail: 0x1a2240, railEm: 0x35e6ff, ground: 'concrete', skirt: 'none', noPillars: true, zoneTex: 'labFloor', zoneTint: 0x6f7a92, zoneEm: 0x102040,
+        road: 'energy', roadTint: 0xffffff, roadOpacity: 0.9, roadEm: 0x35e6ff, roadEmI: 0.35, roadRough: 0.4, roadMetal: 0.2, dash: false, rumble: false, railGlow: true, ringColor: 0x35e6ff,
+        rail: 0x1a2240, railEm: 0x35e6ff, ground: 'concrete', skirt: 'none', noPillars: true, zoneTex: 'labFloor', zoneTint: 0x6f7a92, zoneEm: 0x102040,
         tunnel: 0x10162a, tunnelLight: 0x35e6ff, portal: 0x35e6ff, portalEm: 0x35e6ff, pillar: 0x1d2440, gate: 0x1a2240, gateEm: 0xff2f6d,
         time: 'SPACE', stars: true, seed: 7777, gripMul: 0.97, preview: ['rgba(53,230,255,0.5)', '#0a0f2a', '#ffffff']
+      }
+    },
+    {
+      id: 'sky', name: 'SKY CRYSTAL', tag: 'ADVANCED', mood: 'sky', laps: 1, open: true, runoff: 120, cpCount: 10, lengthKm: '2.9',
+      desc: '구름바다 위 얼음 수정 세계를 가로지르는 포인트-투-포인트. 얼음 협곡에서 이륙해 하늘을 활공하며 팔각 부스터 링을 통과하고, 수정 다리에 착지, 얼음 동굴과 수정 정원을 지나 오로라 사이를 날아 하늘 궁전에 도착한다.',
+      pts: [[0,0,0],[0,28,0],[0,56,0],[0,84,0],[0,110,0],[-2.1,125.8,0.1],[-8.2,140.5,1.3],[-18,153.1,3.4],[-30.8,162.7,6],[-43.3,172.5,8.8],[-52.8,185.4,11.3],[-58.6,200.2,13.2],[-60.3,228.1,14],[-60.3,256.1,14],[-60.3,284.1,14],[-60.3,312.1,14],[-58.2,327.9,14],[-50.8,342,14],[-39,352.6,14],[-24.2,358.5,13.7],[3.8,359.4,8.7],[31.8,359.5,0.6],[59.8,359.7,-6.8],[87.8,359.8,-10],[115.8,359.9,-8.5],[143.8,360,-4.9],[171.8,360.1,-0.4],[199.8,360.2,3.5],[227.8,360.3,5.8],[255.8,360.5,6],[271.8,360.7,5.9],[287.7,362.4,5.2],[303.3,365.8,3.8],[318.5,370.8,2.2],[333.1,377.4,0.8],[346.8,385.5,0.1],[359.7,395,0],[371.4,405.9,0],[381.9,417.9,0],[391.1,431,0],[405.1,455.3,0],[419,479.6,0],[433,503.9,0.7],[446.9,528.2,2.4],[454.8,542.1,3.4],[458.9,557.4,3.9],[456.7,573.2,4],[448.6,586.8,4],[435.8,596.3,4],[420.4,600,4],[392.4,599.7,4],[364.4,599.5,3],[336.4,599.2,-0.4],[318.9,599.1,-3.2],[303,600.7,-6.1],[287.9,605.8,-9],[274.3,614.3,-11.8],[263.1,625.6,-14.3],[254.7,639.2,-16.3],[244.6,665.3,-18],[234.8,691.5,-15.7],[225,717.8,-9.3],[215.1,744,-1.1],[205.3,770.2,6.6],[195.5,796.4,11.4],[185.7,822.6,11.6],[175.8,848.9,9.6],[166,875.1,6.4],[156.2,901.3,3.2],[146.4,927.5,0.7],[136.5,953.7,0],[126.7,979.9,0],[116.9,1006.2,0],[111.3,1021.2,0],[106.9,1036.5,0],[104.4,1052.3,0],[103.8,1068.3,0.1],[105.3,1084.2,1.5],[108.6,1099.9,3.5],[113.9,1115,4.9],[121,1129.3,5],[129.8,1142.7,5],[140.1,1154.8,5],[151.9,1165.6,5],[164.9,1174.9,5],[189,1189.2,5],[213.1,1203.4,4.6],[237.2,1217.7,1.5],[261.4,1231.9,0],[275,1240.3,0],[284.9,1252.7,0],[288.3,1268.2,0],[284.5,1283.6,0],[274.3,1295.7,0],[259.8,1302.1,0],[231.8,1302.6,0],[203.8,1302.5,0],[175.8,1302.3,0.1],[153.3,1302.2,2.1],[137.5,1300,4.7],[122.8,1293.8,7.9],[110.3,1283.9,11.4],[100.8,1271.1,14.9],[94.5,1256.4,18],[85.7,1243,20.4],[73.8,1232.4,21.8],[59.5,1225.3,21.9],[43.9,1222.3,21],[15.9,1222,17.5],[-12.1,1221.9,12.4],[-40.1,1221.7,6.5],[-68.1,1221.5,0.7],[-96.1,1221.4,-4.2],[-124.1,1221.2,-7.3],[-152.1,1221,-7.7],[-180.1,1220.9,-3.9],[-208.1,1220.7,2.2],[-236.1,1220.5,7.7],[-264.1,1220.4,10],[-280.1,1220.3,10],[-296,1218.6,10],[-311.4,1214.2,10],[-325.7,1207.1,10],[-347.7,1189.9,8.7],[-369,1171.7,6.3],[-390.3,1153.5,3.6],[-411.6,1135.4,1.2],[-432.9,1117.2,0],[-454.2,1099,0],[-475.5,1080.9,0],[-496.8,1062.7,0],[-518.2,1044.5,0],[-539.5,1026.4,0],[-560.8,1008.2,0],[-582.1,990,0],[-595.8,978.4,0]],
+      width: 20, narrow: [[0.037, 0.079, 17], [0.646, 0.676, 16]],
+      zones: [
+        { a: 0.112, b: 0.136, side: 1, extra: 12, kind: 'dirt' },    // 수정 동굴 코너 안쪽 (눈길)
+        { a: 0.646, b: 0.676, side: -1, extra: 12, kind: 'dirt' },   // 수정 정원 헤어핀 안쪽
+        { a: 0.865, b: 0.887, side: -1, extra: 12, kind: 'dirt' }
+      ],
+      ramps: [{ a: 0.130, b: 0.138, h: 2.4 }, { a: 0.408, b: 0.415, h: 2.2 }, { a: 0.754, b: 0.761, h: 2.2 }],
+      tunnels: [{ a: 0.318, b: 0.352 }],
+      flights: [{ a: 0.138, b: 0.29, w: 70 }, { a: 0.415, b: 0.60, w: 80 }, { a: 0.761, b: 0.884, w: 70 }],
+      boostPads: [{ s: 0.02, lat: 0 }, { s: 0.10, lat: 0 }, { s: 0.30, lat: 0 }, { s: 0.39, lat: 0 }, { s: 0.62, lat: 0 }, { s: 0.70, lat: 3 }, { s: 0.90, lat: 0 }, { s: 0.93, lat: 0 }],
+      itemRows: [0.03, 0.09, 0.2, 0.3, 0.38, 0.5, 0.62, 0.7, 0.8, 0.9],
+      theme: {
+        sky: [0x6cc8ff, 0xeafbff], fog: 0xd6f1ff, fogNear: 480, fogFar: 2600,
+        sun: 0xffffff, sunInt: 1.5, sunDir: [0.3, 1, -0.4], hemi: [0xdff6ff, 0x9fd8ff], hemiInt: 0.95, exposure: 1.12,
+        road: 'crystal', roadTint: 0xffffff, roadOpacity: 0.93, roadEm: 0x66ccff, roadEmI: 0.22, roadRough: 0.2, roadMetal: 0.1, dash: false, rumble: false, railGlow: true, ringColor: 0x66d9ff,
+        rail: 0xeaf8ff, railEm: 0x9fe3ff, ground: 'snow', skirt: 'none', noPillars: true, zoneTex: 'ice', zoneTint: 0xdff6ff,
+        tunnel: 0xbfe0ff, tunnelLight: 0xffffff, portal: 0xdff6ff, portalEm: 0x9fe3ff, pillar: 0xbfe0ff, gate: 0xffffff, gateEm: 0x9fe3ff,
+        time: 'DAY', stars: false, seed: 5150, gripMul: 0.96, preview: ['rgba(160,230,255,0.65)', '#9fd8ff', '#ffffff']
       }
     }
   ];
@@ -378,9 +399,25 @@
       for (var j = a; j <= b; j++) tunnelMask[j % N] = 1;
       return { a: a, b: b };
     });
-    this.boostPads = (def.boostPads || []).map(function (bp) {
-      return { s: bp.s * path.length, lat: bp.lat, len: 7, w: 4 };
+    // flight sections: no road, a wide invisible corridor the karts glide through, octagonal boost rings every ~90m
+    var flightMask = this.flightMask = new Uint8Array(N), ringPads = [];
+    this.flights = (def.flights || []).map(function (f) {
+      var a = Math.round(f.a * N), b = Math.round(f.b * N), w = f.w || 60, ramp = 25;
+      for (var j = a; j <= b; j++) {
+        var jj = j % N, t = 1;
+        if (j - a < ramp) t = (j - a) / ramp; else if (b - j < ramp) t = (b - j) / ramp;
+        t = U.smooth(Math.max(0, Math.min(1, t)));
+        var hw = path.W[jj] / 2 + (w / 2 - path.W[jj] / 2) * t;
+        if (j - a >= 4 && b - j >= 4) flightMask[jj] = 1;
+        minLat[jj] = Math.min(minLat[jj], -hw); maxLat[jj] = Math.max(maxLat[jj], hw);
+      }
+      var gap = f.gap || 90;
+      for (var s = a * path.ds + 45; s < b * path.ds - 30; s += gap) ringPads.push({ s: s, lat: 0, len: 6, w: 17, ring: true });
+      return { a: a, b: b, w: w };
     });
+    this.boostPads = (def.boostPads || []).map(function (bp) {
+      return { s: bp.s * path.length, lat: bp.lat, len: bp.len || 7, w: bp.w || 4 };
+    }).concat(ringPads);
 
     this._buildRoad();
     this._buildScenery();
@@ -463,6 +500,7 @@
 
   Track.prototype.surfaceAt = function (idx, lat) {
     var hw = this.path.W[idx] / 2;
+    if (this.flightMask && this.flightMask[idx]) return 'road';
     if (lat < -hw - 0.3 || lat > hw + 0.3) return 'dirt';
     return 'road';
   };
@@ -488,29 +526,41 @@
     }
     var half = function (j) { return path.W[j] / 2; };
     var FULL = this.open ? [0, N - 1] : undefined;   // open tracks: never join the last station back to the first
+    // station runs that carry a road (flight sections have none)
+    var flightMask = this.flightMask, runs = [];
+    if (!this.flights.length) runs = [FULL];
+    else { var inRun = false, rs = 0; for (j = 0; j < N; j++) { if (!flightMask[j] && !inRun) { inRun = true; rs = j; } if (inRun && (flightMask[j] || j === N - 1)) { inRun = false; runs.push([rs, flightMask[j] ? j - 1 : j]); } } }
+    function strips(fnA, fnB, vs) { return mergeGeoms(runs.map(function (r) { return stripGeom(path, fnA, fnB, vs, r); })); }
+    this.roadRuns = runs;
 
-    // asphalt
+    // road surface (asphalt by default; themes can pick crystal / energy roads, transparency and glow)
     var roadTex = tex[th.road](); roadTex.repeat.set(1, 1);
-    var road = new THREE.Mesh(
-      stripGeom(path, edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 10, FULL),
-      new THREE.MeshStandardMaterial({ map: roadTex, color: th.roadTint, roughness: th.road === 'ice' ? 0.35 : 0.9, metalness: th.road === 'ice' ? 0.2 : 0.05 })
-    );
+    var roadMatOpts = { map: roadTex, color: th.roadTint, roughness: th.road === 'ice' ? 0.35 : (th.roadRough !== undefined ? th.roadRough : 0.9), metalness: th.road === 'ice' ? 0.2 : (th.roadMetal !== undefined ? th.roadMetal : 0.05) };
+    if (th.roadOpacity !== undefined && th.roadOpacity < 1) { roadMatOpts.transparent = true; roadMatOpts.opacity = th.roadOpacity; roadMatOpts.side = THREE.DoubleSide; }
+    if (th.roadEm) { roadMatOpts.emissive = new THREE.Color(th.roadEm); roadMatOpts.emissiveIntensity = th.roadEmI || 0.4; roadMatOpts.emissiveMap = roadTex; }
+    var road = new THREE.Mesh(strips(edge(function (j) { return -half(j); }), edge(function (j) { return half(j); }), 10), new THREE.MeshStandardMaterial(roadMatOpts));
     road.receiveShadow = true; g.add(road);
 
     // centre dashed line
     var dashTex = U.canvasTexture('dash', 32, function (c, w, h) { c.fillStyle = 'rgba(255,255,255,0)'; c.fillRect(0, 0, w, h); c.fillStyle = '#ffe66d'; c.fillRect(0, 0, w, h / 2); }, { height: 64 });
-    var center = new THREE.Mesh(
-      stripGeom(path, edge(function () { return -0.25; }), edge(function () { return 0.25; }), 12, FULL),
-      new THREE.MeshBasicMaterial({ map: dashTex, transparent: true, depthWrite: false })
-    );
-    center.position.y = 0.03; g.add(center);
+    if (th.dash !== false) {
+      var center = new THREE.Mesh(strips(edge(function () { return -0.25; }), edge(function () { return 0.25; }), 12), new THREE.MeshBasicMaterial({ map: dashTex, transparent: true, depthWrite: false }));
+      center.position.y = 0.03; g.add(center);
+    }
 
     // rumble strips (both edges)
     var rumbleTex = tex.rumble();
     var rumbleMat = new THREE.MeshStandardMaterial({ map: rumbleTex, roughness: 0.7, emissive: th.railEm, emissiveIntensity: th.railEm ? 0.25 : 0 });
-    var rumL = stripGeom(path, edge(function (j) { return -half(j) - 0.9; }), edge(function (j) { return -half(j) + 0.4; }), 3, FULL);
-    var rumR = stripGeom(path, edge(function (j) { return half(j) - 0.4; }), edge(function (j) { return half(j) + 0.9; }), 3, FULL);
-    var rum = new THREE.Mesh(mergeGeoms([rumL, rumR]), rumbleMat); rum.position.y = 0.02; g.add(rum);
+    if (th.rumble !== false) {
+      var rumL = strips(edge(function (j) { return -half(j) - 0.9; }), edge(function (j) { return -half(j) + 0.4; }), 3);
+      var rumR = strips(edge(function (j) { return half(j) - 0.4; }), edge(function (j) { return half(j) + 0.9; }), 3);
+      var rum = new THREE.Mesh(mergeGeoms([rumL, rumR]), rumbleMat); rum.position.y = 0.02; g.add(rum);
+    } else {   // glowing edge lines instead of rumble strips
+      var edgeMat = new THREE.MeshBasicMaterial({ color: th.railEm || 0xffffff, transparent: true, opacity: 0.9 });
+      var edL = strips(edge(function (j) { return -half(j) - 0.5; }), edge(function (j) { return -half(j) + 0.25; }), 3);
+      var edR = strips(edge(function (j) { return half(j) - 0.25; }), edge(function (j) { return half(j) + 0.5; }), 3);
+      var edm = new THREE.Mesh(mergeGeoms([edL, edR]), edgeMat); edm.position.y = 0.03; g.add(edm);
+    }
 
     // dirt shoulders (shortcuts)
     var dirtTex = tex[th.zoneTex || 'dirt'](); dirtTex.repeat.set(2, 1);
@@ -527,8 +577,9 @@
     // guard rails
     var railMat = new THREE.MeshStandardMaterial({ color: th.rail, roughness: 0.4, metalness: 0.5, emissive: th.railEm, emissiveIntensity: th.railEm ? 0.9 : 0, side: THREE.DoubleSide });
     function railEdge(latFn, h) { return function (j, out) { self.surfacePoint(j, latFn(j), out); out.y += h; }; }
-    var rl = stripGeom(path, railEdge(function (j) { return minLat[j] - 0.7; }, 0.35), railEdge(function (j) { return minLat[j] - 0.7; }, 0.95), 4, FULL);
-    var rr = stripGeom(path, railEdge(function (j) { return maxLat[j] + 0.7; }, 0.35), railEdge(function (j) { return maxLat[j] + 0.7; }, 0.95), 4, FULL);
+    var railLo = th.railGlow ? 0.5 : 0.35, railHi = th.railGlow ? 0.8 : 0.95;
+    var rl = strips(railEdge(function (j) { return minLat[j] - 0.7; }, railLo), railEdge(function (j) { return minLat[j] - 0.7; }, railHi), 4);
+    var rr = strips(railEdge(function (j) { return maxLat[j] + 0.7; }, railLo), railEdge(function (j) { return maxLat[j] + 0.7; }, railHi), 4);
     var rails = new THREE.Mesh(mergeGeoms([rl, rr]), railMat); rails.castShadow = true; g.add(rails);
     // rail posts
     var postGeo = new THREE.BoxGeometry(0.25, 1.0, 0.25);
@@ -536,6 +587,7 @@
     var posts = new THREE.InstancedMesh(postGeo, new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.6 }), postCount);
     var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(1, 1, 1), pi = 0;
     for (j = 0; j < N; j += 8) {
+      if (flightMask[j]) continue;
       [minLat[j] - 0.7, maxLat[j] + 0.7].forEach(function (lat) {
         self.surfacePoint(j, lat, tmp); tmp.y += 0.5;
         m4.compose(tmp, q, sc); posts.setMatrixAt(pi++, m4);
@@ -546,15 +598,15 @@
     // skirts (embankment) & pillars for elevated parts
     var groundY = -0.3;
     var skirtMat = new THREE.MeshStandardMaterial({ map: tex[th.skirt === 'none' ? 'concrete' : th.skirt](), roughness: 1, side: THREE.DoubleSide });
-    var skirtL = stripGeom(path, railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { self.surfacePoint(j, minLat[j] - 1.2 - Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6, FULL);
-    var skirtR = stripGeom(path, railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { self.surfacePoint(j, maxLat[j] + 1.2 + Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6, FULL);
+    var skirtL = strips(railEdge(function (j) { return minLat[j] - 1.2; }, 0), function (j, out) { self.surfacePoint(j, minLat[j] - 1.2 - Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
+    var skirtR = strips(railEdge(function (j) { return maxLat[j] + 1.2; }, 0), function (j, out) { self.surfacePoint(j, maxLat[j] + 1.2 + Math.min(8, Math.max(1.5, path.P[j].y + hExtra[j]) * 0.8), out); out.y = groundY; }, 6);
     if (th.skirt !== 'none') { var skirt = new THREE.Mesh(mergeGeoms([skirtL, skirtR]), skirtMat); skirt.receiveShadow = true; g.add(skirt); }
     // under-deck & pillars where high
     var pillarGeo = new THREE.CylinderGeometry(1.2, 1.5, 1, 10);
     var pillars = [];
     for (j = 0; j < N; j += 14) {
       var h = path.P[j].y + hExtra[j];
-      if (h > 5) {
+      if (h > 5 && !flightMask[j]) {
         [-path.W[j] / 3, path.W[j] / 3].forEach(function (lat) {
           // pillar top stays 0.6m under the real (banked) road surface at that lateral, so it never pokes through the deck
           self.surfacePoint(j, lat, tmp);
@@ -618,9 +670,21 @@
     }, { clamp: true });
     var padMat = this.padMat = new THREE.MeshBasicMaterial({ map: padTex, transparent: true, opacity: 0.95 });
     var padGeo = new THREE.PlaneGeometry(1, 1);
+    var ringMeshes = [], ringColor = th.ringColor || 0x35e6ff, ringTmp = new THREE.Vector3();
+    var chevTex = tex.label('chev', '<<', '#ffe066', '#3a2a8a');
     this.boostPads.forEach(function (bp) {
       var sm = path.sample(bp.s);
       var idx = sm.idx;
+      if (bp.ring) {   // octagonal flight ring (like a boost gate in the sky)
+        var grp = new THREE.Group();
+        grp.add(new THREE.Mesh(new THREE.TorusGeometry(9, 0.9, 6, 8), new THREE.MeshStandardMaterial({ color: ringColor, emissive: ringColor, emissiveIntensity: 1.3, roughness: 0.3, metalness: 0.3 })));
+        grp.add(new THREE.Mesh(new THREE.TorusGeometry(9, 0.35, 6, 8), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.0 })).translateZ(0.9));
+        var disc = new THREE.Mesh(new THREE.CircleGeometry(8.6, 8), new THREE.MeshBasicMaterial({ color: ringColor, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); grp.add(disc);
+        var chev = new THREE.Mesh(new THREE.BoxGeometry(5, 2.2, 0.4), new THREE.MeshBasicMaterial({ map: chevTex })); chev.position.set(0, 10.6, 0); grp.add(chev);
+        grp.position.copy(sm.pos).addScaledVector(sm.right, bp.lat); grp.position.y += hExtra[idx] + 3.6;
+        ringTmp.copy(grp.position).add(sm.tan); grp.lookAt(ringTmp);
+        g.add(grp); ringMeshes.push({ g: grp, disc: disc, ph: Math.random() * 6.28 }); bp.idx = idx; return;
+      }
       var m = new THREE.Mesh(padGeo, padMat);
       m.position.copy(sm.pos).addScaledVector(sm.right, bp.lat); m.position.y += hExtra[idx] + 0.06;
       var look = new THREE.Matrix4().lookAt(new THREE.Vector3(), sm.up.clone().negate(), sm.tan);
@@ -629,6 +693,8 @@
       g.add(m);
       bp.mesh = m; bp.idx = idx;
     });
+
+    if (ringMeshes.length) this.animated.push(function (dt, t) { for (var i = 0; i < ringMeshes.length; i++) { var r = ringMeshes[i]; r.disc.rotation.z += dt * 1.2; var sc = 1 + Math.sin(t * 3 + r.ph) * 0.03; r.g.scale.set(sc, sc, 1); } });
 
     // checkpoints visual (thin light beams for neon, flags for coast) - subtle
     this.cpS = [];
@@ -683,7 +749,7 @@
     var ext = 0; for (si = 0; si < Ps.length; si++) ext = Math.max(ext, Math.hypot(Ps[si].x - cxs, Ps[si].z - czs));
     var sky = skyDome(th.sky[0], th.sky[1], th.stars, Math.max(1800, ext + 1500)); sky.position.set(cxs, 0, czs); g.add(sky);
     var groundY = -0.3;
-    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab, space: this._scenerySpace }[th.mood] || this._sceneryCoast;
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab, space: this._scenerySpace, sky: this._scenerySky }[th.mood] || this._sceneryCoast;
     fn.call(this, rng, this.envelope, null, groundY);
   };
 
@@ -1874,6 +1940,129 @@
       rockMesh.instanceMatrix.needsUpdate = true;
       for (i = 0; i < ships.length; i++) { var sh = ships[i], u2 = Math.sin(t * sh.v / sh.span + sh.ph); sh.m.position.copy(sh.c).addScaledVector(sh.dir, u2 * sh.span); sh.m.position.y = sh.c.y + sh.h; var fwd = Math.cos(t * sh.v / sh.span + sh.ph) >= 0 ? 1 : -1; sh.m.rotation.y = Math.atan2(sh.dir.x * fwd, sh.dir.z * fwd); }
       cloudsP.rotation.y += dt * 0.01; moon.rotation.y += dt * 0.02;
+    });
+  };
+
+
+  // ------------------------------------------------------------- SKY CRYSTAL (bright ice world above a cloud sea)
+  Track.prototype._scenerySky = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this, N = path.N;
+    var tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), e = new THREE.Euler();
+    function mesh(geo, mat, x, y, z) { var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; }
+    function emis(color, i, extra) { var o = { color: color, emissive: color, emissiveIntensity: i === undefined ? 0.9 : i, roughness: 0.3, metalness: 0.1 }; if (extra) for (var k in extra) o[k] = extra[k]; return new THREE.MeshStandardMaterial(o); }
+    var CY = 0x66d9ff, WH = 0xffffff, PK = 0xff9ad5, PU = 0xb388ff;
+    var iceMat = new THREE.MeshStandardMaterial({ color: 0xdff6ff, roughness: 0.25, metalness: 0.1, emissive: 0x3a86c8, emissiveIntensity: 0.15 });
+    var snowMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
+    var rockMat = new THREE.MeshStandardMaterial({ color: 0x8fb4d8, roughness: 0.9, flatShading: true });
+    var crystalMat = new THREE.MeshStandardMaterial({ color: 0x9fe8ff, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.8, emissive: 0x2fa4e8, emissiveIntensity: 0.45, flatShading: true });
+    var crystalPink = new THREE.MeshStandardMaterial({ color: 0xffc4ec, roughness: 0.1, transparent: true, opacity: 0.8, emissive: 0xd050a8, emissiveIntensity: 0.4, flatShading: true });
+    var minLat = this.minLat, maxLat = this.maxLat, flightMask = this.flightMask;
+    var J = function (f) { return Math.max(0, Math.min(N - 1, Math.round(f * N))); };
+    function faceAlong(o, j) { o.lookAt(o.position.x + path.T[j].x, o.position.y, o.position.z + path.T[j].z); return o; }
+    var cx = -90, cz = 650;
+
+    // ---- cloud sea below everything + fluffy cloud sprites + god rays
+    var cloudTex = tex.smoke();
+    var sea = mesh(new THREE.PlaneGeometry(4000, 4000).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xf4fbff, roughness: 1, transparent: true, opacity: 0.92 }), cx, -150, cz); sea.castShadow = false; sea.receiveShadow = false; g.add(sea);
+    var cloudMat = new THREE.SpriteMaterial({ map: cloudTex, color: 0xffffff, transparent: true, opacity: 0.95, depthWrite: false });
+    var puffs = [];
+    for (var i = 0; i < 90; i++) { var cl = new THREE.Sprite(cloudMat); cl.position.set(cx + rng.range(-1300, 1300), rng.range(-150, -50), cz + rng.range(-1000, 1100)); var s2 = rng.range(180, 420); cl.scale.set(s2 * 1.5, s2 * 0.7, 1); cl.userData.v = rng.range(1, 3); g.add(cl); puffs.push(cl); }
+    // small clouds drifting right beside the flight corridors (sense of speed while gliding)
+    this.flights.forEach(function (fl) { for (var jj = fl.a; jj < fl.b; jj += 10) { var sdC = rng() < 0.5 ? -1 : 1; self.surfacePoint(jj, sdC * rng.range(fl.w / 2 + 6, fl.w / 2 + 60), tmp); var pc = new THREE.Sprite(cloudMat); pc.position.set(tmp.x, tmp.y + rng.range(-30, 12), tmp.z); var s4 = rng.range(18, 50); pc.scale.set(s4 * 1.6, s4 * 0.8, 1); pc.userData.v = rng.range(0.5, 1.5); g.add(pc); puffs.push(pc); } });
+    for (i = 0; i < 20; i++) { var hc = new THREE.Sprite(new THREE.SpriteMaterial({ map: cloudTex, color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false, fog: false })); hc.position.set(cx + rng.range(-1400, 1400), rng.range(260, 420), cz + rng.range(-1000, 1200)); var s3 = rng.range(140, 320); hc.scale.set(s3 * 1.7, s3 * 0.6, 1); g.add(hc); }
+    var rayMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.10, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
+    var rays = [];
+    for (i = 0; i < 16; i++) { var ray = new THREE.Mesh(new THREE.PlaneGeometry(rng.range(20, 60), 900), rayMat); ray.position.set(cx + rng.range(-900, 900), 250, cz + rng.range(-700, 900)); ray.rotation.set(0, rng() * 6.28, rng.range(-0.25, 0.25)); ray.userData.ph = rng() * 6.28; g.add(ray); rays.push(ray); }
+
+    // ---- aurora ribbons high in the sky
+    var auroraTex = U.canvasTexture('aurora', 512, function (c, w, h) { var gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(120,255,200,0)'); gr.addColorStop(0.3, 'rgba(120,255,200,0.55)'); gr.addColorStop(0.6, 'rgba(180,120,255,0.5)'); gr.addColorStop(1, 'rgba(255,120,220,0)'); c.fillStyle = gr; c.fillRect(0, 0, w, h); c.globalCompositeOperation = 'destination-in'; for (var x = 0; x < w; x += 4) { var a = 0.4 + 0.6 * Math.abs(Math.sin(x * 0.05) * Math.cos(x * 0.013)); c.fillStyle = 'rgba(255,255,255,' + a.toFixed(2) + ')'; c.fillRect(x, 0, 4, h); } }, { height: 128 });
+    var auroras = [];
+    [[-400, 300, 500, 0.4], [200, 340, 1200, -0.3], [-100, 380, 900, 0.9]].forEach(function (a) { var au = new THREE.Mesh(new THREE.PlaneGeometry(1800, 160, 60, 1), new THREE.MeshBasicMaterial({ map: auroraTex, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); au.position.set(a[0], a[1], a[2]); au.rotation.y = a[3]; var pos = au.geometry.attributes.position; for (var vi = 0; vi < pos.count; vi++) pos.setZ(vi, Math.sin(pos.getX(vi) * 0.004) * 90); g.add(au); auroras.push(au); });
+
+    // ---- ice station platform at the start
+    self.surfacePoint(J(0.02), 0, tmp);
+    var plat = mesh(new THREE.BoxGeometry(90, 8, 150), iceMat, tmp.x, tmp.y - 4.6, tmp.z); faceAlong(plat, J(0.02)); g.add(plat);
+    var platRim = mesh(new THREE.BoxGeometry(92, 1.2, 152), emis(CY, 1.0), tmp.x, tmp.y - 8.8, tmp.z); faceAlong(platRim, J(0.02)); platRim.castShadow = false; g.add(platRim);
+    [[-32, -50], [32, -50], [-32, 50], [32, 50]].forEach(function (o) { g.add(mesh(new THREE.CylinderGeometry(1.2, 1.6, 30, 8), iceMat, tmp.x + o[0], tmp.y + 6, tmp.z + o[1])); g.add(mesh(new THREE.OctahedronGeometry(3, 0), crystalMat, tmp.x + o[0], tmp.y + 24, tmp.z + o[1])); });
+    function sign(key, text, f, lat, color, w) {
+      w = w || 16; var j = J(f), jb = Math.max(0, j - 30), grp = new THREE.Group();
+      grp.add(mesh(new THREE.BoxGeometry(w, w * 0.25, 0.4), new THREE.MeshBasicMaterial({ map: tex.label('sk' + key, text, '#ffffff', '#' + color.toString(16).padStart(6, '0')) }), 0, 7, 0));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.3, 0.3), emis(WH, 1.2), 0, 7 + w * 0.125 + 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.3, 0.3), emis(WH, 1.2), 0, 7 - w * 0.125 - 0.3, -0.1));
+      grp.add(mesh(new THREE.BoxGeometry(0.5, 6.5, 0.5), iceMat, 0, 3.2, -0.1));
+      self.surfacePoint(j, lat, tmp); grp.position.set(tmp.x, tmp.y - 0.3, tmp.z); grp.lookAt(path.P[jb].x, grp.position.y, path.P[jb].z); g.add(grp); return grp;
+    }
+    sign('st', 'ICE STATION · SKY CRYSTAL', 0.012, maxLat[J(0.012)] + 6, 0x2a7fc8, 20);
+    sign('canyon', 'FROST CANYON', 0.05, minLat[J(0.05)] - 5, 0x2a7fc8, 14);
+    sign('takeoff1', 'TAKE OFF ↑ FLY THROUGH THE RINGS', 0.118, maxLat[J(0.118)] + 6, 0xd050a8, 22);
+    sign('landing1', 'LANDING · CRYSTAL BRIDGE', 0.296, minLat[J(0.296)] - 5, 0x2a7fc8, 18);
+    sign('cave', 'ICE CAVE', 0.312, maxLat[J(0.312)] + 5, 0x2a7fc8, 12);
+    sign('takeoff2', 'TAKE OFF ↑ CLOUD SEA', 0.402, minLat[J(0.402)] - 6, 0xd050a8, 18);
+    sign('landing2', 'LANDING · CRYSTAL GARDEN', 0.61, maxLat[J(0.61)] + 5, 0x2a7fc8, 18);
+    sign('takeoff3', 'TAKE OFF ↑ AURORA FLIGHT', 0.748, maxLat[J(0.748)] + 6, 0xd050a8, 18);
+    sign('palace', 'SKY PALACE · FINISH AHEAD', 0.9, minLat[J(0.9)] - 6, 0x2a7fc8, 20);
+
+    // ---- frost canyon walls (0.03 .. 0.13) + crystal clusters everywhere near the road
+    var walls = [], spires = [], spiresP = [];
+    function crystalCluster(x, y, z, n, s) { for (var k = 0; k < n; k++) { var h = rng.range(6, 18) * s, r = rng.range(1.2, 3) * s; var cg = new THREE.ConeGeometry(r, h, 5); cg.translate(0, h / 2, 0); cg.rotateX(rng.range(-0.3, 0.3)); cg.rotateZ(rng.range(-0.3, 0.3)); cg.translate(x + rng.range(-4, 4) * s, y, z + rng.range(-4, 4) * s); (rng() < 0.8 ? spires : spiresP).push(cg); } }
+    for (var j = J(0.03); j < J(0.13); j += 12) { [-1, 1].forEach(function (sd) { var lat = sd > 0 ? maxLat[j] + rng.range(7, 12) : minLat[j] - rng.range(7, 12); self.surfacePoint(j, lat, tmp); var h = rng.range(22, 55), w = rng.range(10, 18); var wg = new THREE.BoxGeometry(w, h, 14); wg.rotateY(Math.atan2(path.T[j].x, path.T[j].z)); wg.translate(tmp.x, tmp.y + h / 2 - 8, tmp.z); walls.push(wg); crystalCluster(tmp.x, tmp.y + h - 8, tmp.z, 3, 0.8); }); }
+    var wallMesh = mesh(mergeGeoms(walls), iceMat, 0, 0, 0); g.add(wallMesh);
+    // crystal garden (0.60 .. 0.76) + around the cave hairpin
+    for (j = J(0.60); j < J(0.76); j += 9) { var sd2 = (j % 18 === 0) ? 1 : -1; var lat2 = sd2 > 0 ? maxLat[j] + rng.range(5, 14) : minLat[j] - rng.range(5, 14); self.surfacePoint(j, lat2, tmp); crystalCluster(tmp.x, tmp.y - 1, tmp.z, 4, rng.range(0.6, 1.3)); }
+    for (j = J(0.31); j < J(0.40); j += 10) { self.surfacePoint(j, maxLat[j] + rng.range(6, 12), tmp); crystalCluster(tmp.x, tmp.y - 1, tmp.z, 3, 1.0); self.surfacePoint(j, minLat[j] - rng.range(6, 12), tmp); crystalCluster(tmp.x, tmp.y - 1, tmp.z, 2, 1.0); }
+    if (spires.length) g.add(mesh(mergeGeoms(spires), crystalMat, 0, 0, 0));
+    if (spiresP.length) g.add(mesh(mergeGeoms(spiresP), crystalPink, 0, 0, 0));
+
+    // ---- floating ice islands (rock + snow cap + crystals), kept clear of the corridors
+    var isl = [], caps = [], tries = 0, islands = [];
+    var flightSt = []; this.flights.forEach(function (fl) { for (var jj = fl.a; jj < fl.b; jj += 15) flightSt.push(jj); });
+    while (islands.length < 90 && tries++ < 8000) {
+      var ix, iz, iy;
+      if (islands.length < 50 && flightSt.length) {   // most islands hug the flight corridors so the glide feels busy
+        var js = flightSt[(rng() * flightSt.length) | 0], sdI = rng() < 0.5 ? -1 : 1; self.surfacePoint(js, sdI * rng.range(55, 190), tmp); ix = tmp.x; iz = tmp.z; iy = tmp.y + rng.range(-70, 40);
+      } else { ix = cx + rng.range(-900, 900); iz = cz + rng.range(-700, 900); iy = rng.range(-60, 50); }
+      if (self.distToPath(ix, iz) < 55) continue;
+      var ir = rng.range(14, 42);
+      islands.push([ix, iy, iz, ir]);
+      var rg = new THREE.IcosahedronGeometry(ir, 1); rg.scale(1, 0.75, 1); rg.translate(ix, iy - ir * 0.25, iz); isl.push(rg);
+      var cg = new THREE.IcosahedronGeometry(ir * 0.98, 1); cg.scale(1, 0.32, 1); cg.translate(ix, iy + ir * 0.1, iz); caps.push(cg);
+      crystalCluster(ix, iy + ir * 0.3, iz, 3 + (rng() * 4 | 0), ir / 18);
+    }
+    g.add(mesh(mergeGeoms(isl), rockMat, 0, 0, 0)); g.add(mesh(mergeGeoms(caps), snowMat, 0, 0, 0));
+    if (spires.length) { var extra = spires.splice(0); g.add(mesh(mergeGeoms(extra), crystalMat, 0, 0, 0)); }
+    if (spiresP.length) { var extraP = spiresP.splice(0); g.add(mesh(mergeGeoms(extraP), crystalPink, 0, 0, 0)); }
+
+    // ---- ice arches over the road, landing strips, floating decor rings in flight corridors
+    for (j = J(0.08); j < J(0.11); j += 22) { self.surfacePoint(j, 0, tmp); var arch = mesh(new THREE.TorusGeometry(path.W[j] / 2 + 4, 1.4, 8, 24, Math.PI), iceMat, tmp.x, tmp.y + 0.5, tmp.z); faceAlong(arch, j); g.add(arch); }
+    [0.293, 0.603, 0.887].forEach(function (f, i) { var jl = J(f); self.surfacePoint(jl, 0, tmp); var strip = mesh(new THREE.PlaneGeometry(path.W[jl] + 4, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: CY, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false }), tmp.x, tmp.y + 0.12, tmp.z); faceAlong(strip, jl); strip.castShadow = false; g.add(strip); });
+    var decoRings = [];
+    this.flights.forEach(function (fl) { for (var jj = fl.a + 30; jj < fl.b - 20; jj += 24) { var side = (jj / 24 | 0) % 2 ? 1 : -1; self.surfacePoint(jj, side * (fl.w / 2 + rng.range(8, 30)), tmp); var dr = mesh(new THREE.TorusGeometry(rng.range(3, 7), 0.5, 6, 24), emis(rng() < 0.5 ? CY : PK, 1.2), tmp.x, tmp.y + rng.range(-10, 25), tmp.z); dr.rotation.set(rng() * 3, rng() * 3, 0); dr.userData.v = rng.range(0.3, 0.9); g.add(dr); decoRings.push(dr); } });
+
+    // ---- sky palace at the finish + stands
+    var jf = path.idxOf(this.finishS); self.surfacePoint(jf + 30, 0, tmp);
+    var PX = tmp.x, PY = tmp.y, PZ = tmp.z, fwd = path.T[jf];
+    function tower(dx, dz, r, h) { var x = PX + dx, z = PZ + dz; g.add(mesh(new THREE.CylinderGeometry(r, r * 1.1, h, 12), iceMat, x, PY + h / 2 - 6, z)); g.add(mesh(new THREE.ConeGeometry(r * 1.3, r * 2.2, 12), crystalMat, x, PY + h - 6 + r * 1.1, z)); for (var k = 6; k < h - 6; k += 8) g.add(mesh(new THREE.TorusGeometry(r + 0.3, 0.35, 6, 16).rotateX(Math.PI / 2), emis(CY, 1.2), x, PY + k - 6, z)); }
+    var side = new THREE.Vector3(-fwd.z, 0, fwd.x);
+    tower(fwd.x * 90 + side.x * 40, fwd.z * 90 + side.z * 40, 9, 70); tower(fwd.x * 90 - side.x * 40, fwd.z * 90 - side.z * 40, 9, 70);
+    tower(fwd.x * 130, fwd.z * 130, 16, 110); tower(fwd.x * 60 + side.x * 70, fwd.z * 60 + side.z * 70, 6, 45); tower(fwd.x * 60 - side.x * 70, fwd.z * 60 - side.z * 70, 6, 45);
+    g.add(mesh(new THREE.BoxGeometry(120, 10, 90), iceMat, PX + fwd.x * 110, PY - 11, PZ + fwd.z * 110));
+    for (j = jf - 90; j < jf + 40; j += 12) { [minLat[j] - 16.5, maxLat[j] + 16.5].forEach(function (lat, si) { self.surfacePoint(j, lat, tmp); var st = mesh(new THREE.BoxGeometry(12, 6, 11), iceMat, tmp.x, tmp.y + 3, tmp.z); st.lookAt(path.P[j].x, tmp.y + 3, path.P[j].z); g.add(st); var seat = mesh(new THREE.BoxGeometry(12, 0.6, 11), emis(si ? CY : PK, 0.8), tmp.x, tmp.y + 6.3, tmp.z); seat.lookAt(path.P[j].x, tmp.y + 6.3, path.P[j].z); g.add(seat); }); }
+    self.surfacePoint(jf + 20, 0, tmp);
+    [[120, PK], [90, CY], [60, WH]].forEach(function (rr, i) { var ar = mesh(new THREE.TorusGeometry(rr[0], 1.6, 8, 72).rotateX(Math.PI / 2), emis(rr[1], 1.2), tmp.x, tmp.y - 6 - i * 2, tmp.z); ar.castShadow = false; g.add(ar); });
+
+    // ---- snowflakes
+    var flakeMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffffff, transparent: true, opacity: 0.9, depthWrite: false });
+    var flakes = [];
+    for (i = 0; i < 220; i++) { var fk = new THREE.Sprite(flakeMat); fk.scale.set(0.5, 0.5, 1); fk.position.set(cx + rng.range(-800, 800), rng.range(-40, 80), cz + rng.range(-600, 800)); fk.userData = { v: rng.range(1.5, 3.5), ph: rng() * 6.28 }; g.add(fk); flakes.push(fk); }
+
+    var sunSp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xfffbe6, transparent: true, fog: false })); sunSp.position.set(cx + 900, 900, cz - 1200); sunSp.scale.set(520, 520, 1); g.add(sunSp);
+
+    this.animated.push(function (dt, t) {
+      for (var i = 0; i < flakes.length; i++) { var f = flakes[i]; f.position.y -= f.userData.v * dt; f.position.x += Math.sin(t + f.userData.ph) * dt * 2; if (f.position.y < -60) f.position.y = 80; }
+      for (i = 0; i < puffs.length; i++) puffs[i].position.x += puffs[i].userData.v * dt;
+      for (i = 0; i < rays.length; i++) rays[i].material.opacity = 0.06 + Math.sin(t * 0.6 + rays[i].userData.ph) * 0.04;
+      for (i = 0; i < auroras.length; i++) auroras[i].material.map.offset.x = t * 0.01 * (i + 1);
+      for (i = 0; i < decoRings.length; i++) { decoRings[i].rotation.y += dt * decoRings[i].userData.v; decoRings[i].position.y += Math.sin(t * 0.8 + i) * dt * 0.6; }
     });
   };
 

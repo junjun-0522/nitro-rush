@@ -166,6 +166,7 @@
     this.shieldTime = 0; this.stunTime = 0; this.spinTime = 0; this.spinDir = 1; this.invulnTime = 0; this.hitCooldown = 0;
     this.offroad = false; this.wallContact = 0; this.stuckTime = 0; this.respawnCooldown = 0; this.wrongWay = 0;
     this.lastGoodS = 0; this.lastGoodLat = 0; this.portalCooldown = 0;
+    this.flying = false;
     this.wheelSpin = 0; this.steerVis = 0; this.yawRate = 0; this.accVis = 0;
     this.upSmooth.set(0, 1, 0);
     this.itemsUsed = 0; this.hits = 0;
@@ -331,7 +332,7 @@
     if (inp.respawn && this.respawnCooldown <= 0 && raceOn) { this.respawn(path, track); return; }
 
     var idx = this.idx, halfW = path.W[idx] / 2;
-    var maxS = P.maxSpeed * this.speedScale * this.statMul.speed;
+    var maxS = P.maxSpeed * this.speedScale * this.statMul.speed * (this.flying ? 1.08 : 1);
     if (this.stunTime > 0) maxS *= 0.55;
     if (this.offroad) maxS *= P.dirtSpeed;
     if (this.boostTime > 0) maxS *= this.boostMul;
@@ -442,7 +443,10 @@
     this.prevS = this.s; this.s = pr.s; this.lat = pr.lat;
     halfW = pr.width / 2;
     var minL = track.minLat[idx] + P.wallHalf, maxL = track.maxLat[idx] - P.wallHalf;
-    this.offroad = pr.lat < -halfW - 0.4 || pr.lat > halfW + 0.4;
+    var wasFlying = this.flying;
+    this.flying = !!(track.flightMask && track.flightMask[idx]);
+    if (this.flying !== wasFlying && raceOn) ev.push({ type: this.flying ? 'takeoff' : 'landing' });
+    this.offroad = !this.flying && (pr.lat < -halfW - 0.4 || pr.lat > halfW + 0.4);
     this.wallContact = 0;
     if (track.open) {
       // point-to-point: coast to a stop after the finish line, and never drive past the end of the road
@@ -572,10 +576,11 @@
     var roll = U.clamp(latAcc * 0.0045, -0.16, 0.16) + (this.drifting ? this.driftDir * 0.05 : 0);
     var pitch = U.clamp(-this.accVis * 0.006, -0.08, 0.1);
     if (this.airborne) pitch += U.clamp(-this.vy * 0.02, -0.25, 0.25);
+    if (this.flying) { roll += -this.input.steer * 0.42; pitch += -0.06 + Math.sin(t * 1.7 + this.index) * 0.03; }
     m.body.rotation.z = U.damp(m.body.rotation.z, roll, 10, dt);
     m.body.rotation.x = U.damp(m.body.rotation.x, pitch, 8, dt);
     var bounce = this.offroad && !this.airborne ? Math.sin(t * 45 + this.index) * 0.04 * Math.min(1, this.speed / 8) : 0;
-    m.body.position.y = bounce + (m.hover ? 0.14 + Math.sin(t * 4 + this.index) * 0.05 : 0);
+    m.body.position.y = bounce + (m.hover ? 0.14 + Math.sin(t * 4 + this.index) * 0.05 : 0) + (this.flying ? 0.9 + Math.sin(t * 2.2 + this.index) * 0.25 : 0);
 
     // wheels
     this.wheelSpin += this.vf / m.wheelR * dt;
