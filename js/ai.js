@@ -78,6 +78,13 @@
       if (zk & 1) latT = U.lerp(latT, mn, 0.7);
       if (zk & 2) latT = U.lerp(latT, mx, 0.7);
     }
+    // portals: shortcut-minded drivers line up with the gate
+    if (track.portals && track.portals.length && this.useShortcut) {
+      for (var pp = 0; pp < track.portals.length; pp++) {
+        var po = track.portals[pp], dp = po.s - k.s; if (dp < -L / 2) dp += L; if (dp > L / 2) dp -= L;
+        if (dp > 0 && dp < 75) { latT = U.lerp(latT, po.lat, Math.min(1, (75 - dp) / 40)); break; }
+      }
+    }
     latT = U.clamp(latT, track.minLat[idxT] + 2.2, track.maxLat[idxT] - 2.2);
 
     // avoidance: karts just ahead in a similar lane

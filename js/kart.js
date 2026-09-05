@@ -165,7 +165,7 @@
     this.airborne = false; this.vy = 0; this.prevY = 0;
     this.shieldTime = 0; this.stunTime = 0; this.spinTime = 0; this.spinDir = 1; this.invulnTime = 0; this.hitCooldown = 0;
     this.offroad = false; this.wallContact = 0; this.stuckTime = 0; this.respawnCooldown = 0; this.wrongWay = 0;
-    this.lastGoodS = 0; this.lastGoodLat = 0;
+    this.lastGoodS = 0; this.lastGoodLat = 0; this.portalCooldown = 0;
     this.wheelSpin = 0; this.steerVis = 0; this.yawRate = 0; this.accVis = 0;
     this.upSmooth.set(0, 1, 0);
     this.itemsUsed = 0; this.hits = 0;
@@ -234,6 +234,22 @@
     this.drifting = false; this.driftCharge = 0; this.driftTier = 0; this.spinTime = 0; this.stunTime = 0;
     this.hint = sm.idx; this.invulnTime = 2; this.respawnCooldown = 1; this.stats.respawns++;
     this.events.push({ type: 'respawn' });
+  };
+
+  /** portal teleport: jump to (toS, toLat) keeping speed, mark skipped checkpoints as passed */
+  Kart.prototype.teleport = function (path, track, po) {
+    var sp = Math.max(this.vf, 14);
+    path.posAt(po.toS, po.toLat, this.pos); this.pos.y += 0.25;
+    this.yaw = path.yawAt(po.toS);
+    this.vel.set(Math.sin(this.yaw) * sp, 0, Math.cos(this.yaw) * sp); this.vf = sp; this.vl = 0; this.speed = sp;
+    this.hint = path.idxOf(po.toS); this.s = path.wrap(po.toS); this.prevS = this.s; this.lastGoodS = this.s; this.lastGoodLat = po.toLat; this.lat = po.toLat;
+    this.airborne = false; this.vy = 0; this.drifting = false; this.driftCharge = 0; this.driftTier = 0; this.wrongWay = 0; this.stuckTime = 0;
+    this.upSmooth.set(0, 1, 0);
+    var n = track.cpS.length, cp = Math.min(n - 1, Math.floor(this.s / (path.length / n)));
+    if (cp > this.cpPassed) this.cpPassed = cp;
+    this.portalCooldown = 2.5; this.invulnTime = Math.max(this.invulnTime, 1);
+    this.stats.portals = (this.stats.portals || 0) + 1;
+    this.events.push({ type: 'portal' });
   };
 
   function crossedForward(prev, now, cp, L) {
@@ -488,6 +504,16 @@
             }
           }
         }
+      }
+    }
+
+    // ---- portals -----------------------------------------------------------------------------
+    if (this.portalCooldown > 0) this.portalCooldown -= dt;
+    else if (track.portals && track.portals.length && raceOn && !this.finished) {
+      var Lp = path.length;
+      for (var pi = 0; pi < track.portals.length; pi++) {
+        var po = track.portals[pi], dsp = this.s - po.s; if (dsp > Lp / 2) dsp -= Lp; if (dsp < -Lp / 2) dsp += Lp;
+        if (Math.abs(dsp) < 3.2 && Math.abs(this.lat - po.lat) < po.r) { this.teleport(path, track, po); break; }
       }
     }
 

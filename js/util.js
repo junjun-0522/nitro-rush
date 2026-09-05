@@ -285,6 +285,57 @@
         });
       }, { clamp: true, height: 128 });
     },
+    swirl: function () {
+      return U.canvasTexture('swirl', 256, function (g, w, h) {
+        g.clearRect(0, 0, w, h);
+        var cx = w / 2, cy = h / 2;
+        for (var arm = 0; arm < 3; arm++) {
+          g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 9; g.beginPath();
+          for (var t = 0; t < 6.5; t += 0.05) { var r = t * 19, a = t * 1.6 + arm * 2.094; var x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r; if (t === 0) g.moveTo(x, y); else g.lineTo(x, y); }
+          g.stroke();
+        }
+        var grd = g.createRadialGradient(cx, cy, 5, cx, cy, w / 2); grd.addColorStop(0, 'rgba(255,255,255,0.9)'); grd.addColorStop(0.5, 'rgba(255,255,255,0.25)'); grd.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = grd; g.fillRect(0, 0, w, h);
+      }, { clamp: true });
+    },
+    labFloor: function () {
+      return U.canvasTexture('labFloor', 256, function (g, w, h) {
+        g.fillStyle = '#141a2c'; g.fillRect(0, 0, w, h);
+        g.strokeStyle = 'rgba(70,200,255,0.55)'; g.lineWidth = 3;
+        g.strokeRect(2, 2, w - 4, h - 4);
+        g.strokeStyle = 'rgba(70,200,255,0.18)'; g.lineWidth = 1;
+        for (var i = 64; i < w; i += 64) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.moveTo(0, i); g.lineTo(w, i); g.stroke(); }
+        g.fillStyle = 'rgba(255,255,255,0.05)'; g.fillRect(0, 0, w, h / 2);
+      });
+    },
+    periodic: function () {
+      return U.canvasTexture('periodic', 512, function (g, w, h) {
+        g.fillStyle = '#0d1226'; g.fillRect(0, 0, w, h);
+        var els = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'];
+        var cols = ['#35e6ff', '#ff9a3c', '#b388ff', '#7bffb0', '#ffe066', '#ff5c8a'];
+        var cw = w / 18, ch = h / 7, pos = [[0, 0], [17, 0], [0, 1], [1, 1], [12, 1], [13, 1], [14, 1], [15, 1], [16, 1], [17, 1], [0, 2], [1, 2], [12, 2], [13, 2], [14, 2], [15, 2], [16, 2], [17, 2]];
+        for (var c = 0; c < 18; c++) { pos.push([c, 3]); }
+        for (c = 0; c < 18; c++) { pos.push([c, 4]); }
+        for (c = 0; c < 18; c++) { pos.push([c, 5]); }
+        g.font = 'bold 15px sans-serif'; g.textAlign = 'center';
+        for (var i = 0; i < els.length && i < pos.length; i++) {
+          var x = pos[i][0] * cw, y = pos[i][1] * ch + 6;
+          g.fillStyle = cols[(pos[i][0] + pos[i][1]) % cols.length]; g.globalAlpha = 0.25; g.fillRect(x + 1, y + 1, cw - 2, ch - 2); g.globalAlpha = 1;
+          g.strokeStyle = cols[(pos[i][0] + pos[i][1]) % cols.length]; g.lineWidth = 1; g.strokeRect(x + 1, y + 1, cw - 2, ch - 2);
+          g.fillStyle = '#ffffff'; g.fillText(els[i], x + cw / 2, y + ch / 2 + 5);
+        }
+        g.fillStyle = '#35e6ff'; g.font = 'bold 26px sans-serif'; g.fillText('PERIODIC TABLE · NITRO LAB', w / 2, h - 18);
+      }, { clamp: true });
+    },
+    formula: function () {
+      return U.canvasTexture('formula', 512, function (g, w, h) {
+        g.fillStyle = '#0f2b24'; g.fillRect(0, 0, w, h);
+        g.strokeStyle = '#3a5a50'; g.lineWidth = 8; g.strokeRect(4, 4, w - 8, h - 8);
+        g.fillStyle = '#e8f6ff'; g.font = 'bold 40px sans-serif'; g.textAlign = 'left';
+        ['E = mc²', 'F = ma', 'v = s / t', 'PV = nRT', 'ΔS ≥ 0', 'a = v² / r', 'NITRO = SPEED²'].forEach(function (f, i) { g.fillStyle = i === 6 ? '#ffe066' : '#e8f6ff'; g.fillText(f, 30 + (i % 2) * 250, 60 + Math.floor(i / 2) * 62); });
+        g.strokeStyle = '#7bffb0'; g.lineWidth = 3; g.beginPath(); for (var x = 20; x < w - 20; x += 4) { var y = h - 70 + Math.sin(x * 0.05) * 25; if (x === 20) g.moveTo(x, y); else g.lineTo(x, y); } g.stroke();
+      }, { clamp: true });
+    },
     label: function (key, text, color, bg) {
       return U.canvasTexture('label' + key, 256, function (g, w, h) {
         g.fillStyle = bg || 'rgba(0,0,0,0)'; g.fillRect(0, 0, w, h);

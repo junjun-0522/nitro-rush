@@ -671,6 +671,10 @@
           case 'shieldBreak':
             if (isP || near) { audio.shield(); fx.sparks(k.pos, 20, 0x66ccff, 10); if (isP) showMsg('SHIELD BROKEN', 'cyan'); }
             break;
+          case 'portal':
+            if (isP) { audio.respawn(); flash('rgba(80,230,255,0.7)'); showMsg('WARP!', 'cyan'); fx.addShake(0.4); cam.init = false; }
+            if (near || isP) fx.sparks(k.pos, 30, 0x35e6ff, 12);
+            break;
           case 'respawn':
             if (isP) { audio.respawn(); flash('rgba(120,200,255,0.5)'); }
             break;

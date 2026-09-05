@@ -133,6 +133,34 @@
         tunnel: 0x7a7f86, tunnelLight: 0xfff3b0, portal: 0x8a8f96, portalEm: 0x000000, pillar: 0x6f7378, gate: 0x2b6e3a, gateEm: 0x000000,
         time: 'DAY', stars: false, seed: 3301, gripMul: 1, preview: ['rgba(90,210,130,0.5)', '#3a5a3a', '#ffe066']
       }
+    },
+    {
+      id: 'lab', name: 'NITRO LAB', tag: 'EXPERT', mood: 'lab', laps: 1,
+      desc: '거대한 미래 과학실 안을 달리는 3.3km 단판 승부. 실험대 위 3연속 헤어핀과 18m 낙하 점프, 반응로 헤어핀, 시험관 에스, 그리고 구간을 건너뛰는 워프 포탈 2개.',
+      pts: [[0,0,0],[0,28,0],[0,56,0],[0,84,0],[0,112,0],[0,140,0],[-0.4,156,0],[-5.2,171.2,0],[-14.9,183.7,0],[-25.6,195.5,0.1],[-31.6,210.3,1.4],[-32.5,238.2,5.9],[-32.5,266.2,11.6],[-32.4,282.2,14.5],[-29.6,297.9,16.8],[-22.7,312.3,17.9],[-12.3,324.4,18],[1,333.3,18],[16.1,338.4,18],[44,339.6,18],[72,339.7,18],[100,339.8,18],[128,339.9,18],[147,340,18],[162.5,343.5,18],[174.8,353.5,18],[182.1,367.7,18],[194.1,377.8,18],[209.8,378.4,18],[222.5,369.1,18],[226.9,341.9,18],[227.3,313.9,18],[230.7,298.6,18],[242.8,288.5,18],[258.5,288.1,18],[271.1,297.5,18],[281.1,323.5,18],[288.8,345.2,18],[298.4,357.6,18],[313.7,361.4,18],[328,355,18],[335.2,341,18],[335.8,313.1,18],[337.4,297.2,18],[344.8,283.1,17.8],[357,273,16],[372.2,268.4,12.8],[400.2,268.7,6.2],[428.2,269.1,2.1],[456.2,269.6,1.8],[472.1,267.8,1.6],[486.9,261.8,1.2],[499.6,252.2,0.9],[509.4,239.6,0.5],[515.5,224.9,0.2],[517.7,197,0],[518.3,169,0],[518.6,151,0],[521.7,135.4,0],[530,121.8,0],[542.5,112,0],[557.6,107.1,0],[573.5,107.8,0],[588.2,114,0],[599.8,124.9,0],[606.8,139.2,0],[608.3,167,0],[607.6,195,0],[607,223,0],[607.1,239,0],[611.7,254.2,0],[621.3,266.9,0],[634.7,275.4,0],[650.3,278.7,0],[666,276.4,0],[680,268.8,0],[690.4,256.8,0],[696,241.9,0],[697.2,213.9,0],[697.7,185.9,0],[698.3,157.9,0],[698.9,129.9,0],[699.4,101.9,0.5],[700,73.9,3.2],[700.6,45.9,6.5],[701.1,18,8],[701.7,-10,8],[702.3,-38,8],[702.8,-65,8],[700.4,-80.8,8],[692.6,-94.7,7.6],[680.6,-105,6.8],[665.6,-110.5,5.5],[637.7,-111.7,3],[609.7,-112.4,0.9],[581.7,-113.1,0],[565.7,-113.3,0],[550.1,-110.2,0],[536.2,-102.2,0],[525.6,-90.4,0],[515.6,-78,0],[502.2,-69.4,0],[486.7,-65.4,0],[470.8,-64.4,0],[455.8,-59.1,0],[443.2,-49.3,0],[433.8,-36.4,0],[422.1,-25.6,0],[407.6,-18.9,0],[379.8,-17.4,0],[351.8,-18.1,0],[323.8,-18.8,0],[308.9,-23.7,0],[299.8,-36.5,0],[300.1,-52.2,0],[309.8,-64.6,0],[334.4,-78.1,0],[355.5,-89.5,0],[366.4,-100.9,0],[368.3,-116.5,0],[360.5,-130.2,0],[346.1,-136.5,0],[318.1,-137.2,0],[290.1,-137.9,0],[262.2,-138.6,0],[244.7,-139,0],[229.3,-142.9,0],[217.2,-153.1,0.3],[210.8,-167.7,1.1],[211.6,-183.5,2.3],[219.2,-197.4,3.5],[232.2,-206.5,4.5],[258.7,-215.7,5],[285.2,-224.8,5],[299.7,-231.3,5],[310.1,-243.3,5],[314.2,-258.6,5],[311.1,-274.2,5],[301.4,-286.8,5],[287.2,-293.8,5],[259.3,-295.2,4],[231.3,-295.9,2],[203.3,-296.6,0.3],[175.3,-297.3,0],[159.3,-297.7,0],[143.7,-294.6,0],[130.6,-285.7,0],[121.9,-272.4,0],[119.1,-256.7,0],[115.9,-240.5,0],[109,-225.6,0],[99.6,-212.6,0],[88.6,-200.6,0],[76.6,-189.4,0],[64.4,-178.9,0],[52,-168.4,0],[39.8,-157.8,0],[28.1,-146.6,0],[17.4,-134.5,0],[8.3,-120.9,0],[2.1,-105.8,0],[0,-78,0],[0,-50,0],[0,-22,0]],
+      width: 19, narrow: [[0.158, 0.262, 15], [0.60, 0.672, 15], [0.685, 0.748, 14]],
+      zones: [
+        { a: 0.356, b: 0.394, side: -1, extra: 16, kind: 'dirt' },   // 반응로 헤어핀 1 안쪽
+        { a: 0.424, b: 0.461, side: 1, extra: 16, kind: 'dirt' },    // 반응로 헤어핀 2 안쪽
+        { a: 0.692, b: 0.706, side: -1, extra: 10, kind: 'dirt' },   // 현미경 헤어핀 안쪽
+        { a: 0.778, b: 0.801, side: -1, extra: 12, kind: 'dirt' },   // DNA 헤어핀 안쪽
+        { a: 0.891, b: 0.906, side: 1, extra: 14, kind: 'dirt' }     // 마지막 코너 안쪽
+      ],
+      ramps: [{ a: 0.266, b: 0.275, h: 2.6 }, { a: 0.583, b: 0.591, h: 2.2 }, { a: 0.862, b: 0.869, h: 1.8 }],
+      tunnels: [{ a: 0.472, b: 0.502 }, { a: 0.582, b: 0.600 }],
+      portals: [
+        { a: 0.160, lat: 5.2, r: 4.2, to: 0.226, toLat: 0 },       // 실험대 헤어핀 1·2 건너뛰기
+        { a: 0.770, lat: -5.2, r: 4.2, to: 0.855, toLat: 0 }       // DNA 헤어핀 건너뛰기
+      ],
+      boostPads: [{ s: 0.03, lat: 0 }, { s: 0.125, lat: 0 }, { s: 0.30, lat: 0 }, { s: 0.468, lat: 0 }, { s: 0.52, lat: 3 }, { s: 0.61, lat: 0 }, { s: 0.755, lat: 0 }, { s: 0.87, lat: 0 }, { s: 0.94, lat: 0 }],
+      itemRows: [0.04, 0.13, 0.24, 0.33, 0.44, 0.54, 0.63, 0.73, 0.83, 0.93],
+      theme: {
+        sky: [0x0a0f24, 0x16204a], fog: 0x0d1330, fogNear: 320, fogFar: 1000,
+        sun: 0xbfe4ff, sunInt: 1.15, sunDir: [0.3, 1, 0.4], hemi: [0x4a7bff, 0x16203a], hemiInt: 1.25, exposure: 1.2,
+        road: 'asphaltNight', roadTint: 0xb8c8ff, rail: 0x1a2240, railEm: 0x35e6ff, ground: 'concrete', skirt: 'concrete',
+        tunnel: 0x151a2e, tunnelLight: 0x35e6ff, portal: 0x35e6ff, portalEm: 0x35e6ff, pillar: 0x1d2440, gate: 0x1a2240, gateEm: 0x35e6ff,
+        time: 'NIGHT', stars: false, seed: 4242, gripMul: 0.94, preview: ['rgba(53,230,255,0.45)', '#101a33', '#35e6ff']
+      }
     }
   ];
 
@@ -326,8 +354,32 @@
 
     this._buildRoad();
     this._buildScenery();
+    this._buildPortals();
     scene.add(this.group);
   }
+
+  /** teleport portals: def.portals = [{ a, lat, r, to, toLat }] (fractions of the lap) */
+  Track.prototype._buildPortals = function () {
+    var path = this.path, self = this, tex = U.tex, g = this.group;
+    this.portals = (this.def.portals || []).map(function (p) { return { s: p.a * path.length, lat: p.lat || 0, r: p.r || 4.5, toS: p.to * path.length, toLat: p.toLat || 0 }; });
+    if (!this.portals.length) return;
+    var tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), rings = [];
+    function gate(s, lat, r, color, isExit) {
+      var j = path.idxOf(s), grp = new THREE.Group();
+      self.surfacePoint(j, lat, tmp); tmp2.copy(tmp).add(path.T[j]);
+      grp.position.set(tmp.x, tmp.y + r + 0.3, tmp.z); grp.lookAt(tmp2.x, tmp.y + r + 0.3, tmp2.z);
+      var ring = new THREE.Mesh(new THREE.TorusGeometry(r + 0.6, 0.45, 10, 40), new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 1.4, roughness: 0.3, metalness: 0.4 }));
+      grp.add(ring);
+      var disc = new THREE.Mesh(new THREE.CircleGeometry(r + 0.3, 40), new THREE.MeshBasicMaterial({ map: tex.swirl(), color: color, transparent: true, opacity: isExit ? 0.35 : 0.6, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+      grp.add(disc);
+      [-1, 1].forEach(function (sd) { var col = new THREE.Mesh(new THREE.BoxGeometry(0.5, r * 2 + 1.2, 0.5), new THREE.MeshStandardMaterial({ color: 0x1a2240, emissive: color, emissiveIntensity: 0.6 })); col.position.set(sd * (r + 1.2), 0, 0); grp.add(col); });
+      var pad = new THREE.Mesh(new THREE.RingGeometry(r * 0.4, r + 1, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false }));
+      pad.position.set(tmp.x, tmp.y + 0.08, tmp.z); g.add(pad);
+      g.add(grp); rings.push({ disc: disc, ring: ring, dir: isExit ? -1 : 1 });
+    }
+    this.portals.forEach(function (p) { gate(p.s, p.lat, p.r, 0x35e6ff, false); gate(p.toS, p.toLat, p.r, 0xff9a3c, true); });
+    this.animated.push(function (dt, t) { for (var i = 0; i < rings.length; i++) { rings[i].disc.rotation.z += dt * 2.2 * rings[i].dir; rings[i].ring.material.emissiveIntensity = 1.1 + Math.sin(t * 4 + i) * 0.4; } });
+  };
 
   Track.prototype.dispose = function (scene) {
     scene.remove(this.group);
@@ -566,7 +618,7 @@
     var rng = U.rng(th.seed);
     g.add(skyDome(th.sky[0], th.sky[1], th.stars));
     var groundY = -0.3;
-    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju }[th.mood] || this._sceneryCoast;
+    var fn = { coast: this._sceneryCoast, neon: this._sceneryNeon, canyon: this._sceneryCanyon, frost: this._sceneryFrost, seoul: this._scenerySeoul, jeju: this._sceneryJeju, lab: this._sceneryLab }[th.mood] || this._sceneryCoast;
     fn.call(this, rng, this.envelope, null, groundY);
   };
 
@@ -1393,6 +1445,213 @@
     for (var c = 0; c < 22; c++) { var a2 = rng() * Math.PI * 2, r2 = rng.range(300, 900), cl = new THREE.Sprite(cloudMat); cl.position.set(50 + Math.cos(a2) * r2, rng.range(120, 200), -220 + Math.sin(a2) * r2); var s2 = rng.range(50, 120); cl.scale.set(s2 * 1.6, s2 * 0.8, 1); g.add(cl); }
     var sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.particle(), color: 0xfff1b0, transparent: true, fog: false }));
     sun.position.set(400, 520, -700); sun.scale.set(240, 240, 1); g.add(sun);
+  };
+
+
+  // ------------------------------------------------------------- NITRO LAB (giant futuristic science room)
+  Track.prototype._sceneryLab = function (rng, envelope, _unused, groundY) {
+    var g = this.group, tex = U.tex, path = this.path, self = this, N = path.N;
+    var tmp = new THREE.Vector3(), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), e = new THREE.Euler();
+    function mesh(geo, mat, x, y, z) { var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; }
+    function emis(color, i, extra) { var o = { color: color, emissive: color, emissiveIntensity: i === undefined ? 0.9 : i, roughness: 0.3, metalness: 0.2 }; if (extra) for (var k in extra) o[k] = extra[k]; return new THREE.MeshStandardMaterial(o); }
+    var CYAN = 0x35e6ff, ORANGE = 0xff9a3c, PURPLE = 0xb388ff, GREEN = 0x7bffb0, YELLOW = 0xffe066, PINK = 0xff5c8a;
+    var steelMat = new THREE.MeshStandardMaterial({ color: 0x8a94a8, roughness: 0.35, metalness: 0.7 });
+    var darkMat = new THREE.MeshStandardMaterial({ color: 0x1b2136, roughness: 0.6, metalness: 0.4 });
+    var whiteMat = new THREE.MeshStandardMaterial({ color: 0xdfe6f2, roughness: 0.5, metalness: 0.1 });
+    var glassMat = new THREE.MeshStandardMaterial({ color: 0xbfe8ff, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false });
+    var CX = 335, CZ = 40;   // room centre
+
+    // ---- floor / walls / ceiling
+    var floorTex = tex.labFloor(); floorTex.repeat.set(70, 70);
+    var floor = mesh(new THREE.PlaneGeometry(2600, 2600).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.5, metalness: 0.3, emissive: 0x0b1a33, emissiveIntensity: 0.4 }), CX, groundY + 0.01, CZ);
+    floor.castShadow = false; g.add(floor);
+    var R = 780, WH = 300;
+    var wallMat = new THREE.MeshStandardMaterial({ color: 0x151b33, roughness: 0.8, metalness: 0.2 });
+    [[CX, CZ - R, 0], [CX, CZ + R, Math.PI], [CX - R, CZ, Math.PI / 2], [CX + R, CZ, -Math.PI / 2]].forEach(function (w, i) {
+      var wall = mesh(new THREE.PlaneGeometry(R * 2, WH), wallMat, w[0], groundY + WH / 2, w[1]); wall.rotation.y = w[2]; wall.castShadow = false; g.add(wall);
+      // glowing trim lines + windows to the void
+      for (var yb = 30; yb < WH; yb += 60) { var trim = mesh(new THREE.BoxGeometry(R * 2, 0.8, 0.8), emis(i % 2 ? PURPLE : CYAN, 1.2), w[0], groundY + yb, w[1]); trim.rotation.y = w[2]; trim.castShadow = false; g.add(trim); }
+    });
+    // posters: periodic table (south wall), formula board (north wall), big screens (east/west)
+    var poster = mesh(new THREE.PlaneGeometry(360, 200), new THREE.MeshBasicMaterial({ map: tex.periodic() }), CX - 150, groundY + 150, CZ - R + 1); g.add(poster);
+    var board = mesh(new THREE.PlaneGeometry(320, 160), new THREE.MeshBasicMaterial({ map: tex.formula() }), CX + 200, groundY + 140, CZ + R - 1); board.rotation.y = Math.PI; g.add(board);
+    [['NITRO LAB · SECTOR 7', CYAN], ['WARP GATE ONLINE', ORANGE], ['EXPERIMENT 42', GREEN], ['1 LAP · NO MERCY', PINK]].forEach(function (t, i) {
+      var sx = i < 2 ? CX - R + 1 : CX + R - 1, sz = CZ - 250 + (i % 2) * 500;
+      var scr = mesh(new THREE.PlaneGeometry(260, 65), new THREE.MeshBasicMaterial({ map: tex.label('lab' + i, t[0], '#' + t[1].toString(16).padStart(6, '0'), '#0b1226') }), sx, groundY + 120, sz);
+      scr.rotation.y = i < 2 ? Math.PI / 2 : -Math.PI / 2; g.add(scr);
+    });
+    var ceil = mesh(new THREE.PlaneGeometry(R * 2, R * 2).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x0b0f22, roughness: 1 }), CX, groundY + WH, CZ); ceil.castShadow = false; g.add(ceil);
+    var panels = [];
+    for (var px = -600; px <= 600; px += 200) for (var pz = -600; pz <= 600; pz += 200) { var pg = new THREE.BoxGeometry(70, 1.5, 12); pg.translate(CX + px, groundY + WH - 1, CZ + pz); panels.push(pg); }
+    var panelMesh = mesh(mergeGeoms(panels), emis(0xdff4ff, 1.6), 0, 0, 0); panelMesh.castShadow = false; g.add(panelMesh);
+
+    // ---- lab table under the elevated section (road y=18 from f 0.10 to 0.27)
+    var TX = 200, TZ = 322, TW = 360, TD = 150, TH = 17.2;
+    g.add(mesh(new THREE.BoxGeometry(TW, 2.2, TD), whiteMat, TX, groundY + TH - 1.1, TZ));
+    g.add(mesh(new THREE.BoxGeometry(TW + 2, 0.6, TD + 2), emis(CYAN, 1.0), TX, groundY + TH - 2.4, TZ));
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (c) { g.add(mesh(new THREE.CylinderGeometry(4, 5, TH - 2.2, 10), steelMat, TX + c[0] * (TW / 2 - 12), groundY + (TH - 2.2) / 2, TZ + c[1] * (TD / 2 - 12))); });
+    // table-top props: microscope, book stack, petri dishes
+    (function microscope(x, z, y0, s) {
+      var mg = new THREE.Group(); mg.position.set(x, y0, z); mg.scale.set(s, s, s);
+      mg.add(mesh(new THREE.CylinderGeometry(6, 8, 1.5, 16), darkMat, 0, 0.75, 0));
+      var arm = mesh(new THREE.BoxGeometry(2.2, 14, 2.2), steelMat, -3.5, 8, 0); arm.rotation.z = 0.35; mg.add(arm);
+      mg.add(mesh(new THREE.CylinderGeometry(1.4, 1.8, 10, 12), whiteMat, 1.2, 12, 0));
+      mg.add(mesh(new THREE.CylinderGeometry(1.0, 1.4, 3, 12), darkMat, 1.2, 6, 0));
+      mg.add(mesh(new THREE.BoxGeometry(7, 0.6, 5), steelMat, 1.2, 3.6, 0));
+      mg.add(mesh(new THREE.CylinderGeometry(0.4, 0.4, 3, 8), emis(GREEN, 1.3), 1.2, 2.2, 0));
+      g.add(mg);
+    })(70, 385, groundY + TH, 2.2);
+    [[110, 285, 0xff5c8a], [95, 268, 0x7bffb0], [125, 272, 0xb388ff]].forEach(function (b, i) { g.add(mesh(new THREE.BoxGeometry(34 - i * 4, 6, 22), new THREE.MeshStandardMaterial({ color: b[2], roughness: 0.7 }), b[0], groundY + TH + 3 + i * 6, b[1])); });
+    [[300, 385], [320, 372], [260, 388]].forEach(function (pd) { g.add(mesh(new THREE.CylinderGeometry(7, 7, 1, 20), glassMat, pd[0], groundY + TH + 0.5, pd[1])); g.add(mesh(new THREE.CylinderGeometry(4, 4, 0.6, 14), emis(GREEN, 1.2), pd[0], groundY + TH + 0.7, pd[1])); });
+    // warning sign before the table drop
+    var bubbles = [];
+    function neonSign(key, text, x, z, fx, fz, color, w) {
+      w = w || 18; var grp = new THREE.Group();
+      grp.add(mesh(new THREE.BoxGeometry(w, w * 0.25, 0.4), new THREE.MeshBasicMaterial({ map: tex.label('labsign' + key, text, '#ffffff', '#' + color.toString(16).padStart(6, '0')) }), 0, 8, 0));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.6, w * 0.25 + 0.6, 0.2), new THREE.MeshStandardMaterial({ color: 0x0e1224, emissive: color, emissiveIntensity: 0.22, roughness: 0.5 }), 0, 8, -0.32));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.25, 0.25), emis(color, 1.4), 0, 8 + w * 0.125 + 0.3, -0.2));
+      grp.add(mesh(new THREE.BoxGeometry(w + 0.8, 0.25, 0.25), emis(color, 1.4), 0, 8 - w * 0.125 - 0.3, -0.2));
+      grp.add(mesh(new THREE.BoxGeometry(0.6, 7, 0.6), steelMat, 0, 3.5, -0.1));
+      grp.position.set(x, groundY, z); grp.lookAt(fx, groundY, fz); g.add(grp); return grp;
+    }
+    function trackSign(key, text, f, lat, color, w) { var j = Math.round(f * N) % N, jb = (j - 30 + N) % N; self.surfacePoint(j, lat, tmp); var sg = neonSign(key, text, tmp.x, tmp.z, path.P[jb].x, path.P[jb].z, color, w); sg.position.y = tmp.y - 0.4; return sg; }
+    trackSign('drop', 'DANGER · 18m DROP', 0.255, self.maxLat[Math.round(0.255 * N)] + 7, PINK, 16);
+    trackSign('warp1', 'WARP GATE →', 0.148, self.maxLat[Math.round(0.148 * N)] + 6, ORANGE, 16);
+    trackSign('warp2', 'WARP GATE →', 0.758, self.minLat[Math.round(0.758 * N)] - 6, ORANGE, 16);
+    trackSign('reactor', 'REACTOR CORE', 0.345, self.minLat[Math.round(0.345 * N)] - 6, CYAN, 18);
+    trackSign('tube', 'SPECIMEN TUBES', 0.595, self.maxLat[Math.round(0.595 * N)] + 6, GREEN, 18);
+    trackSign('dna', 'DNA SEQUENCER', 0.75, self.maxLat[Math.round(0.75 * N)] + 6, PURPLE, 18);
+    trackSign('final', 'FINAL SECTOR', 0.915, self.maxLat[Math.round(0.915 * N)] + 6, YELLOW, 18);
+    trackSign('lab', 'NITRO LAB', 0.985, self.minLat[Math.round(0.985 * N)] - 6, CYAN, 16);
+
+    // ---- giant beakers with glowing liquid + rising bubbles
+    var bubbleMat = new THREE.SpriteMaterial({ map: tex.particle(), color: 0xffffff, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending });
+    function beaker(x, z, r, h, color) {
+      g.add(mesh(new THREE.CylinderGeometry(r, r * 0.92, h, 28, 1, true), glassMat, x, groundY + h / 2, z));
+      g.add(mesh(new THREE.TorusGeometry(r + 0.6, 1.2, 8, 32).rotateX(Math.PI / 2), glassMat, x, groundY + h, z));
+      var liq = mesh(new THREE.CylinderGeometry(r - 0.8, r * 0.92 - 0.8, h * 0.6, 28), emis(color, 0.8, { transparent: true, opacity: 0.85 }), x, groundY + h * 0.3, z); g.add(liq);
+      for (var i = 0; i < 14; i++) { var b = new THREE.Sprite(bubbleMat); var a = rng() * 6.28, rr = rng() * (r - 3); b.position.set(x + Math.cos(a) * rr, groundY + rng() * h * 0.6, z + Math.sin(a) * rr); b.scale.set(rng.range(1, 3), rng.range(1, 3), 1); b.userData = { v: rng.range(2, 5), top: groundY + h * 0.6, bot: groundY + 1 }; g.add(b); bubbles.push(b); }
+      // label strip
+      g.add(mesh(new THREE.BoxGeometry(r * 1.2, h * 0.12, 0.3), new THREE.MeshBasicMaterial({ map: tex.label('bk' + x, (Math.round(h * 20)) + ' mL', '#ffffff', '#1a2240') }), x, groundY + h * 0.75, z + r + 0.2));
+    }
+    beaker(350, 120, 32, 76, CYAN);
+    beaker(-160, 110, 28, 64, GREEN);
+    beaker(200, 480, 36, 84, PURPLE);
+    beaker(620, -240, 30, 70, ORANGE);
+    beaker(880, 120, 26, 60, PINK);
+    // Erlenmeyer flasks
+    [[-140, -230, 34, 80, YELLOW], [800, 330, 40, 96, GREEN]].forEach(function (f) {
+      g.add(mesh(new THREE.CylinderGeometry(f[2] * 0.3, f[2], f[3] * 0.75, 28, 1, true), glassMat, f[0], groundY + f[3] * 0.375, f[1]));
+      g.add(mesh(new THREE.CylinderGeometry(f[2] * 0.3, f[2] * 0.3, f[3] * 0.3, 20, 1, true), glassMat, f[0], groundY + f[3] * 0.9, f[1]));
+      g.add(mesh(new THREE.CylinderGeometry(f[2] * 0.62, f[2] - 0.8, f[3] * 0.3, 28), emis(f[4], 0.8, { transparent: true, opacity: 0.85 }), f[0], groundY + f[3] * 0.15, f[1]));
+    });
+
+    // ---- specimen tube rack beside the S-curves (south of them) + tube tunnel decor
+    var rackX = 480, rackZ = -200;
+    g.add(mesh(new THREE.BoxGeometry(220, 4, 30), darkMat, rackX, groundY + 2, rackZ));
+    g.add(mesh(new THREE.BoxGeometry(220, 2, 30), steelMat, rackX, groundY + 40, rackZ));
+    [CYAN, GREEN, PINK, PURPLE, ORANGE, YELLOW, CYAN, GREEN].forEach(function (c, i) {
+      var x = rackX - 96 + i * 27.5;
+      g.add(mesh(new THREE.CylinderGeometry(8, 8, 60, 20, 1, true), glassMat, x, groundY + 34, rackZ));
+      g.add(mesh(new THREE.SphereGeometry(8, 20, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), glassMat, x, groundY + 4, rackZ));
+      g.add(mesh(new THREE.CylinderGeometry(7, 7, 30 + (i % 3) * 8, 20), emis(c, 0.8, { transparent: true, opacity: 0.85 }), x, groundY + 4 + 15 + (i % 3) * 4, rackZ));
+      g.add(mesh(new THREE.CylinderGeometry(8.5, 8.5, 3, 20), steelMat, x, groundY + 64, rackZ));
+    });
+
+    // ---- reactor core (inside hairpin 1) + reactor tower outside the bulge
+    var coreGroups = [];
+    function core(x, z, y, r) {
+      var cg = new THREE.Group(); cg.position.set(x, y, z);
+      cg.add(mesh(new THREE.SphereGeometry(r, 20, 14), emis(CYAN, 1.6)));
+      [[1.6, 0], [2.1, 1.1], [2.6, 2.2]].forEach(function (rr) { var ring = mesh(new THREE.TorusGeometry(r * rr[0], r * 0.09, 8, 40), emis(ORANGE, 1.2)); ring.rotation.x = rr[1]; ring.userData.ax = rr[1]; cg.add(ring); });
+      g.add(cg); coreGroups.push(cg); return cg;
+    }
+    core(563.6, 152, groundY + 22, 6);
+    core(651.8, 233.5, groundY + 22, 6);
+    g.add(mesh(new THREE.CylinderGeometry(38, 44, 130, 24), darkMat, 760, groundY + 65, 130));
+    for (var rb = 12; rb < 130; rb += 24) g.add(mesh(new THREE.TorusGeometry(42, 1.6, 8, 40).rotateX(Math.PI / 2), emis(CYAN, 1.3), 760, groundY + rb, 130));
+    core(760, 130, groundY + 150, 14);
+
+    // ---- DNA helices: giant one inside the loop, small one in the DNA hairpin
+    var helices = [];
+    function dna(x, z, r, h, n) {
+      var hg = new THREE.Group(); hg.position.set(x, groundY, z);
+      var sph = new THREE.SphereGeometry(r * 0.16, 10, 8), rung = new THREE.CylinderGeometry(r * 0.05, r * 0.05, r * 2, 6).rotateZ(Math.PI / 2);
+      var ma = emis(CYAN, 1.2), mb = emis(PINK, 1.2), mr = new THREE.MeshStandardMaterial({ color: 0xdfe6f2, emissive: 0x3350aa, emissiveIntensity: 0.6 });
+      for (var i = 0; i < n; i++) {
+        var a = i / n * Math.PI * 4, y = 4 + (i / n) * h;
+        hg.add(mesh(sph, ma, Math.cos(a) * r, y, Math.sin(a) * r)); hg.add(mesh(sph, mb, -Math.cos(a) * r, y, -Math.sin(a) * r));
+        var rg = mesh(rung, mr, 0, y, 0); rg.rotation.y = -a; hg.add(rg);
+      }
+      g.add(hg); helices.push(hg);
+    }
+    dna(470, 100, 16, 130, 34);
+    dna(245.5, -174, 6, 40, 16);
+    dna(-120, 320, 12, 100, 28);
+
+    // ---- robot arms along the long east straight
+    var arms = [];
+    [[755, 20], [755, -40], [755, 80]].forEach(function (p, i) {
+      var base = new THREE.Group(); base.position.set(p[0], groundY, p[1]);
+      base.add(mesh(new THREE.CylinderGeometry(5, 6, 4, 12), darkMat, 0, 2, 0));
+      var j1 = new THREE.Group(); j1.position.y = 4; base.add(j1);
+      j1.add(mesh(new THREE.BoxGeometry(3, 26, 3), steelMat, 0, 13, 0));
+      var j2 = new THREE.Group(); j2.position.y = 26; j1.add(j2);
+      j2.add(mesh(new THREE.BoxGeometry(2.4, 22, 2.4), whiteMat, 0, 11, 0));
+      j2.add(mesh(new THREE.SphereGeometry(2.4, 10, 8), emis(ORANGE, 1.2), 0, 22, 0));
+      j1.rotation.z = -0.6; j2.rotation.z = 1.2;
+      g.add(base); arms.push({ j1: j1, j2: j2, ph: i * 2.1 });
+    });
+
+    // ---- holographic rings above the start straight and the finish straight, drones, laser fence
+    var holos = [];
+    for (var j = Math.round(0.005 * N); j < Math.round(0.045 * N); j += 14) {
+      var ring = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(CYAN, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 3, path.P[j].z);
+      ring.rotation.x = Math.PI / 2; ring.castShadow = false; g.add(ring); holos.push(ring);
+    }
+    for (j = Math.round(0.93 * N); j < Math.round(0.985 * N); j += 14) {
+      var ring2 = mesh(new THREE.TorusGeometry(14, 0.35, 6, 48), emis(PURPLE, 1.4, { transparent: true, opacity: 0.6 }), path.P[j].x, path.P[j].y + 3, path.P[j].z);
+      ring2.rotation.x = Math.PI / 2; ring2.castShadow = false; g.add(ring2); holos.push(ring2);
+    }
+    var drones = [];
+    for (var d = 0; d < 8; d++) {
+      var dr = new THREE.Group();
+      dr.add(mesh(new THREE.BoxGeometry(3, 1, 3), darkMat, 0, 0, 0));
+      dr.add(mesh(new THREE.SphereGeometry(0.6, 8, 6), emis([CYAN, PINK, GREEN, ORANGE][d % 4], 1.6), 0, -0.7, 0));
+      [[-1.6, -1.6], [1.6, -1.6], [-1.6, 1.6], [1.6, 1.6]].forEach(function (rp) { dr.add(mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.15, 10), steelMat, rp[0], 0.6, rp[1])); });
+      var fj = Math.round(rng() * N); dr.userData = { j: fj, side: rng() < 0.5 ? -1 : 1, h: rng.range(6, 14), v: rng.range(8, 16) * (rng() < 0.5 ? -1 : 1) };
+      g.add(dr); drones.push(dr);
+    }
+    var lasers = [];
+    for (j = Math.round(0.47 * N); j < Math.round(0.55 * N); j += 2) {
+      if (j % 40 === 0) { self.surfacePoint(j, self.maxLat[j] + 3, tmp); var post = mesh(new THREE.BoxGeometry(0.6, 4, 0.6), darkMat, tmp.x, tmp.y + 2, tmp.z); g.add(post); }
+    }
+    for (var ls = 0; ls < 2; ls++) {
+      var j0 = Math.round(0.47 * N), j1 = Math.round(0.55 * N); self.surfacePoint(j0, self.maxLat[j0] + 3, tmp); var a0 = tmp.clone(); self.surfacePoint(j1, self.maxLat[j1] + 3, tmp);
+      var len = a0.distanceTo(tmp), beam = mesh(new THREE.CylinderGeometry(0.12, 0.12, len, 5), emis(ls ? PINK : CYAN, 2.0), 0, 0, 0);
+      beam.position.copy(a0).lerp(tmp, 0.5); beam.position.y += 1.2 + ls * 1.6; beam.lookAt(tmp.x, beam.position.y, tmp.z); beam.rotateX(Math.PI / 2); beam.castShadow = false; g.add(beam); lasers.push(beam);
+    }
+    // giant pencil + ruler on the floor
+    var pencil = new THREE.Group(); pencil.position.set(420, groundY + 7, -380);
+    pencil.add(mesh(new THREE.CylinderGeometry(7, 7, 300, 6).rotateZ(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffc933, roughness: 0.7 }), 0, 0, 0));
+    pencil.add(mesh(new THREE.ConeGeometry(7, 26, 6).rotateZ(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xe8cfa0, roughness: 0.8 }), 163, 0, 0));
+    pencil.add(mesh(new THREE.ConeGeometry(2.6, 9, 6).rotateZ(-Math.PI / 2), darkMat, 176, 0, 0));
+    pencil.add(mesh(new THREE.CylinderGeometry(7.2, 7.2, 14, 6).rotateZ(Math.PI / 2), steelMat, -152, 0, 0));
+    pencil.add(mesh(new THREE.CylinderGeometry(6.6, 6.6, 12, 6).rotateZ(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xff7aa8, roughness: 0.9 }), -165, 0, 0));
+    pencil.rotation.y = 0.2; g.add(pencil);
+    g.add(mesh(new THREE.BoxGeometry(24, 2, 380), new THREE.MeshStandardMaterial({ color: 0xffe99a, roughness: 0.8 }), -200, groundY + 1, -60));
+    for (var rk = -180; rk <= 180; rk += 20) g.add(mesh(new THREE.BoxGeometry(rk % 100 === 0 ? 12 : 6, 0.3, 1.2), darkMat, -206 + (rk % 100 === 0 ? 3 : 0), groundY + 2.2, -60 + rk));
+
+    // ---- animation
+    this.animated.push(function (dt, t) {
+      for (var i = 0; i < bubbles.length; i++) { var b = bubbles[i]; b.position.y += b.userData.v * dt; if (b.position.y > b.userData.top) b.position.y = b.userData.bot; }
+      for (i = 0; i < coreGroups.length; i++) { var cg = coreGroups[i]; cg.children[0].scale.setScalar(1 + Math.sin(t * 3 + i) * 0.08); for (var c = 1; c < cg.children.length; c++) { cg.children[c].rotation.y += dt * (0.6 + c * 0.35); cg.children[c].rotation.x = cg.children[c].userData.ax + Math.sin(t * 0.7 + c) * 0.3; } }
+      for (i = 0; i < helices.length; i++) helices[i].rotation.y += dt * 0.35;
+      for (i = 0; i < arms.length; i++) { arms[i].j1.rotation.z = -0.6 + Math.sin(t * 0.8 + arms[i].ph) * 0.35; arms[i].j2.rotation.z = 1.2 + Math.cos(t * 1.1 + arms[i].ph) * 0.5; arms[i].j1.rotation.y = Math.sin(t * 0.5 + arms[i].ph) * 0.6; }
+      for (i = 0; i < holos.length; i++) { holos[i].rotation.z += dt * 0.8; holos[i].material.opacity = 0.35 + Math.sin(t * 2 + i) * 0.25; }
+      for (i = 0; i < drones.length; i++) { var dr = drones[i], u = dr.userData; u.j = ((u.j + u.v * dt / path.ds) % N + N) % N; var jj = Math.floor(u.j); self.surfacePoint(jj, u.side * (path.W[jj] / 2 + 6), tmp); dr.position.set(tmp.x, tmp.y + u.h + Math.sin(t * 2 + i) * 1.2, tmp.z); dr.rotation.y += dt; }
+      for (i = 0; i < lasers.length; i++) lasers[i].material.emissiveIntensity = 1.4 + Math.sin(t * 9 + i * 2) * 0.6;
+    });
   };
 
   Track.prototype.update = function (dt, t) {
