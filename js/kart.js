@@ -127,6 +127,8 @@
   function Kart(opts) {
     this.name = opts.name; this.isPlayer = !!opts.isPlayer; this.index = opts.index;
     this.remote = !!opts.remote; this.netId = opts.netId !== undefined ? opts.netId : -1;
+    this.team = opts.team !== undefined ? opts.team : -1;   // team race: 0 red, 1 blue, -1 none
+    this.marker = null;                                      // team marker sprite (game.js)
     this.netTarget = null; this.netTime = 0; this.netInit = false;
     this.color = opts.color; this.accent = opts.accent;
     this.charId = opts.char || 'volt'; this.petId = opts.pet || null; this.kartId = opts.kart || 'nitro';

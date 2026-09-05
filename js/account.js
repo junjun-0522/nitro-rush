@@ -42,10 +42,12 @@
       'bad-user': '아이디는 2~16자 (한글/영문/숫자/_)만 가능해요.', 'bad-pass': '비밀번호는 4자 이상이어야 해요.',
       'taken': '이미 있는 아이디예요.', 'no-user': '없는 아이디예요.', 'wrong-pass': '비밀번호가 틀렸어요.',
       'unauthorized': '로그인이 풀렸어요. 다시 로그인해주세요.', 'rate': '너무 많이 시도했어요. 잠시 후 다시 해주세요.',
-      'too-big': '저장 데이터가 너무 커요.', 'network': '계정 서버에 연결할 수 없어요. 인터넷을 확인해주세요.'
+      'too-big': '저장 데이터가 너무 커요.', 'network': '계정 서버에 연결할 수 없어요. 인터넷을 확인해주세요.',
+      'self': '자기 자신은 친구로 추가할 수 없어요.', 'too-many': '친구 또는 요청이 너무 많아요 (최대 50명).', 'no-request': '그 요청은 이미 처리됐어요.'
     })[code] || ('계정 오류: ' + code);
   }
   Account.errText = errText;
+  Account.request = function (method, path, body) { return req(method, path, body, true); };
 
   function req(method, path, body, auth) {
     var base = baseUrl();

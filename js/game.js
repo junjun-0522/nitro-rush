@@ -7,15 +7,17 @@
   function $(id) { return document.getElementById(id); }
 
   var SETTINGS_KEY = 'nitroRush.settings.v1';
-  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark', kart: 'nitro' };
+  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark', kart: 'nitro', team: false };
   var MODES = {
     mixed: { label: 'ITEM + SPEED', desc: '아이템 + 드리프트 부스터 (부스터 1개 저장)', items: true, gauge: true, stock: 1, gaugeMul: 1 },
     speed: { label: 'SPEED RACE', desc: '아이템 없음 · 드리프트로 부스터 충전 · 부스터 2개 저장', items: false, gauge: true, stock: 2, gaugeMul: 1.5 },
-    item: { label: 'ITEM RACE', desc: '아이템만 · 부스터 게이지 없음 (부스트 패드는 유지)', items: true, gauge: false, stock: 0, gaugeMul: 0 }
+    item: { label: 'ITEM RACE', desc: '아이템만 · 부스터 게이지 없음 (부스트 패드는 유지)', items: true, gauge: false, stock: 0, gaugeMul: 0 },
+    time: { label: 'TIME ATTACK', desc: '혼자 달려서 기록 깨기 · 아이템 없음 · 부스터 2개 저장 · 내 최고 기록의 고스트와 대결', items: false, gauge: true, stock: 2, gaugeMul: 1.5, solo: true }
   };
-  var MODE_ORDER = ['mixed', 'speed', 'item'];
+  var MODE_ORDER = ['mixed', 'speed', 'item', 'time'];
   function modeInfo(m) { return MODES[m] || MODES.mixed; }
-  function nextMode(m) { return MODE_ORDER[(MODE_ORDER.indexOf(m) + 1) % MODE_ORDER.length]; }
+  function nextMode(m, forOnline) { var nm = MODE_ORDER[(MODE_ORDER.indexOf(m) + 1) % MODE_ORDER.length]; return (forOnline && MODES[nm].solo) ? MODE_ORDER[0] : nm; }
+  function onlineMode(m) { return (MODES[m] && MODES[m].solo) ? 'mixed' : m; }
   try { var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); for (var k in saved) if (k in settings) settings[k] = saved[k]; } catch (e) { }
   function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { } }
   Progress.load(); Account.load();
@@ -26,6 +28,11 @@
   var PLAYER_COLORS = [0xffd60a, 0x2fe0ff, 0x2ecc71, 0xff8c00, 0xd25cff, 0xff3b3b, 0xf8f8f8, 0x1abc9c];
   var PLAYER_ACCENTS = [0xff2e7e, 0x111111, 0xffffff, 0x111111, 0xffffff, 0xffe066, 0xff2e7e, 0xffffff];
   var online = null; // { net, isHost, myId, lobby, startAt, cfg, kartById, sendTimer }
+  var TEAMS = [{ id: 0, name: 'RED', kr: '레드', color: 0xff3b3b, css: '#ff4d4d' }, { id: 1, name: 'BLUE', kr: '블루', color: 0x3b8bff, css: '#4d9bff' }];
+  var TEAM_PTS = [10, 8, 7, 6, 5, 4, 3, 2];
+  function teamPts(rank) { return TEAM_PTS[rank - 1] || 1; }
+  // time attack state: ghost of the stored best run + recorder for this run
+  var ta = { on: false, ghost: null, gp: null, gk: null, rec: null, delta: 0, newBest: false, prevBest: null, hudT: 0, smp: {} };
 
   var ICONS = {
     speed: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4l7 8-7 8h5l7-8-7-8zM11 4l7 8-7 8h5l7-8-7-8z"/></svg>',
@@ -78,7 +85,9 @@
     window.addEventListener('resize', resize); resize();
     loadTrack(trackIndex);
     Progress.onChange(function () { refreshProfileUI(); Account.push(); });
-    Account.onChange(function () { refreshProfileUI(); if (state === 'account') renderAccount(); });
+    Account.onChange(function () { refreshProfileUI(); if (state === 'account') renderAccount(); if (state === 'friends') renderFriends(); });
+    Social.onChange(function () { refreshProfileUI(); if (state === 'friends') renderFriends(); });
+    Social.start();
     showScreen('menu');
     $('loading').classList.add('hidden');
     requestAnimationFrame(loop);
@@ -92,7 +101,8 @@
       if (/fast/.test(qs)) { settings.quality = 'low'; applyQuality(); renderer.setPixelRatio(0.5); window.__renderSkip = 8; }
       if (/manual/.test(qs)) window.__manual = true;
       if (/speed/.test(qs)) settings.mode = 'speed';
-      var mq = /mode=(mixed|speed|item)/.exec(qs); if (mq) settings.mode = mq[1];
+      var mq = /mode=(mixed|speed|item|time)/.exec(qs); if (mq) settings.mode = mq[1];
+      settings.team = /[?&]team(&|$)/.test(qs);
       var chq = /char=([a-z]+)/.exec(qs); if (chq) settings.char = chq[1];
       var ptq = /pet=([a-z]*)/.exec(qs); if (ptq) settings.pet = ptq[1] || null;
       var ktq = /kart=([a-z0-9]+)/.exec(qs); if (ktq) settings.kart = ktq[1];
@@ -100,6 +110,8 @@
       var sq = /[?&]skin=([a-z]+)/.exec(qs); if (sq) { if (Progress.p.unlocked.indexOf(sq[1]) < 0) Progress.p.unlocked.push(sq[1]); Progress.p.skin = sq[1]; Progress.save(true); }
       if (/garage/.test(qs)) { setTimeout(openGarage, 300); }
       if (/accscreen/.test(qs)) { setTimeout(openAccount, 300); }
+      if (/[?&]friends/.test(qs)) { setTimeout(openFriends, 300); }
+      var lq = /[?&]login=([^&:]+):([^&]+)/.exec(qs); if (lq) Account.login(decodeURIComponent(lq[1]), decodeURIComponent(lq[2])).then(function (j) { console.log('[AUTOTEST] login ok ' + j.user); }, function (e) { console.log('[AUTOTEST] login fail ' + e.error); });
       var on = /online=(host|join)/.exec(qs), room = /room=([A-Za-z0-9]+)/.exec(qs), nm = /name=([A-Za-z0-9]+)/.exec(qs);
       if (on) {
         window.__onlineTest = on[1];
@@ -119,8 +131,8 @@
       var st = /steps=(\d+)/.exec(qs); if (st) { window.__steps = parseInt(st[1], 10); window.__timerLoop = true; }
       document.body.classList.add('autotest');
       console.log('[AUTOTEST] init ok, track=' + trackIndex + ' racers=' + settings.racers);
-      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; }, get progress() { return Progress.p; }, get award() { return race.award; }, get account() { return { user: Account.user, status: Account.status }; } };
-      if (!on && !/garage/.test(qs) && !/accscreen/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
+      window.__dbg = { get karts() { return karts; }, get track() { return track; }, get player() { return player; }, get state() { return state; }, get progress() { return Progress.p; }, get award() { return race.award; }, get account() { return { user: Account.user, status: Account.status }; }, get ta() { return ta; }, get race() { return race; }, teamScores: teamScores, get social() { return { friends: Social.friends, incoming: Social.incoming, outgoing: Social.outgoing, status: Social.status, state: Social.state, room: Social.room }; } };
+      if (!on && !/garage/.test(qs) && !/accscreen/.test(qs) && !/[?&]friends/.test(qs)) setTimeout(function () { startRace(trackIndex); console.log('[AUTOTEST] race started'); }, 300);
     }
   }
 
@@ -161,7 +173,7 @@
 
   // ---------------------------------------------------------------- UI
   function showScreen(name) {
-    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage', 'account'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
+    ['menu', 'trackSelect', 'settings', 'results', 'pause', 'online', 'room', 'garage', 'account', 'friends'].forEach(function (s) { $(s).classList.toggle('hidden', s !== name); });
     if (name !== 'garage' && garage.kart) destroyGaragePreview();
     $('menuChar').textContent = findChar(settings.char).name + (settings.pet && findPet(settings.pet) ? ' + ' + findPet(settings.pet).name : '') + ' · ' + findKart(settings.kart).name + ' · ' + findSkin(Progress.p.skin).name;
     refreshProfileUI();
@@ -171,6 +183,18 @@
     $('menuRacers').textContent = settings.racers;
     $('menuMode').textContent = modeInfo(settings.mode).label;
     $('menuModeDesc').textContent = modeInfo(settings.mode).desc;
+    $('menuTeam').textContent = settings.team ? 'ON' : 'OFF'; $('btnTeam').classList.toggle('on', !!settings.team);
+    $('trackSelHead').textContent = modeInfo(settings.mode).solo ? 'Time Attack · Track Select' : 'Track Select';
+    updatePresence(name);
+  }
+  /** tell friends what we are doing (only sends when it changes) */
+  function updatePresence(screen) {
+    if (!window.Social) return;
+    if (screen === 'room' && online && online.net) Social.setState('lobby', online.net.code || '', !!online.isHost);
+    else if (screen === null) Social.setState(race.solo ? 'timeattack' : 'racing', online && online.net ? online.net.code || '' : '', !!(online && online.isHost));
+    else if (screen === 'results' && online && online.net) Social.setState('lobby', online.net.code || '', !!online.isHost);
+    else if (screen === 'garage') Social.setState('garage');
+    else Social.setState('menu');
   }
 
   function bindUI() {
@@ -178,6 +202,10 @@
     document.querySelectorAll('.btn').forEach(function (b) { b.addEventListener('mouseenter', function () { if (audio.ctx) audio.ui('hover'); }); });
     click('btnPlay', function () { startRace(trackIndex); });
     click('btnMode', function () { settings.mode = nextMode(settings.mode); saveSettings(); showScreen('menu'); });
+    click('btnTimeAttack', function () { settings.mode = 'time'; saveSettings(); buildTrackCards(); showScreen('trackSelect'); });
+    click('btnTeam', function () { settings.team = !settings.team; saveSettings(); showScreen('menu'); });
+    click('btnRoomTeams', function () { hostLobbyChange({ team: !online.lobby.team }); });
+    click('btnRoomSwap', function () { swapTeam(); });
     click('btnOnline', function () {
       $('nickInput').value = settings.nick || ''; $('onlineStatus').textContent = ''; showScreen('online');
       var el = $('turnStatus');
@@ -189,6 +217,12 @@
     });
     click('btnGarage', function () { openGarage(); });
     click('btnAccount', function () { openAccount(); });
+    click('btnFriends', function () { openFriends(); });
+    click('btnFriendsBack', function () { showScreen('menu'); });
+    click('btnFriendsLogin', function () { openAccount(); });
+    click('btnFriendsRefresh', function () { friendsMsg('새로고침 중...'); Social.refresh().then(function () { friendsMsg(''); }, function (e) { friendsMsg(Account.errText(e.error), true); }); });
+    click('btnFriendAdd', function () { addFriend(); });
+    $('friendAdd').addEventListener('keydown', function (e) { if (e.key === 'Enter') addFriend(); });
     click('btnAccBack', function () { showScreen('menu'); });
     click('btnAccLogin', function () { doAuth('login'); });
     click('btnAccRegister', function () { doAuth('register'); });
@@ -210,7 +244,7 @@
     click('btnRoomStart', function () { hostStartRace(); });
     click('btnRoomTrackPrev', function () { hostLobbyChange({ track: (online.lobby.track + TRACKS.length - 1) % TRACKS.length }); });
     click('btnRoomTrackNext', function () { hostLobbyChange({ track: (online.lobby.track + 1) % TRACKS.length }); });
-    click('btnRoomMode', function () { hostLobbyChange({ mode: nextMode(online.lobby.mode) }); });
+    click('btnRoomMode', function () { hostLobbyChange({ mode: nextMode(online.lobby.mode, true) }); });
     $('roomRacers').addEventListener('change', function () { hostLobbyChange({ racers: parseInt(this.value, 10) }); });
     $('codeInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(this.value); });
     $('nickInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('codeInput').focus(); });
@@ -231,7 +265,7 @@
     $('optQuality').addEventListener('change', function () { settings.quality = this.value; saveSettings(); applyQuality(); });
     $('optVolume').addEventListener('input', function () { settings.volume = parseFloat(this.value); audio.setVolume(settings.volume); saveSettings(); });
     $('optMusic').addEventListener('change', function () { settings.music = this.checked; saveSettings(); audio.setMusicOn(settings.music, state === 'racing' ? track.def.mood : null); });
-    document.addEventListener('visibilitychange', function () { if (document.hidden && (state === 'racing' || state === 'countdown')) pauseRace(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden && !window.__autotest && (state === 'racing' || state === 'countdown')) pauseRace(); });
   }
 
   function syncSettingsUI() {
@@ -299,7 +333,7 @@
       if (e.code === 'Escape' || e.code === 'KeyP') {
         if (state === 'racing' || state === 'countdown' || state === 'finished') pauseRace();
         else if (state === 'paused') resumeRace();
-        else if (state === 'trackselect' || state === 'settings' || state === 'online' || state === 'garage' || state === 'account') { audio.ui('back'); showScreen('menu'); }
+        else if (state === 'trackselect' || state === 'settings' || state === 'online' || state === 'garage' || state === 'account' || state === 'friends') { audio.ui('back'); showScreen('menu'); }
         else if (state === 'room') { leaveRoom(); }
       }
       if (e.code === 'Enter') {
@@ -325,8 +359,71 @@
   }
 
   function aiName(i) { return AI_NAMES[i % AI_NAMES.length] + (i >= AI_NAMES.length ? ' ' + (Math.floor(i / AI_NAMES.length) + 1) : ''); }
-  function addKart(k) { scene.add(k.root); if (k.petRoot) scene.add(k.petRoot); }
-  function removeKart(k) { scene.remove(k.root); if (k.petRoot) scene.remove(k.petRoot); }
+  function addKart(k) {
+    scene.add(k.root); if (k.petRoot) scene.add(k.petRoot);
+    if (k.team >= 0) { k.accent = TEAMS[k.team].color; if (!k.isPlayer && !k.marker) k.marker = makeTeamMarker(k.team); }
+    if (k.marker) scene.add(k.marker);
+  }
+  function removeKart(k) { scene.remove(k.root); if (k.petRoot) scene.remove(k.petRoot); if (k.marker) scene.remove(k.marker); }
+  /** floating team chevron above AI / other players' karts */
+  function makeTeamMarker(team) {
+    var t = TEAMS[team];
+    var tex = U.canvasTexture('teamMarker' + team, 64, function (g, w, h) {
+      g.clearRect(0, 0, w, h);
+      g.beginPath(); g.moveTo(8, 6); g.lineTo(w - 8, 6); g.lineTo(w / 2, h - 6); g.closePath();
+      g.fillStyle = t.css; g.fill(); g.lineWidth = 5; g.strokeStyle = 'rgba(0,0,0,0.55)'; g.stroke();
+      g.lineWidth = 2; g.strokeStyle = '#fff'; g.stroke();
+    }, { clamp: true });
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    sp.scale.set(1.5, 1.5, 1); sp.renderOrder = 5;
+    return sp;
+  }
+  function teamScores() {
+    var s = [0, 0], sorted = race.sorted || karts;
+    for (var i = 0; i < sorted.length; i++) { var k = sorted[i]; if (k.team >= 0) s[k.team] += teamPts(k.rank); }
+    return s;
+  }
+  // ---------------------------------------------------------------- time attack (ghost)
+  function clearGhost() { if (ta.gk) { scene.remove(ta.gk.root); ta.gk = null; } ta.on = false; ta.gp = null; ta.rec = null; }
+  function makeGhostKart(g) {
+    var k = new Kart({ name: 'GHOST', isPlayer: false, remote: true, color: 0xffffff, accent: 0x9be7ff, index: 60, char: g.char || settings.char, pet: null, kart: g.kart || settings.kart, skin: g.skin || null });
+    k.root.traverse(function (o) {
+      if (!o.material) return;
+      var arr = Array.isArray(o.material), mats = (arr ? o.material : [o.material]).map(function (m) { var c = m.clone(); c.transparent = true; c.opacity = Math.min(c.opacity, 0.42); c.depthWrite = false; return c; });
+      o.material = arr ? mats : mats[0]; o.castShadow = false; o.receiveShadow = false;
+    });
+    return k;
+  }
+  function taStep(dt) {
+    var L = track.path.length, p = player;
+    if (race.raceOn && !p.finished && ta.rec) ta.rec.push(p, race.time, p.progress(L));
+    if (ta.gp && ta.gk) {
+      var g = ta.gk, sm = ta.gp.at(race.raceOn ? race.time : 0, ta.smp);
+      var dyaw = sm.yaw - g.yaw; while (dyaw > Math.PI) dyaw -= 2 * Math.PI; while (dyaw < -Math.PI) dyaw += 2 * Math.PI;
+      var dx = sm.x - g.pos.x, dz = sm.z - g.pos.z, sp = dt > 0 ? Math.sqrt(dx * dx + dz * dz) / dt : 0;
+      g.speed = g.vf = Math.min(sp, 80); g.yawRate = dt > 0 ? dyaw / dt : 0; g.input.steer = U.clamp(g.yawRate * 0.6, -1, 1);
+      g.pos.set(sm.x, sm.y, sm.z); g.yaw = sm.yaw;
+      g.drifting = !!(sm.flags & 1); g.driftDir = (sm.flags & 4) ? 1 : -1; g.boostTime = (sm.flags & 2) ? 1 : 0; g.airborne = !!(sm.flags & 8); g.flying = !!(sm.flags & 16);
+      g.updateVisual(dt, clock.t);
+      if (race.raceOn && !p.finished) ta.delta = race.time - ta.gp.timeAtProgress(p.progress(L));
+    }
+  }
+  function renderTAHud(force) {
+    ta.hudT -= 1 / 60;
+    if (ta.hudT > 0 && !force) return;
+    ta.hudT = 0.1;
+    var rec = ta.prevBest, el = $('taDelta');
+    $('taRec').textContent = rec && rec.race ? U.fmtTime(rec.race) : '--:--.---';
+    if (!ta.gp) { el.className = 'delta none'; el.textContent = rec && rec.race ? '고스트 없음 (이 기기에 저장된 주행 없음)' : '고스트 없음 · 첫 기록에 도전!'; }
+    else if (!race.raceOn) { el.className = 'delta none'; el.textContent = '고스트: ' + U.fmtTime(ta.ghost.time) + ' 주행과 대결'; }
+    else { var d = ta.delta / 1000; el.className = 'delta ' + (d <= 0 ? 'ahead' : 'behind'); el.textContent = (d > 0 ? '+' : '') + d.toFixed(2) + 's'; }
+    var html = '', gl = ta.ghost && ta.ghost.laps || [];
+    for (var i = 0; i < player.lapTimes.length; i++) {
+      var lt = player.lapTimes[i], d2 = gl[i] ? lt - gl[i] : null;
+      html += 'LAP ' + (i + 1) + ' ' + U.fmtTime(lt) + (d2 === null ? '' : ' ' + (d2 <= 0 ? '<span>' : '<em>') + (d2 > 0 ? '+' : '') + (d2 / 1000).toFixed(2) + (d2 <= 0 ? '</span>' : '</em>')) + '<br>';
+    }
+    $('taLaps').innerHTML = html;
+  }
   function aiLook(rng) { return { char: rng.pick(CHARS).id, pet: rng() < 0.45 ? rng.pick(PETS).id : null, kart: rng.pick(KARTS).id, skin: rng() < 0.3 ? rng.pick(SKINS.slice(1)).id : null }; }
 
   function startRace(ti, cfg) {
@@ -335,41 +432,45 @@
     if (ti !== trackIndex) loadTrack(ti);
     if (!isOnline) { settings.track = ti; saveSettings(); }
     // remove old karts
-    karts.forEach(removeKart);
+    karts.forEach(removeKart); clearGhost();
     karts = []; ais = []; playerAI = null;
-    var mode = isOnline ? cfg.mode : settings.mode;
-    var n = isOnline ? Math.max(cfg.players.length, cfg.racers) : Math.max(2, settings.racers);
+    var mode = isOnline ? onlineMode(cfg.mode) : settings.mode, mi = modeInfo(mode);
+    var solo = !isOnline && !!mi.solo;                               // time attack: player only
+    var teamOn = isOnline ? !!cfg.team : (!!settings.team && !solo);   // red vs blue
+    var n = solo ? 1 : (isOnline ? Math.max(cfg.players.length, cfg.racers) : Math.max(2, settings.racers));
     var rng = U.rng(isOnline ? (cfg.seed >>> 0) : (Date.now() & 0xffff));
     var band = settings.difficulty === 'easy' ? 0.6 : (settings.difficulty === 'hard' ? 1.25 : 1);
     var list = [], i, kt;
     if (!isOnline) {
-      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin });
+      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin, team: teamOn ? 0 : -1 });
       for (i = 1; i < n; i++) {
         var lk = aiLook(rng);
-        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart, skin: lk.skin });
+        kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart, skin: lk.skin, team: teamOn ? (i % 2) : -1 });
         list.push(kt);
         ais.push(new AIDriver(kt, { skill: difficultySkill(rng), band: band, seed: i }));
       }
       list.push(player);
     } else {
       var isHost = online.isHost, kartById = {};
-      var aiCount = n - cfg.players.length;
+      var aiCount = n - cfg.players.length, tc = [0, 0];
+      cfg.players.forEach(function (p) { if (teamOn) tc[p.team === 1 ? 1 : 0]++; });
       for (i = 0; i < aiCount; i++) {
         var lk2 = aiLook(rng), sk = difficultySkill(rng); // consume the shared rng identically on every peer
-        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet, kart: lk2.kart, skin: lk2.skin });
+        var at = -1; if (teamOn) { at = tc[0] <= tc[1] ? 0 : 1; tc[at]++; }   // AI fill keeps the teams even
+        kt = new Kart({ name: aiName(i), isPlayer: false, remote: !isHost, netId: 100 + i, color: AI_COLORS[i % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i + 1, char: lk2.char, pet: lk2.pet, kart: lk2.kart, skin: lk2.skin, team: at });
         list.push(kt); kartById[100 + i] = kt;
         if (isHost) ais.push(new AIDriver(kt, { skill: sk, band: 0.7, seed: i + 1 }));
       }
       cfg.players.forEach(function (p, pi) {
         var mine = p.id === online.myId;
-        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro', skin: p.skin || 'classic' });
+        var pk = new Kart({ name: p.name, isPlayer: mine, remote: !mine, netId: p.id, color: PLAYER_COLORS[p.id % PLAYER_COLORS.length], accent: PLAYER_ACCENTS[p.id % PLAYER_ACCENTS.length], index: 200 + pi, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro', skin: p.skin || 'classic', team: teamOn ? (p.team === 1 ? 1 : 0) : -1 });
         list.push(pk); kartById[p.id] = pk;
         if (mine) player = pk;
       });
       online.kartById = kartById; online.sendTimer = 0; online.cfg = cfg; online.startAt = cfg.startAt;
       if (online.net.state !== undefined) online.net.state = 'racing';
     }
-    var path = track.path, mi = modeInfo(mode);
+    var path = track.path;
     list.forEach(function (k, slot) {
       var g = track.gridSlot(slot, n);
       k.maxStock = mi.stock; k.gaugeMul = mi.gaugeMul;
@@ -382,11 +483,21 @@
     $('hudBoost').classList.toggle('hidden', !mi.gauge);
     $('tutShift').classList.toggle('hidden', !mi.gauge);
     $('tutItem').classList.toggle('hidden', !mi.items);
-    $('hudMode').textContent = mi.label;
+    $('hudMode').textContent = mi.label + (teamOn ? ' · TEAM' : '');
+    $('hudPosBox').classList.toggle('hidden', solo); $('hudBoard').classList.toggle('hidden', solo);
+    $('hudTA').classList.toggle('hidden', !solo); $('hudTeam').classList.toggle('hidden', !teamOn);
     buildPips(mi.stock);
     showTutorial();
     race.time = 0; race.raceOn = false; race.countdown = 3.8; race.cdShown = -1; race.finishedAt = null; race.allDoneAt = null; race.results = null;
-    race.maxDrifts = 0; race.award = null;
+    race.maxDrifts = 0; race.award = null; race.solo = solo; race.team = teamOn; race.mode = mode; race.teamWin = false;
+    ta.delta = 0; ta.newBest = false; ta.ghost = null; ta.gp = null; ta.rec = null; ta.prevBest = null;
+    if (solo) {
+      ta.on = true; ta.rec = new Ghost.Recorder(); ta.prevBest = Progress.record(TRACKS[ti].id, mode); ta.ghost = Ghost.load(TRACKS[ti].id);
+      if (ta.ghost) { ta.gp = new Ghost.Player(ta.ghost); ta.gk = makeGhostKart(ta.ghost); var g0 = track.gridSlot(0, 1); ta.gk.placeAt(path, g0.s, g0.lat); scene.add(ta.gk.root); }
+      renderTAHud(true);
+      if (window.__autotest) console.log('[AUTOTEST] time attack: ghost=' + (ta.ghost ? ta.ghost.n + ' samples ' + U.fmtTime(ta.ghost.time) : 'none') + ' prevBest=' + (ta.prevBest && ta.prevBest.race ? U.fmtTime(ta.prevBest.race) : '-'));
+    }
+    if (teamOn) { updateTeamHud(); if (window.__autotest) console.log('[AUTOTEST] team race: ' + karts.map(function (k) { return k.name + ':' + (k.team >= 0 ? TEAMS[k.team].name : '-'); }).join(',')); }
     cam.init = false; cam.fov = 72;
     world = { path: path, track: track, karts: karts, player: player, items: items, itemsOn: mi.items, raceOn: false, time: 0, clock: 0, playerProgress: 0, onPlayerHit: onPlayerHit, onPlayerItem: onPlayerItem,
       net: isOnline ? online.net : null, localKarts: isOnline ? karts.filter(function (k) { return !k.remote; }) : null, sendEvent: isOnline ? sendNetEvent : null };
@@ -405,11 +516,13 @@
     audio.startEngine();
     audio.startMusic(track.def.mood);
     updateCamera(0); updateShadowCamera();
+    if (teamOn) setTimeout(function () { if (state === 'countdown' && player && player.team >= 0) showMsg(TEAMS[player.team].name + ' TEAM', player.team === 0 ? 'pink' : 'cyan'); }, 300);
   }
 
   function pauseRace() {
     if (online) { $('pause').classList.toggle('hidden'); return; }
     if (state === 'paused') return;
+    if (window.__autotest) console.log('[AUTOTEST] pauseRace');
     race.prevState = state; state = 'paused';
     $('pause').classList.remove('hidden');
     if (audio.ctx) audio.ctx.suspend();
@@ -427,7 +540,7 @@
     if (online) { leaveRoom(); return; }
     if (audio.ctx) audio.ctx.resume();
     audio.stopEngine(); audio.stopMusic();
-    karts.forEach(removeKart); karts = []; ais = []; player = null;
+    karts.forEach(removeKart); clearGhost(); karts = []; ais = []; player = null;
     fx.clear(); items.clear();
     $('countdown').classList.add('hidden'); $('finishBanner').classList.add('hidden');
     showScreen('menu');
@@ -468,7 +581,7 @@
     if (state === 'paused') { return; }
     track.update(dt, clock.t);
     if (state === 'garage') { garageTick(dt); fx.update(dt); return; }
-    if (state === 'menu' || state === 'trackselect' || state === 'settings' || state === 'results' || state === 'online' || state === 'room' || state === 'account') {
+    if (state === 'menu' || state === 'trackselect' || state === 'settings' || state === 'results' || state === 'online' || state === 'room' || state === 'account' || state === 'friends') {
       menuCamera(dt);
       items.update(dt, { karts: [], raceOn: false, clock: clock.t, player: null });
       if (state === 'results' && player) { stepRace(dt, true); }
@@ -563,6 +676,7 @@
     // sparkle trails while flying
     for (i = 0; i < karts.length; i++) { var fk = karts[i]; if (fk.flying && fk.speed > 8 && camDist(fk.pos) < 140 && Math.random() < 0.5) { _v.copy(fk.pos); _v.y += 0.9; fx.sparks(_v, 1, fk.isPlayer ? 0x9ff7ff : 0xffffff, 2); } }
     resolveCollisions(dt);
+    if (ta.on && !background) taStep(dt);
     items.update(dt, world);
     if (online && !background) netTick(dt);
     processEvents(dt);
@@ -570,7 +684,10 @@
     computeRanks();
     if (!background) updateCamera(dt);
     if (race._camLog > 0) { race._camLog--; console.log('[AUTOTEST] camdist after GO: ' + camDist(player.pos).toFixed(1) + 'm fov=' + cam.fov.toFixed(0)); }
-    for (i = 0; i < karts.length; i++) karts[i].updateVisual(dt, clock.t);
+    for (i = 0; i < karts.length; i++) {
+      var vk = karts[i]; vk.updateVisual(dt, clock.t);
+      if (vk.marker) { vk.marker.position.set(vk.pos.x, vk.pos.y + 2.4 + Math.sin(clock.t * 3 + i) * 0.12, vk.pos.z); vk.marker.visible = vk.root.visible; }
+    }
     if (!background) { updateShadowCamera(); updateHUD(dt); }
     fx.update(dt);
     updateAudio(dt);
@@ -857,8 +974,14 @@
     updateItemSlot();
     // board
     boardTimer -= dt;
-    if (boardTimer <= 0) { boardTimer = 0.3; updateBoard(); }
+    if (boardTimer <= 0) { boardTimer = 0.3; if (!race.solo) updateBoard(); if (race.team) updateTeamHud(); }
+    if (ta.on) renderTAHud();
     drawMinimap();
+  }
+  function updateTeamHud() {
+    var s = teamScores(), tot = Math.max(1, s[0] + s[1]);
+    $('teamRed').textContent = s[0]; $('teamBlue').textContent = s[1];
+    $('teamBar').style.width = (s[0] / tot * 100).toFixed(1) + '%';
   }
 
   // ---------------------------------------------------------------- online
@@ -901,7 +1024,7 @@
     var prof = profile();
     onlineStatus('방 만드는 중...');
     var net = new Net();
-    online = { net: net, isHost: true, myId: 0, lobby: { track: trackIndex, mode: settings.mode, racers: 8 }, kartById: null, sendTimer: 0 };
+    online = { net: net, isHost: true, myId: 0, lobby: { track: trackIndex, mode: onlineMode(settings.mode), racers: 8, team: !!settings.team }, kartById: null, sendTimer: 0 };
     bindNet(net);
     net.host(prof, function (err, code) {
       if (err) { onlineStatus(netErrorText(err), true); net.close(); online = null; if (window.__autotest) console.log('[AUTOTEST] host error ' + (err.type || err.message)); return; }
@@ -931,7 +1054,7 @@
     if (online) { try { online.net.close(); } catch (e) { } online = null; }
     if (audio.ctx) audio.ctx.resume();
     audio.stopEngine(); audio.stopMusic();
-    karts.forEach(removeKart); karts = []; ais = []; player = null;
+    karts.forEach(removeKart); clearGhost(); karts = []; ais = []; player = null;
     fx.clear(); items.clear(); items.setRemoteRockets([]);
     $('countdown').classList.add('hidden'); $('finishBanner').classList.add('hidden'); $('pause').classList.add('hidden');
     if (wasOnline && reason) { showScreen('online'); onlineStatus(reason, true); }
@@ -952,13 +1075,18 @@
     list.forEach(function (p) {
       var col = '#' + PLAYER_COLORS[p.id % PLAYER_COLORS.length].toString(16).padStart(6, '0');
       var look = findChar(p.char || 'volt').name + (p.pet && findPet(p.pet) ? ' · ' + findPet(p.pet).name : '') + ' · ' + findKart(p.kart || 'nitro').name + (p.skin && p.skin !== 'classic' ? ' · ' + findSkin(p.skin).name : '');
-      html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span><span class="look">' + look + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
+      var tt = lobby.team ? '<span class="tag team' + (p.team === 1 ? 1 : 0) + '">' + TEAMS[p.team === 1 ? 1 : 0].name + '</span>' : '';
+      html += '<div class="prow' + (p.id === online.myId ? ' me' : '') + '"><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + p.name + '</span>' + tt + '<span class="look">' + look + '</span>' + (p.id === 0 ? '<span class="tag">HOST</span>' : '') + (p.id === online.myId ? '<span class="you">YOU</span>' : '') + '</div>';
     });
     for (var i = list.length; i < Math.max(2, lobby.racers); i++) html += '<div class="prow dim"><span class="chip" style="background:#555"></span><span>' + (i < lobby.racers ? 'AI' : '') + '</span></div>';
     $('roomPlayers').innerHTML = html;
     $('roomTrack').textContent = TRACKS[lobby.track].name;
-    $('roomTrackC').textContent = TRACKS[lobby.track].name + ' · ' + modeInfo(lobby.mode).label + ' · ' + lobby.racers + ' racers';
+    $('roomTrackC').textContent = TRACKS[lobby.track].name + ' · ' + modeInfo(lobby.mode).label + (lobby.team ? ' · TEAM' : '') + ' · ' + lobby.racers + ' racers';
     $('roomMode').textContent = modeInfo(lobby.mode).label;
+    $('roomTeams').textContent = lobby.team ? 'ON' : 'OFF';
+    $('roomTeamBox').classList.toggle('hidden', !lobby.team);
+    var me = null; list.forEach(function (p) { if (p.id === online.myId) me = p; });
+    if (me) { var mt = me.team === 1 ? 1 : 0; $('roomMyTeam').textContent = TEAMS[mt].name + ' TEAM'; $('roomMyTeam').style.color = TEAMS[mt].css; }
     $('roomRacers').value = String(lobby.racers);
     $('roomHostControls').classList.toggle('hidden', !online.isHost);
     $('roomWait').classList.toggle('hidden', online.isHost);
@@ -968,7 +1096,7 @@
   function hostStartRace() {
     if (!online || !online.isHost) return;
     var net = online.net, players = net.playerList();
-    var cfg = { track: online.lobby.track, mode: online.lobby.mode, racers: Math.max(online.lobby.racers, players.length), players: players, startAt: performance.now() + 5500, seed: (Date.now() & 0x7fffffff) };
+    var cfg = { track: online.lobby.track, mode: online.lobby.mode, racers: Math.max(online.lobby.racers, players.length), players: players, startAt: performance.now() + 5500, seed: (Date.now() & 0x7fffffff), team: !!online.lobby.team };
     net.state = 'racing';
     net.send({ t: 'start', cfg: cfg });
     if (window.__autotest) console.log('[AUTOTEST] host sent start ' + JSON.stringify(cfg));
@@ -1019,7 +1147,16 @@
       case 'results':
         if (!online.isHost && state !== 'results' && karts.length) showResults();
         break;
+      case 'team':
+        // a player asks to switch sides (host only; the lobby broadcast carries the new team list)
+        if (online.isHost && online.net.state === 'lobby') { var tp = online.net.players[msg.id]; if (tp) { tp.team = (tp.team === undefined ? msg.id % 2 : tp.team) === 1 ? 0 : 1; online.net.setLobby(online.lobby); renderRoom(); } }
+        break;
     }
+  }
+  function swapTeam() {
+    if (!online || !online.lobby || !online.lobby.team || state !== 'room') return;
+    if (online.isHost) { var me = online.net.players[0]; me.team = (me.team === undefined ? 0 : me.team) === 1 ? 0 : 1; online.net.setLobby(online.lobby); renderRoom(); }
+    else online.net.send({ t: 'team' });
   }
   function handleNetEvent(ev) {
     var kb = online.kartById || {};
@@ -1120,6 +1257,65 @@
     $('menuAccount').textContent = Account.loggedIn() ? Account.user : '로그인 / 계정 만들기';
     $('profSkins').textContent = Progress.p.unlocked.length + '/' + SKINS.length;
     $('profWins').textContent = Progress.p.wins; $('profRaces').textContent = Progress.p.races;
+    var logged = Account.loggedIn();
+    $('profFriends').textContent = logged ? Social.friends.length : '';
+    $('profFriendsSub').textContent = logged ? '온라인 ' + Social.onlineCount : '로그인 필요';
+    $('btnFriends').classList.toggle('on', logged && Social.onlineCount > 0);
+    $('profFriendsBadge').textContent = Social.pending; $('profFriendsBadge').classList.toggle('hidden', !(logged && Social.pending > 0));
+  }
+  // ---------------------------------------------------------------- friends UI
+  function friendsMsg(t, err) { var el = $('friendsStatus'); el.textContent = t; el.style.color = err ? '#ff8a8a' : '#9be7ff'; }
+  function openFriends() {
+    friendsMsg(''); renderFriends(); showScreen('friends');
+    if (Account.loggedIn()) { Social.refresh().then(function () { }, function (e) { friendsMsg(Account.errText(e.error), true); }); }
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function renderFriends() {
+    var logged = Account.loggedIn();
+    $('friendsGuest').classList.toggle('hidden', logged); $('friendsMain').classList.toggle('hidden', !logged);
+    if (!logged) return;
+    var inc = Social.incoming, out = Social.outgoing, fr = Social.friends, html = '';
+    inc.forEach(function (p) { html += '<div class="frow" data-u="' + esc(p.user) + '"><span class="dot"></span><span class="fn">' + esc(p.name) + '</span><span class="fs">친구 요청을 보냈어요</span><span class="fa"><button class="btn small join" data-act="accept">수락</button><button class="btn small" data-act="decline">거절</button></span></div>'; });
+    $('friendsIn').innerHTML = html; $('friendsInWrap').classList.toggle('hidden', !inc.length); $('friendsInCount').textContent = inc.length;
+    html = '';
+    fr.forEach(function (f) {
+      var canJoin = f.online && f.state === 'lobby' && f.room && !(online && online.net && online.net.code === f.room);
+      html += '<div class="frow' + (f.online ? (f.state === 'racing' || f.state === 'timeattack' ? ' on race' : ' on') : '') + '" data-u="' + esc(f.user) + '"><span class="dot"></span><span class="fn">' + esc(f.name) + '</span><span class="fs">' + esc(Social.stateText(f)) + '</span><span class="fa">' +
+        (canJoin ? '<button class="btn small join" data-act="join" data-room="' + esc(f.room) + '">참가 ' + esc(f.room) + '</button>' : '') + '<button class="btn small" data-act="remove" title="친구 삭제">✕</button></span></div>';
+    });
+    if (!fr.length) html = '<div class="empty">아직 친구가 없어요. 위에 친구 아이디를 입력해서 요청을 보내보세요.</div>';
+    $('friendsList').innerHTML = html; $('friendsCount').textContent = fr.length; $('friendsOnline').textContent = fr.length ? '온라인 ' + Social.onlineCount + '명' : '';
+    html = '';
+    out.forEach(function (p) { html += '<div class="frow" data-u="' + esc(p.user) + '"><span class="dot"></span><span class="fn">' + esc(p.name) + '</span><span class="fs">상대가 수락하면 친구가 돼요</span><span class="fa"><button class="btn small" data-act="decline">취소</button></span></div>'; });
+    $('friendsOut').innerHTML = html; $('friendsOutWrap').classList.toggle('hidden', !out.length);
+    $('friends').querySelectorAll('[data-act]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        audio.init(); audio.ui('click');
+        var u = b.parentNode.parentNode.getAttribute('data-u'), act = b.getAttribute('data-act');
+        if (act === 'join') { joinFriendRoom(b.getAttribute('data-room')); return; }
+        if (act === 'remove' && !window.__autotest && !confirm(u + ' 님을 친구에서 삭제할까요?')) return;
+        friendsMsg('처리 중...');
+        var p = act === 'accept' ? Social.accept(u) : act === 'decline' ? Social.decline(u) : Social.remove(u);
+        p.then(function () { friendsMsg(act === 'accept' ? '이제 친구예요!' : ''); }, function (e) { friendsMsg(Account.errText(e.error), true); });
+      });
+    });
+    if (window.__autotest) console.log('[AUTOTEST] friends render friends=' + fr.map(function (f) { return f.user + ':' + (f.online ? f.state + (f.room ? '@' + f.room : '') : 'off'); }).join(',') + ' in=' + inc.map(function (p) { return p.user; }).join(',') + ' out=' + out.map(function (p) { return p.user; }).join(','));
+  }
+  function addFriend() {
+    var name = ($('friendAdd').value || '').trim();
+    if (name.length < 2) { friendsMsg(Account.errText('bad-user'), true); return; }
+    friendsMsg('요청 보내는 중...');
+    Social.request(name).then(function (j) {
+      $('friendAdd').value = '';
+      friendsMsg(j.status === 'friends' ? name + ' 님과 친구가 됐어요!' : name + ' 님에게 친구 요청을 보냈어요. 상대가 수락하면 목록에 나타나요.');
+    }, function (e) { friendsMsg(e.error === 'no-user' ? '그 아이디의 계정이 없어요. 아이디를 확인해주세요.' : Account.errText(e.error), true); });
+  }
+  /** jump into a friend's open room from the friends screen */
+  function joinFriendRoom(code) {
+    if (online) { friendsMsg('이미 방에 있어요. 먼저 나가주세요.', true); return; }
+    if (!$('nickInput').value) $('nickInput').value = (settings.nick || Account.user || '').slice(0, 12);
+    showScreen('online');
+    joinRoom(code);
   }
   function accMsg(t, err) { var el = $('accStatus'); el.textContent = t; el.style.color = err ? '#ff8a8a' : '#9be7ff'; }
   function openAccount() { accMsg(''); renderAccount(); showScreen('account'); if (!Account.loggedIn()) setTimeout(function () { $('accId').focus(); }, 50); }
@@ -1154,7 +1350,8 @@
     var realPlayers = online ? karts.filter(function (k) { return k.netId >= 0 && k.netId < 100; }).length : 1;
     var def = TRACKS[trackIndex], mode = online && online.cfg ? online.cfg.mode : settings.mode;
     return Progress.award({ trackId: def.id, trackTag: def.tag, mode: mode, rank: player.rank, n: karts.length, finished: player.finished, laps: player.lapsCompleted,
-      lapTimes: player.lapTimes, raceTime: player.finishTime, maxDrifts: race.maxDrifts || 0, online: realPlayers, difficulty: online ? 'normal' : settings.difficulty });
+      lapTimes: player.lapTimes, raceTime: player.finishTime, maxDrifts: race.maxDrifts || 0, online: realPlayers, difficulty: online ? 'normal' : settings.difficulty,
+      solo: !!race.solo, teamWin: !!race.teamWin, ghostBeaten: !!(race.solo && ta.ghost && player.finished && player.finishTime < ta.ghost.time) });
   }
   function renderAward(a) {
     var html = '<div class="xphead"><span>XP 획득</span><b>+' + a.total + '</b></div>';
@@ -1237,7 +1434,8 @@
       var k = show[i];
       if (!k) { html += '<div class="row" style="opacity:.4;justify-content:center">···</div>'; continue; }
       var gap = k.finished ? U.fmtTime(k.finishTime) : (k.isPlayer ? '' : ((k.progress(L) - pp) >= 0 ? '+' : '') + Math.round(k.progress(L) - pp) + 'm');
-      html += '<div class="row' + (k.isPlayer ? ' me' : '') + '"><span class="r">' + k.rank + '</span><span class="chip" style="background:#' + k.color.toString(16).padStart(6, '0') + ';color:#' + k.color.toString(16).padStart(6, '0') + '"></span><span>' + k.name + '</span><span class="gap">' + gap + '</span></div>';
+      var cc = k.team >= 0 ? TEAMS[k.team].css : '#' + k.color.toString(16).padStart(6, '0');
+      html += '<div class="row' + (k.isPlayer ? ' me' : '') + '"><span class="r">' + k.rank + '</span><span class="chip' + (k.team >= 0 ? ' t' + k.team : '') + '" style="background:' + cc + ';color:' + cc + '"></span><span>' + k.name + '</span><span class="gap">' + (race.team ? teamPts(k.rank) + 'pt · ' : '') + gap + '</span></div>';
     }
     $('hudBoard').innerHTML = html;
   }
@@ -1263,9 +1461,10 @@
     if (track.open) { var pf = track.path.P[track.path.idxOf(track.finishS)]; g.fillStyle = '#ff2f6d'; g.fillRect(pf.x * m.scale + m.ox - 4, pf.z * m.scale + m.oy - 4, 8, 8); }
     for (i = 0; i < karts.length; i++) {
       var k = karts[i]; if (k.isPlayer) continue;
-      g.fillStyle = '#' + k.color.toString(16).padStart(6, '0');
+      g.fillStyle = k.team >= 0 ? TEAMS[k.team].css : '#' + k.color.toString(16).padStart(6, '0');
       g.beginPath(); g.arc(k.pos.x * m.scale + m.ox, k.pos.z * m.scale + m.oy, 3, 0, 7); g.fill();
     }
+    if (ta.gk) { g.fillStyle = 'rgba(255,255,255,0.7)'; g.beginPath(); g.arc(ta.gk.pos.x * m.scale + m.ox, ta.gk.pos.z * m.scale + m.oy, 3.5, 0, 7); g.fill(); }
     var pl = player;
     g.fillStyle = '#ffe600'; g.strokeStyle = '#000'; g.lineWidth = 2;
     g.beginPath(); g.arc(pl.pos.x * m.scale + m.ox, pl.pos.z * m.scale + m.oy, 5, 0, 7); g.fill(); g.stroke();
@@ -1287,7 +1486,13 @@
     audio.finish();
     fx.confetti(player.pos);
     var b = $('finishBanner'); b.classList.remove('hidden');
-    $('finishSub').textContent = U.ordinal(player.rank).toUpperCase() + ' PLACE · ' + U.fmtTime(player.finishTime);
+    if (ta.on) {
+      var t = player.finishTime, prev = ta.prevBest && ta.prevBest.race;
+      ta.newBest = !prev || t < prev;
+      if (ta.newBest && ta.rec) Ghost.save(TRACKS[trackIndex].id, { time: t, samples: ta.rec.finish(), char: settings.char, kart: settings.kart, skin: Progress.p.skin, laps: player.lapTimes.slice() });
+      $('finishSub').textContent = (ta.newBest ? 'NEW RECORD · ' : '') + U.fmtTime(t) + (prev ? ' (' + (t - prev > 0 ? '+' : '') + ((t - prev) / 1000).toFixed(3) + ')' : '');
+      if (window.__autotest) console.log('[AUTOTEST] time attack finish ' + U.fmtTime(t) + ' newBest=' + ta.newBest + ' samples=' + (ta.rec ? ta.rec.buf.length / Ghost.STRIDE : 0));
+    } else $('finishSub').textContent = U.ordinal(player.rank).toUpperCase() + ' PLACE · ' + U.fmtTime(player.finishTime);
     flash('rgba(255,255,255,0.6)');
   }
 
@@ -1328,11 +1533,39 @@
       }
       html += '<div class="rrow' + (k.isPlayer ? ' me' : '') + '"><span class="rk">' + (i + 1) + '</span><span class="chip" style="background:' + col + ';color:' + col + '"></span><span>' + k.name + (k.isPlayer ? ' (YOU)' : '') + '</span><span>' + timeStr + '</span><span class="dim">' + U.fmtTime(best) + '</span></div>';
     });
+    var pr = player.rank, teamHtml = '';
+    if (race.team) {
+      // team race: rows carry the team colour and the points each place is worth
+      var sc = teamScores(), win = sc[0] > sc[1] ? 0 : sc[1] > sc[0] ? 1 : -1;
+      race.teamWin = win >= 0 && win === player.team;
+      html = '<div class="rrow head"><span>Pos</span><span></span><span>Racer</span><span>Time</span><span>Points</span></div>';
+      sorted.forEach(function (k, i) {
+        var tm = TEAMS[k.team >= 0 ? k.team : 0];
+        html += '<div class="rrow' + (k.isPlayer ? ' me' : '') + '"><span class="rk">' + (i + 1) + '</span><span class="chip" style="background:' + tm.css + ';color:' + tm.css + ';border-radius:50%"></span><span>' + k.name + (k.isPlayer ? ' (YOU)' : '') + ' <span class="tchip" style="background:' + tm.css + '">' + tm.name + '</span></span><span>' + (k.finished ? U.fmtTime(k.finishTime) : '<span class="dim">DNF</span>') + '</span><span style="color:' + tm.css + '">+' + teamPts(k.rank) + '</span></div>';
+      });
+      teamHtml = '<span class="r">RED ' + sc[0] + '</span><span>:</span><span class="b">' + sc[1] + ' BLUE</span>';
+      $('resultsTitle').textContent = win < 0 ? 'DRAW!' : (race.teamWin ? 'TEAM VICTORY!' : 'TEAM DEFEAT');
+      $('resultsSub').textContent = TRACKS[trackIndex].name + ' · ' + (win < 0 ? '무승부' : TEAMS[win].name + ' TEAM WINS') + ' · YOU ' + U.ordinal(pr) + ' of ' + karts.length + (player.finished ? ' · ' + U.fmtTime(player.finishTime) : '');
+    } else if (race.solo) {
+      // time attack: lap table against the ghost's laps
+      var gl = ta.ghost && ta.ghost.laps || [], tot = 0, gtot = 0, prev = ta.prevBest && ta.prevBest.race;
+      html = '<div class="rrow head"><span>Lap</span><span></span><span>Time</span><span>Ghost</span><span>Diff</span></div>';
+      var lapsArr = player.lapTimes.length ? player.lapTimes : (player.finished ? [player.finishTime] : []);
+      lapsArr.forEach(function (lt, i) {
+        var g = gl[i], d = g ? lt - g : null; tot += lt; if (g) gtot += g;
+        html += '<div class="rrow"><span class="rk">' + (i + 1) + '</span><span></span><span>' + U.fmtTime(lt) + '</span><span class="dim">' + (g ? U.fmtTime(g) : '-') + '</span><span style="color:' + (d === null ? '#fff' : d <= 0 ? '#5dff9a' : '#ff7a7a') + '">' + (d === null ? '' : (d > 0 ? '+' : '') + (d / 1000).toFixed(3)) + '</span></div>';
+      });
+      if (player.finished) html += '<div class="rrow lapsum"><span class="rk">Σ</span><span></span><span>' + U.fmtTime(player.finishTime) + '</span><span class="dim">' + (ta.ghost ? U.fmtTime(ta.ghost.time) : '-') + '</span><span>' + (ta.ghost ? ((player.finishTime - ta.ghost.time > 0 ? '+' : '') + ((player.finishTime - ta.ghost.time) / 1000).toFixed(3)) : '') + '</span></div>';
+      else html += '<div class="rrow lapsum"><span></span><span></span><span class="dim">완주 못 함</span><span></span><span></span></div>';
+      $('resultsTitle').textContent = player.finished ? (ta.newBest ? 'NEW RECORD!' : 'TIME ATTACK') : 'DNF';
+      $('resultsSub').textContent = TRACKS[trackIndex].name + ' · ' + (player.finished ? U.fmtTime(player.finishTime) : 'DNF') + (prev ? ' · 이전 기록 ' + U.fmtTime(prev) : ' · 첫 기록') + (ta.newBest && player.finished ? ' · 고스트 저장됨' : '');
+    } else {
+      $('resultsTitle').textContent = pr === 1 ? 'VICTORY!' : (pr <= 3 ? 'PODIUM!' : 'FINISH!');
+      $('resultsSub').textContent = TRACKS[trackIndex].name + ' · ' + U.ordinal(pr) + ' of ' + karts.length + ' · ' + (player.finished ? U.fmtTime(player.finishTime) : 'DNF');
+    }
+    $('resultsTeam').innerHTML = teamHtml; $('resultsTeam').classList.toggle('hidden', !teamHtml);
     $('resultsList').innerHTML = html;
-    if (window.__autotest) console.log('[AUTOTEST] RESULTS ' + sorted.map(function (k) { return k.rank + ':' + k.name + ':' + (k.finished ? U.fmtTime(k.finishTime) : 'DNF') ; }).join(' | '));
-    var pr = player.rank;
-    $('resultsTitle').textContent = pr === 1 ? 'VICTORY!' : (pr <= 3 ? 'PODIUM!' : 'FINISH!');
-    $('resultsSub').textContent = TRACKS[trackIndex].name + ' · ' + U.ordinal(pr) + ' of ' + karts.length + ' · ' + (player.finished ? U.fmtTime(player.finishTime) : 'DNF');
+    if (window.__autotest) console.log('[AUTOTEST] RESULTS ' + sorted.map(function (k) { return k.rank + ':' + k.name + ':' + (k.finished ? U.fmtTime(k.finishTime) : 'DNF') ; }).join(' | ') + (race.team ? ' TEAM ' + JSON.stringify(teamScores()) + ' win=' + race.teamWin : ''));
     if (!race.award) { race.award = awardRace(); if (window.__autotest) console.log('[AUTOTEST] XP +' + race.award.total + ' lv ' + race.award.before.level + '->' + race.award.after.level + ' unlocked=' + race.award.unlocked.map(function (s) { return s.id; }).join(',') + ' record=' + JSON.stringify(race.award.record)); }
     renderAward(race.award);
     if (online && online.net.state !== undefined) online.net.state = 'lobby';

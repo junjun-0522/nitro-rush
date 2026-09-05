@@ -129,9 +129,12 @@
     var p = Progress.p, before = Progress.levelInfo(p.xp);
     var rows = [], sub = 0;
     function row(label, xp) { xp = Math.round(xp); if (xp === 0) return; rows.push({ label: label, xp: xp }); sub += xp; }
-    row(ctx.finished ? '레이스 완주' : '레이스 참가', ctx.finished ? 80 : 30);
-    if (ctx.finished && ctx.n > 1) row(U.ordinal(ctx.rank).toUpperCase() + ' PLACE', 220 * (ctx.n - ctx.rank) / (ctx.n - 1));
-    if (ctx.finished && ctx.rank === 1) row('WINNER 보너스', 80);
+    if (ctx.solo) row(ctx.finished ? '타임어택 완주' : '타임어택 참가', ctx.finished ? 90 : 30);
+    else row(ctx.finished ? '레이스 완주' : '레이스 참가', ctx.finished ? 80 : 30);
+    if (!ctx.solo && ctx.finished && ctx.n > 1) row(U.ordinal(ctx.rank).toUpperCase() + ' PLACE', 220 * (ctx.n - ctx.rank) / (ctx.n - 1));
+    if (!ctx.solo && ctx.finished && ctx.rank === 1) row('WINNER 보너스', 80);
+    if (ctx.teamWin) row('TEAM WIN 보너스', 60);
+    if (ctx.solo && ctx.finished && ctx.ghostBeaten) row('고스트 격파', 40);
     if (ctx.laps) row('랩 ' + ctx.laps + '회', 10 * ctx.laps);
     if (ctx.maxDrifts) row('MAX CHARGE 드리프트 ×' + ctx.maxDrifts, Math.min(90, 6 * ctx.maxDrifts));
     var mul = 1, tags = [];
@@ -158,8 +161,8 @@
     p.xp += total; p.races++; p.laps += ctx.laps || 0; p.maxDrifts += ctx.maxDrifts || 0;
     if (ctx.finished) p.finishes++;
     if (ctx.online >= 2) p.online++;
-    if (ctx.finished && ctx.rank === 1) { p.wins++; p.trackWins[ctx.trackId] = (p.trackWins[ctx.trackId] || 0) + 1; }
-    if (ctx.finished && ctx.rank <= 3) { p.podiums++; p.trackPodiums[ctx.trackId] = (p.trackPodiums[ctx.trackId] || 0) + 1; }
+    if (!ctx.solo && ctx.finished && ctx.rank === 1) { p.wins++; p.trackWins[ctx.trackId] = (p.trackWins[ctx.trackId] || 0) + 1; }
+    if (!ctx.solo && ctx.finished && ctx.rank <= 3) { p.podiums++; p.trackPodiums[ctx.trackId] = (p.trackPodiums[ctx.trackId] || 0) + 1; }
     var unlocked = Progress.checkUnlocks();
     var after = Progress.levelInfo(p.xp);
     Progress.save();

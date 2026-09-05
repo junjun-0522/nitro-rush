@@ -78,6 +78,9 @@ function merge(a, b) {
   return out;
 }
 
+import { handleSocial } from './social.js';
+const SOCIAL_RE = /^\/(friends(\/(request|accept|decline|remove))?|presence)$/;
+
 // ---- Worker-level router ---------------------------------------------------
 export function corsHeaders(req, env) {
   const origin = req.headers.get('Origin');
@@ -107,13 +110,20 @@ export async function handleApi(req, env) {
     if (!USER_RE.test(user)) return json({ error: 'bad-user' }, 400, cors);
     const pass = String(body.pass || '');
     if (pass.length < 4 || pass.length > 64) return json({ error: 'bad-pass' }, 400, cors);
-  } else if (path === '/profile' || path === '/logout' || path === '/password') {
+  } else if (path === '/profile' || path === '/logout' || path === '/password' || SOCIAL_RE.test(path)) {
     const m = /^Bearer\s+(.+?):([0-9a-f]{48})$/.exec(req.headers.get('Authorization') || '');
     if (!m) return json({ error: 'unauthorized' }, 401, cors);
     user = m[1].normalize('NFC');
     if (!USER_RE.test(user)) return json({ error: 'unauthorized' }, 401, cors);
     body.token = m[2];
   } else return json({ error: 'not-found' }, 404, cors);
+  if (SOCIAL_RE.test(path)) {
+    // friends / presence: verify the token with the caller's Account object, then use the shared Social object
+    const vid = env.ACCOUNT.idFromName(user.toLowerCase());
+    const v = await (await env.ACCOUNT.get(vid).fetch('https://account/verify', { method: 'POST', body: JSON.stringify({ op: 'verify', token: body.token, user }), headers: { 'content-type': 'application/json' } })).json();
+    if (!v.ok) return json({ error: 'unauthorized' }, 401, cors);
+    return handleSocial(env, cors, { user: user.toLowerCase(), name: v.user || user, path, method: req.method, body });
+  }
   if (path === '/password') {
     const np = String(body.newPass || '');
     if (np.length < 4 || np.length > 64) return json({ error: 'bad-pass' }, 400, cors);
@@ -161,9 +171,11 @@ export class Account {
       await st.put('profile', profile);
       return json({ ok: true, user: (await st.get('user')) || b.user, token, profile, admin: !!b.admin });
     }
+    if (op === 'exists') return json({ ok: true, exists: !!(await st.get('auth')), user: (await st.get('user')) || null });
     // authenticated ops
     const token = await st.get('token');
     if (!token || !safeEq(token, b.token)) return json({ error: 'unauthorized' }, 401);
+    if (op === 'verify') return json({ ok: true, user: (await st.get('user')) || b.user });
     if (op === 'logout') { await st.delete('token'); return json({ ok: true }); }
     if (op === 'password') {
       const auth = await st.get('auth');

@@ -15,10 +15,11 @@
     "ADMIN_USERS": "junjun"
   },
   "durable_objects": {
-    "bindings": [{ "name": "ROOM", "class_name": "Room" }, { "name": "ACCOUNT", "class_name": "Account" }]
+    "bindings": [{ "name": "ROOM", "class_name": "Room" }, { "name": "ACCOUNT", "class_name": "Account" }, { "name": "SOCIAL", "class_name": "Social" }]
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["Room"] },
-    { "tag": "v2", "new_sqlite_classes": ["Account"] }
+    { "tag": "v2", "new_sqlite_classes": ["Account"] },
+    { "tag": "v3", "new_sqlite_classes": ["Social"] }
   ]
 }

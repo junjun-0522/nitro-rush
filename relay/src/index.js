@@ -12,11 +12,12 @@
      keepalive       : "~ping" -> "~pong" (auto-answered, not billed)
    Close codes: 4404 no such room, 4409 code taken, 4013 room full,
                 4000 host left, 4001 kicked
-   /api/*  : account + cloud save endpoints (see account.js)
+   /api/*  : account + cloud save endpoints (see account.js), friends + presence (social.js)
    ============================================================ */
 
 import { Account, handleApi } from './account.js';
-export { Account };
+import { Social } from './social.js';
+export { Account, Social };
 
 const MAX_SOCKETS = 16;          // app-level limit is 8 players; keep headroom for retries
 const MAX_MSG = 64 * 1024;       // bytes

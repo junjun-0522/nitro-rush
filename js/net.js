@@ -79,7 +79,7 @@
 
   Net.prototype.playerList = function () {
     var self = this;
-    return Object.keys(this.players).map(function (k) { var p = self.players[k]; return { id: p.id, name: p.name, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro', skin: p.skin || 'classic' }; })
+    return Object.keys(this.players).map(function (k) { var p = self.players[k]; return { id: p.id, name: p.name, char: p.char || 'volt', pet: p.pet || null, kart: p.kart || 'nitro', skin: p.skin || 'classic', team: p.team === undefined ? p.id % 2 : p.team }; })
       .sort(function (a, b) { return a.id - b.id; });
   };
 

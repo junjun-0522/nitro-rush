@@ -87,6 +87,30 @@
   .hud-board .row .r{width:18px;text-align:right;font-family:var(--display);font-style:italic;opacity:0.9}
   .hud-board .chip{width:10px;height:10px;border-radius:3px;flex:none;box-shadow:0 0 6px currentColor}
   .hud-board .gap{margin-left:auto;font-size:11px;opacity:0.6;font-variant-numeric:tabular-nums}
+  .hud-board .row .chip.t0{border-radius:50%} .hud-board .row .chip.t1{border-radius:50%}
+  .hud-ta{position:absolute;right:22px;top:16px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 14px;min-width:210px;font-family:var(--body);backdrop-filter:blur(6px);font-variant-numeric:tabular-nums}
+  .hud-ta .tt{font-family:var(--display);font-style:italic;font-size:13px;letter-spacing:0.2em;color:var(--cyan)}
+  .hud-ta .rec{font-size:13px;color:rgba(255,255,255,0.8);margin-top:4px;letter-spacing:0.08em}
+  .hud-ta .rec b{color:var(--yellow);font-size:16px}
+  .hud-ta .delta{font-family:var(--display);font-style:italic;font-size:26px;margin-top:2px;text-shadow:0 2px 0 rgba(0,0,0,0.5)}
+  .hud-ta .delta.ahead{color:#5dff9a} .hud-ta .delta.behind{color:#ff7a7a} .hud-ta .delta.none{font-family:var(--body);font-style:normal;font-size:12px;color:rgba(255,255,255,0.6)}
+  .hud-ta .laps{font-size:12px;color:rgba(255,255,255,0.75);margin-top:4px;line-height:1.5}
+  .hud-ta .laps span{color:#5dff9a} .hud-ta .laps em{color:#ff7a7a;font-style:normal}
+  .hud-team{position:absolute;top:82px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:5px 14px;backdrop-filter:blur(6px);font-family:var(--display);font-style:italic}
+  .hud-team .tn{font-size:11px;letter-spacing:0.25em} .hud-team b{font-size:22px;min-width:34px;text-align:center;font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,0.5)}
+  .hud-team .r{color:#ff5a5a} .hud-team .b{color:#5aa5ff}
+  .hud-team .tbar{width:min(220px,28vw);height:12px;border-radius:7px;overflow:hidden;background:#3b8bff;border:1px solid var(--border);transform:skewX(-14deg)}
+  .hud-team .tbar i{display:block;height:100%;background:#ff3b3b;transition:width .4s}
+  .tag.team0{background:#d63031 !important} .tag.team1{background:#2f6fd6 !important}
+  .room-teambox{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:14px;letter-spacing:0.1em}
+  .room-teambox b{font-family:var(--display);font-style:italic}
+  .btn.ta{border-color:rgba(255,230,0,0.45);background:linear-gradient(135deg,rgba(255,230,0,0.22),rgba(255,122,61,0.18))}
+  .btn.mode.on b{color:var(--yellow)}
+  .results-box .rrow .tchip{font-size:10px;letter-spacing:0.15em;padding:2px 6px;border-radius:5px;color:#fff;font-family:var(--body);font-style:normal}
+  .results-box .rrow.lapsum{border-top:1px solid var(--border);margin-top:4px;color:var(--yellow)}
+  .results-team{display:flex;gap:18px;justify-content:center;font-family:var(--display);font-style:italic;font-size:clamp(20px,3.4vw,34px);margin-top:-6px}
+  .results-team .r{color:#ff5a5a} .results-team .b{color:#5aa5ff}
+  @media (max-height:780px){ .menu-buttons .btn.ta small{display:none} }
 
   .hud-speed{position:absolute;right:24px;bottom:22px;width:clamp(150px,18vw,220px);text-align:center}
   .hud-speed svg{width:100%;display:block;overflow:visible}
@@ -232,6 +256,26 @@
   .prof .btn.acc{padding:6px 12px;font-size:12px;line-height:1.2;white-space:nowrap;text-align:center}
   .prof .btn.acc b{color:var(--cyan);display:block;font-weight:700;max-width:150px;overflow:hidden;text-overflow:ellipsis}
   .prof .btn.acc small{display:block;font-family:var(--body);font-style:normal;font-size:9px;letter-spacing:0.05em;text-transform:none;color:rgba(255,255,255,0.65)}
+  .prof .btn.fr{overflow:visible} .prof .btn.fr b{color:#fff} .prof .btn.fr.on b{color:#5dff9a}
+  .prof .btn .badge{position:absolute;top:-8px;right:-8px;background:var(--pink);color:#fff;font-style:normal;font-family:var(--body);font-weight:700;font-size:11px;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;padding:0 4px}
+  .friends-box{width:min(620px,94vw);max-height:78vh;overflow:auto}
+  .friends-box input{font-family:var(--body);font-size:16px;flex:1;min-width:160px;width:auto}
+  .fsec{font-family:var(--display);font-style:italic;letter-spacing:0.2em;font-size:13px;color:var(--cyan);margin-top:8px;display:flex;align-items:baseline;gap:8px}
+  .fsec small{font-family:var(--body);font-style:normal;letter-spacing:0;color:rgba(255,255,255,0.6);font-size:11px}
+  .fsec.dim{color:rgba(255,255,255,0.5)}
+  .flist{display:flex;flex-direction:column;gap:6px}
+  .flist .frow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;padding:8px 12px;font-size:14px}
+  .flist .frow .dot{width:11px;height:11px;border-radius:50%;background:#556;flex:none;box-shadow:0 0 0 2px rgba(0,0,0,0.3)}
+  .flist .frow.on .dot{background:#3dff8a;box-shadow:0 0 10px #3dff8a}
+  .flist .frow.race .dot{background:var(--yellow);box-shadow:0 0 10px var(--yellow)}
+  .flist .frow .fn{font-family:var(--display);font-style:italic;font-size:15px;min-width:90px}
+  .flist .frow .fs{flex:1;font-size:12px;color:rgba(255,255,255,0.7)}
+  .flist .frow.on .fs{color:#bfeadb}
+  .flist .frow .fa{display:flex;gap:6px}
+  .flist .frow .btn.small{padding:6px 12px;font-size:12px}
+  .flist .frow .btn.small.join{background:linear-gradient(135deg,var(--pink),#ff7a3d);border-color:#ffb0c6}
+  .flist .empty{font-size:12px;color:rgba(255,255,255,0.5);padding:6px 2px}
+  @media (max-width:760px){ .prof .btn.fr small{display:none} }
   #menu{gap:12px}
   @media (max-width:760px){ .prof .st{display:none} }
   @media (max-height:780px){
@@ -334,13 +378,16 @@
         <div class="cl" id="profCloud"></div>
       </div>
       <div class="st">스킨 <b id="profSkins">1/16</b><br>우승 <b id="profWins">0</b> · 레이스 <b id="profRaces">0</b></div>
+      <button id="btnFriends" class="btn small acc fr"><b>👥 친구 <span id="profFriends">0</span></b><small id="profFriendsSub">온라인 0</small><i id="profFriendsBadge" class="badge hidden">0</i></button>
       <button id="btnAccount" class="btn small acc"><b id="menuAccount">로그인 / 계정 만들기</b><small>클라우드 세이브</small></button>
     </div>
     <div class="menu-buttons">
       <button id="btnPlay" class="btn big">▶ Play</button>
       <button id="btnOnline" class="btn online">🌐 Online Multiplayer<small>친구와 방 코드로 함께 달리기</small></button>
+      <button id="btnTimeAttack" class="btn mode ta">⏱ Time Attack<small>혼자 달려서 기록 깨기 · 내 최고 기록 고스트와 대결</small></button>
       <button id="btnGarage" class="btn mode">Garage: <b id="menuChar">VOLT + SPARK</b><small>스킨 · 카트 · 캐릭터 · 펫 선택</small></button>
       <button id="btnMode" class="btn mode">Mode: <b id="menuMode">ITEM RACE</b><small id="menuModeDesc"></small></button>
+      <button id="btnTeam" class="btn mode">Team Race: <b id="menuTeam">OFF</b><small>레드 vs 블루 · 순위 점수 합산 · 팀원끼리는 아이템 안 맞음</small></button>
       <button id="btnTrack" class="btn">Track Select</button>
       <button id="btnSettings" class="btn">Settings</button>
     </div>
@@ -353,7 +400,7 @@
 
   <!-- TRACK SELECT -->
   <div id="trackSelect" class="screen dim hidden">
-    <h2 class="head">Track Select</h2>
+    <h2 class="head" id="trackSelHead">Track Select</h2>
     <div id="trackCards" class="cards"></div>
     <div class="btn-row"><button id="btnTrackGo" class="btn big">Race!</button><button id="btnTrackBack" class="btn">Back</button></div>
   </div>
@@ -378,11 +425,13 @@
 
   <!-- HUD -->
   <div id="hud" class="hidden">
-    <div class="hud-pos"><span class="n" id="hudPos">8</span><span class="sfx" id="hudPosSfx">th</span><span class="tot" id="hudPosTotal">/8</span></div>
+    <div class="hud-pos" id="hudPosBox"><span class="n" id="hudPos">8</span><span class="sfx" id="hudPosSfx">th</span><span class="tot" id="hudPosTotal">/8</span></div>
     <div class="hud-lap" id="hudLap"><span id="hudLapLabel">LAP</span> <span id="hudLapN">1</span>/<span id="hudLapT">3</span></div>
     <div class="hud-mode" id="hudMode">ITEM RACE</div>
     <div class="hud-time"><div class="t" id="hudTime">00:00.000</div><div class="sub"><span><span id="hudLapTimeLabel">LAP</span> <b id="hudLapTime">00:00.000</b></span><span>BEST <b id="hudBest">--:--.---</b></span></div></div>
     <div class="hud-board" id="hudBoard"></div>
+    <div class="hud-ta hidden" id="hudTA"><div class="tt">⏱ TIME ATTACK</div><div class="rec">RECORD <b id="taRec">--:--.---</b></div><div class="delta" id="taDelta">고스트 없음 · 첫 기록에 도전!</div><div class="laps" id="taLaps"></div></div>
+    <div class="hud-team hidden" id="hudTeam"><span class="tn r">RED</span><b class="r" id="teamRed">0</b><div class="tbar"><i id="teamBar" style="width:50%"></i></div><b class="b" id="teamBlue">0</b><span class="tn b">BLUE</span></div>
     <div class="hud-item" id="hudItem"><div id="hudItemIcon"></div><div class="iname" id="hudItemName"></div><div class="ikey">E</div></div>
     <div class="hud-speed">
       <svg viewBox="0 0 200 130">
@@ -456,6 +505,27 @@
     <button id="btnAccBack" class="btn">Back</button>
   </div>
 
+  <!-- FRIENDS -->
+  <div id="friends" class="screen dim hidden">
+    <h2 class="head">Friends</h2>
+    <div class="acc-box friends-box">
+      <div id="friendsGuest">
+        <div class="help">친구 기능은 <b>계정 로그인</b>이 필요해요. 로그인하면 아이디로 친구를 추가하고, 친구가 <b>온라인인지</b>·<b>어느 방에서 기다리는지</b> 보고 바로 참가할 수 있어요.</div>
+        <div class="row" style="margin-top:12px"><button id="btnFriendsLogin" class="btn big">로그인 / 계정 만들기</button></div>
+      </div>
+      <div id="friendsMain" class="hidden">
+        <div class="row"><input id="friendAdd" maxlength="16" placeholder="친구 아이디 (2~16자)" autocomplete="off"><button id="btnFriendAdd" class="btn small">친구 추가</button></div>
+        <div id="friendsStatus" class="status"></div>
+        <div id="friendsInWrap" class="hidden"><div class="fsec">받은 친구 요청 <span id="friendsInCount"></span></div><div id="friendsIn" class="flist"></div></div>
+        <div class="fsec">친구 <span id="friendsCount">0</span> <small id="friendsOnline"></small></div>
+        <div id="friendsList" class="flist"></div>
+        <div id="friendsOutWrap" class="hidden"><div class="fsec dim">보낸 요청 · 수락 대기 중</div><div id="friendsOut" class="flist"></div></div>
+        <div class="help" style="margin-top:6px">친구가 <b>방 대기 중</b>이면 <b>참가</b> 버튼으로 바로 들어갈 수 있어요. 목록은 40초마다 자동으로 새로고침돼요.</div>
+      </div>
+    </div>
+    <div class="btn-row"><button id="btnFriendsRefresh" class="btn small">새로고침</button><button id="btnFriendsBack" class="btn">Back</button></div>
+  </div>
+
   <!-- ONLINE -->
   <div id="online" class="screen dim hidden">
     <h2 class="head">Online Multiplayer</h2>
@@ -487,6 +557,7 @@
         <div id="roomHostControls">
           <div class="room-opt"><span>Track</span><div class="stepper"><button id="btnRoomTrackPrev" class="btn small">◀</button><b id="roomTrack">-</b><button id="btnRoomTrackNext" class="btn small">▶</button></div></div>
           <div class="room-opt"><span>Mode</span><button id="btnRoomMode" class="btn small"><b id="roomMode">ITEM RACE</b></button></div>
+          <div class="room-opt"><span>Team Race</span><button id="btnRoomTeams" class="btn small"><b id="roomTeams">OFF</b></button></div>
           <div class="room-opt"><span>Racers</span><select id="roomRacers"><option value="2">플레이어만</option><option value="4">4 (AI 채움)</option><option value="6">6 (AI 채움)</option><option value="8" selected>8 (AI 채움)</option></select></div>
           <button id="btnRoomStart" class="btn big">▶ Start Race</button>
         </div>
@@ -494,6 +565,7 @@
           <div class="room-opt"><span>Track</span><b id="roomTrackC"></b></div>
           <div class="wait">방장이 시작하기를 기다리는 중<span class="dots"></span></div>
         </div>
+        <div id="roomTeamBox" class="room-teambox hidden"><span>내 팀: <b id="roomMyTeam">RED</b></span><button id="btnRoomSwap" class="btn small">팀 바꾸기</button></div>
       </div>
     </div>
     <button id="btnRoomLeave" class="btn">Leave Room</button>
@@ -513,6 +585,7 @@
   <div id="results" class="screen dim hidden">
     <div class="results-title" id="resultsTitle">FINISH!</div>
     <div class="results-sub" id="resultsSub"></div>
+    <div class="results-team hidden" id="resultsTeam"></div>
     <div class="results-wrap"><div class="results-box" id="resultsList"></div><div class="xpbox" id="resultsXp"></div></div>
     <div class="btn-row">
       <button id="btnRetry" class="btn big">Play Again</button>
@@ -540,7 +613,9 @@
 <script src="js/karts.js"></script>
 <script src="js/skins.js"></script>
 <script src="js/progress.js"></script>
+<script src="js/ghost.js"></script>
 <script src="js/account.js"></script>
+<script src="js/social.js"></script>
 <script src="js/kart.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/items.js"></script>

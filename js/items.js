@@ -121,6 +121,9 @@
     return d < 90 ? 1 - d / 120 : 0;
   };
 
+  /** team race: teammates never hit each other with rockets / traps / lightning */
+  function sameTeam(a, b) { return !!(a && b && a !== b && a.team >= 0 && a.team === b.team); }
+
   /** kart uses its item. Returns true if used. */
   ItemManager.prototype.use = function (kart, world) {
     if (!this.enabled || !kart.item || kart.itemRoulette > 0 || !world.raceOn || kart.spinTime > 0) return false;
@@ -237,6 +240,7 @@
       for (j = 0; j < n; j++) {
         k = karts[j];
         if (k === rk.owner && rk.age < 1.0) continue;
+        if (sameTeam(k, rk.owner)) continue;
         var gs = ((k.s - rk.s) % L + L) % L; if (gs > L / 2) gs -= L;
         if (Math.abs(gs) < 2.4 && Math.abs(k.lat - rk.lat) < 2.2 && Math.abs(k.pos.y - rk.mesh.position.y) < 3) { hit = k; break; }
       }
@@ -262,6 +266,7 @@
       for (j = 0; j < cand.length; j++) {
         k = cand[j];
         if (k === tr.owner && tr.age < 1.2) continue;
+        if (sameTeam(k, tr.owner)) continue;
         if (k.airborne && k.pos.y - tr.pos.y > 1.5) continue;
         var ddx = k.pos.x - tr.pos.x, ddz = k.pos.z - tr.pos.z;
         if (ddx * ddx + ddz * ddz < 3.6) { got = k; break; }
@@ -283,7 +288,7 @@
   ItemManager.prototype.spawnRocket = function (kart, karts) {
     var L = this.path.length, best = null, bestD = 1e9, kp = kart.progress(L);
     for (var i = 0; i < karts.length; i++) {
-      var o = karts[i]; if (o === kart) continue;
+      var o = karts[i]; if (o === kart || sameTeam(o, kart)) continue;
       var d = o.progress(L) - kp;
       if (d > 1 && d < 260 && d < bestD) { bestD = d; best = o; }
     }
@@ -296,7 +301,7 @@
   ItemManager.prototype.applyZap = function (x, z, prog, from, world) {
     var karts = world.localKarts || world.karts, L = this.path.length, hitAny = false;
     for (var i = 0; i < karts.length; i++) {
-      var ok = karts[i]; if (ok === from || ok.remote) continue;
+      var ok = karts[i]; if (ok === from || ok.remote || sameTeam(ok, from)) continue;
       var dx = ok.pos.x - x, dz = ok.pos.z - z, ahead = ok.progress(L) - prog;
       if (dx * dx + dz * dz < 75 * 75 || (ahead > 0 && ahead < 75)) {
         if (ok.stun(2.6)) { this.fx.zapRing(ok.pos); hitAny = true; if (ok.isPlayer && world.onPlayerHit) world.onPlayerHit('lightning'); }
