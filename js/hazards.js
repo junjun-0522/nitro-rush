@@ -23,7 +23,7 @@
     this.group = new THREE.Group(); scene.add(this.group);
     this.rng = U.rng(4242);
     this.time = 0; this.light = 0; this.player = null; this.ps = 0;
-    this.rockMat = new THREE.MeshStandardMaterial({ color: 0x241f21, roughness: 0.95, flatShading: true });
+    this.rockMat = new THREE.MeshStandardMaterial({ color: 0x6a5652, roughness: 0.85, emissive: 0xff5a18, emissiveIntensity: 0.38, flatShading: true });
     this.bombMat = new THREE.MeshStandardMaterial({ color: 0x3a2018, roughness: 0.8, emissive: 0xff4a10, emissiveIntensity: 1.2, flatShading: true });
     this.glowMat = new THREE.SpriteMaterial({ map: U.tex.particle(), color: 0xff8030, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false });
     this.flameMat = new THREE.SpriteMaterial({ map: U.tex.flame(), color: 0xffc060, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
@@ -109,7 +109,7 @@
           if (dist < 160) { fx.addShake(U.clamp((big ? 0.9 : 0.45) * (1 - dist / 160), 0, 1)); if (big) this.audio.explode(); else this.audio.hit(0.6); }
           if (rk.bounces === 0 && rk.vy < -8) { rk.vy = -rk.vy * 0.28; var ang = Math.random() * 6.28; rk.vx = Math.cos(ang) * 1.8; rk.vz = Math.sin(ang) * 1.8; rk.bounces++; }
           else {
-            rk.state = 'landed'; rk.vy = 0; rk.mesh.position.y = rk.impact.y + rk.r * 0.8; rk.marker.visible = false;
+            rk.state = 'landed'; rk.vy = 0; rk.mesh.position.y = rk.impact.y + rk.r * 0.8; rk.marker.material.opacity = 0.5;
             var pr = this.path.project(rk.mesh.position, this.path.idxOf(rk.sImpact), {});
             rk.ob = this.addObstacle(rk.mesh.position.x, rk.mesh.position.y, rk.mesh.position.z, rk.r * 0.95, pr.s, pr.lat);
           }
@@ -176,7 +176,7 @@
         for (var k = 0; k < lk.length; k++) {
           var kt = lk[k]; if (kt.remote || kt.invulnTime > 0 || kt.spinTime > 0) continue;
           var dx = kt.pos.x - sp.pos.x, dz = kt.pos.z - sp.pos.z;
-          if (dx * dx + dz * dz < sp.r * sp.r && Math.abs(kt.pos.y - sp.pos.y) < 3) { kt.spinOut('lava'); kt.invulnTime = 1.0; this.fx.explosion(kt.pos, false); }
+          if (dx * dx + dz * dz < sp.r * sp.r && Math.abs(kt.pos.y - sp.pos.y) < 3) { kt.vel.multiplyScalar(0.55); kt.boostTime = 0; kt.invulnTime = 1.0; this.fx.explosion(kt.pos, false); if (kt.isPlayer) this.emit('burn'); }
         }
       } else { sp.col.visible = false; sp.glow.material.opacity = 0.2 + Math.sin(t * 2 + i) * 0.05; sp.glow.scale.set(6, 4, 1); }
       sp.ob.off = st === 'idle'; sp.was = st;
@@ -380,7 +380,7 @@
         if (vn < 0) {
           kt.vel.x -= nx * vn * 1.5; kt.vel.z -= nz * vn * 1.5;
           var imp = -vn;
-          if (imp > 3 && kt.hitCooldown <= 0) { kt.hitCooldown = 0.3; kt.vel.multiplyScalar(1 - U.clamp(imp / 30, 0.08, 0.35)); kt.events.push({ type: 'wall', impact: imp * 0.6, side: 1 }); }
+          if (imp > 3 && kt.hitCooldown <= 0) { kt.hitCooldown = 0.3; kt.vel.multiplyScalar(1 - U.clamp(imp / 60, 0.04, 0.18)); kt.events.push({ type: 'scrape', side: 1 }); }
         }
       }
     }

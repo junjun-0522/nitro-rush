@@ -648,6 +648,7 @@
       case 'newroute': showMsg('ROAD COLLAPSED · NEW ROUTE →', 'yellow'); flash('rgba(255,120,40,0.35)'); break;
       case 'rockwarn': if (msgCool <= 0) { showMsg('⚠ ROCKFALL!', 'yellow'); msgCool = 3; } break;
       case 'crushed': break;
+      case 'burn': showMsg('LAVA!', 'pink'); flash('rgba(255,120,20,0.45)'); break;
       case 'cracks': showMsg('THE ROAD IS BREAKING!', 'yellow'); break;
       case 'cliff': showMsg('CLIFF COLLAPSE!', 'pink'); break;
     }
