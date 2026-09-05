@@ -193,6 +193,12 @@
     click('btnAccLogin', function () { doAuth('login'); });
     click('btnAccRegister', function () { doAuth('register'); });
     click('btnAccLogout', function () { Account.logout(); accMsg('로그아웃했어요. 기록은 이 기기에 계속 남아요.'); renderAccount(); });
+    click('btnAccPw', function () {
+      var o = $('accPwOld').value || '', n = $('accPwNew').value || '';
+      if (n.length < 4) { accMsg(Account.errText('bad-pass'), true); return; }
+      accMsg('비밀번호 바꾸는 중...');
+      Account.changePassword(o, n).then(function () { $('accPwOld').value = ''; $('accPwNew').value = ''; accMsg('비밀번호를 바꿨어요.'); }, function (e) { accMsg(Account.errText(e.error), true); });
+    });
     click('btnAccSync', function () { accMsg('동기화 중...'); Account.sync().then(function (j) { accMsg(j ? '동기화 완료!' : Account.errText('network'), !j); renderAccount(); }); });
     $('accPw').addEventListener('keydown', function (e) { if (e.key === 'Enter') doAuth('login'); });
     $('accId').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('accPw').focus(); });
@@ -1080,7 +1086,7 @@
   // ---------------------------------------------------------------- profile / account UI
   function refreshProfileUI() {
     var li = Progress.levelInfo();
-    $('profName').textContent = Account.loggedIn() ? Account.user : (settings.nick || 'GUEST');
+    $('profName').textContent = (Account.loggedIn() ? Account.user : (settings.nick || 'GUEST')) + (Account.admin ? ' 👑' : '');
     $('profLv').textContent = 'LV ' + li.level; $('profTitle').textContent = Progress.title(li.level);
     $('profBar').style.width = (li.pct * 100).toFixed(1) + '%';
     $('profXp').textContent = li.max ? 'MAX LEVEL' : li.cur + ' / ' + li.need + ' XP';
@@ -1097,7 +1103,8 @@
     if (!Account.available()) accMsg('계정 서버 주소가 설정되지 않았어요 (js/config.js 의 relayUrl / accountUrl).', true);
     if (!logged) return;
     var li = Progress.levelInfo(), p = Progress.p;
-    $('accName').textContent = Account.user;
+    $('accName').textContent = Account.user + (Account.admin ? ' 👑' : '');
+    $('accAdmin').classList.toggle('hidden', !Account.admin);
     $('accSummary').textContent = 'LV ' + li.level + ' ' + Progress.title(li.level) + ' · ' + p.xp + ' XP · 레이스 ' + p.races + ' · 우승 ' + p.wins + ' · 스킨 ' + p.unlocked.length + '/' + SKINS.length;
     $('accSyncState').textContent = Account.busy ? '동기화 중...' : Account.status === 'error' ? '마지막 동기화 실패 — 인터넷을 확인하고 다시 시도해주세요' : (Account.lastSync ? '클라우드에 저장됨 · ' + new Date(Account.lastSync).toLocaleTimeString() : '아직 동기화 전');
   }

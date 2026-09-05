@@ -10,7 +10,9 @@
   "observability": { "enabled": true },
   "vars": {
     // browsers send Origin on WebSocket upgrades; anything else is refused (403)
-    "ALLOWED_ORIGINS": "https://junjun-0522.github.io,http://127.0.0.1:8765,http://localhost:8765"
+    "ALLOWED_ORIGINS": "https://junjun-0522.github.io,http://127.0.0.1:8765,http://localhost:8765",
+    // 관리자 계정(쉼표 구분, 대소문자 무시): 로그인 응답에 admin:true → 클라이언트가 전 스킨 해금 + 최대 레벨 부여
+    "ADMIN_USERS": "junjun"
   },
   "durable_objects": {
     "bindings": [{ "name": "ROOM", "class_name": "Room" }, { "name": "ACCOUNT", "class_name": "Account" }]

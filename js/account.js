@@ -13,7 +13,7 @@
   'use strict';
 
   var KEY = 'nitroRush.account.v1';
-  var Account = { user: null, token: null, busy: false, lastSync: 0, status: 'offline', listeners: [] };
+  var Account = { user: null, token: null, admin: false, busy: false, lastSync: 0, status: 'offline', listeners: [] };
 
   function baseUrl() {
     var qs = /[?&]account=([^&]+)/.exec(location.search);
@@ -32,10 +32,10 @@
   function emit() { Account.listeners.forEach(function (fn) { try { fn(Account); } catch (e) { } }); }
 
   Account.load = function () {
-    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.user && s.token) { Account.user = s.user; Account.token = s.token; } } catch (e) { }
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.user && s.token) { Account.user = s.user; Account.token = s.token; Account.admin = !!s.admin; } } catch (e) { }
     return Account.loggedIn();
   };
-  function persist() { try { if (Account.loggedIn()) localStorage.setItem(KEY, JSON.stringify({ user: Account.user, token: Account.token })); else localStorage.removeItem(KEY); } catch (e) { } }
+  function persist() { try { if (Account.loggedIn()) localStorage.setItem(KEY, JSON.stringify({ user: Account.user, token: Account.token, admin: Account.admin })); else localStorage.removeItem(KEY); } catch (e) { } }
 
   function errText(code) {
     return ({
@@ -62,7 +62,11 @@
 
   function applyRemote(j) {
     if (j && j.profile) Progress.merge(j.profile);
-    Account.lastSync = Date.now(); Account.status = 'synced'; emit();
+    if (j && typeof j.admin === 'boolean' && j.admin !== Account.admin) { Account.admin = j.admin; persist(); }
+    Account.lastSync = Date.now(); Account.status = 'synced';
+    // admin accounts own every skin at max level; push the granted profile back once
+    if (Account.admin && Progress.grantAll()) Account.push();
+    emit();
   }
 
   /** register or login; both send the local profile so the merged result comes back at once */
@@ -80,7 +84,15 @@
   Account.logout = function () {
     var was = Account.loggedIn();
     if (was) req('POST', '/api/logout', null, true).catch(function () { });
-    Account.user = null; Account.token = null; Account.status = 'offline'; persist(); emit();
+    Account.user = null; Account.token = null; Account.admin = false; Account.status = 'offline'; persist(); emit();
+  };
+  /** change password (server verifies the old one and rotates the token) */
+  Account.changePassword = function (oldPass, newPass) {
+    if (!Account.loggedIn()) return Promise.reject({ error: 'unauthorized' });
+    Account.busy = true; emit();
+    return req('POST', '/api/password', { pass: oldPass, newPass: newPass }, true).then(function (j) {
+      Account.token = j.token; persist(); Account.busy = false; emit(); return j;
+    }, function (e) { Account.busy = false; emit(); throw e; });
   };
 
   /** push the local profile (merged server-side) — debounced, safe to call after every race */

@@ -59,6 +59,7 @@
     return { level: L, xp: xp, cur: xp - lo, need: Math.max(1, hi - lo), pct: L >= MAX_LEVEL ? 1 : (xp - lo) / (hi - lo), max: L >= MAX_LEVEL };
   };
   Progress.title = function (L) {
+    if (global.Account && Account.admin) return 'ADMIN';
     return L >= 40 ? 'LEGEND' : L >= 30 ? 'CHAMPION' : L >= 20 ? 'PRO' : L >= 10 ? 'RACER' : L >= 5 ? 'ROOKIE' : 'NEWBIE';
   };
 
@@ -104,6 +105,15 @@
       if (Progress.unlockInfo(s).done) { Progress.p.unlocked.push(s.id); fresh.push(s); }
     });
     return fresh;
+  };
+  /** admin: unlock every skin and max the level. returns true if anything changed */
+  Progress.grantAll = function () {
+    var p = Progress.p, changed = false;
+    SKINS.forEach(function (s) { if (p.unlocked.indexOf(s.id) < 0) { p.unlocked.push(s.id); changed = true; } });
+    var maxXp = Progress.xpForLevel(MAX_LEVEL);
+    if (p.xp < maxXp) { p.xp = maxXp; changed = true; }
+    if (changed) Progress.save(true);
+    return changed;
   };
   Progress.setSkin = function (id) {
     if (!Progress.isUnlocked(id)) return false;

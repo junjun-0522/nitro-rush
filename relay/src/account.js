@@ -107,14 +107,19 @@ export async function handleApi(req, env) {
     if (!USER_RE.test(user)) return json({ error: 'bad-user' }, 400, cors);
     const pass = String(body.pass || '');
     if (pass.length < 4 || pass.length > 64) return json({ error: 'bad-pass' }, 400, cors);
-  } else if (path === '/profile' || path === '/logout') {
+  } else if (path === '/profile' || path === '/logout' || path === '/password') {
     const m = /^Bearer\s+(.+?):([0-9a-f]{48})$/.exec(req.headers.get('Authorization') || '');
     if (!m) return json({ error: 'unauthorized' }, 401, cors);
     user = m[1].normalize('NFC');
     if (!USER_RE.test(user)) return json({ error: 'unauthorized' }, 401, cors);
     body.token = m[2];
   } else return json({ error: 'not-found' }, 404, cors);
+  if (path === '/password') {
+    const np = String(body.newPass || '');
+    if (np.length < 4 || np.length > 64) return json({ error: 'bad-pass' }, 400, cors);
+  }
   body.user = user; body.op = path.slice(1); body.method = req.method;
+  body.admin = !!(env.ADMIN_USERS && env.ADMIN_USERS.split(',').some((a) => a.trim().toLowerCase() === user.toLowerCase()));
   const id = env.ACCOUNT.idFromName(user.toLowerCase());
   const res = await env.ACCOUNT.get(id).fetch('https://account/' + body.op, { method: 'POST', body: JSON.stringify(body), headers: { 'content-type': 'application/json' } });
   const out = new Response(res.body, res);
@@ -154,12 +159,21 @@ export class Account {
       await st.put('token', token);
       const profile = merge((await st.get('profile')) || {}, b.profile || {});
       await st.put('profile', profile);
-      return json({ ok: true, user: (await st.get('user')) || b.user, token, profile });
+      return json({ ok: true, user: (await st.get('user')) || b.user, token, profile, admin: !!b.admin });
     }
     // authenticated ops
     const token = await st.get('token');
     if (!token || !safeEq(token, b.token)) return json({ error: 'unauthorized' }, 401);
     if (op === 'logout') { await st.delete('token'); return json({ ok: true }); }
+    if (op === 'password') {
+      const auth = await st.get('auth');
+      const hash = await pbkdf2(String(b.pass || ''), auth.salt, auth.iter || PBKDF2_ITER);
+      if (!safeEq(hash, auth.hash)) return json({ error: 'wrong-pass' }, 401);
+      const salt = randHex(16);
+      await st.put('auth', { salt, hash: await pbkdf2(b.newPass, salt, PBKDF2_ITER), iter: PBKDF2_ITER });
+      const token = randHex(24); await st.put('token', token);
+      return json({ ok: true, token });
+    }
     if (op === 'profile') {
       let profile = (await st.get('profile')) || {};
       if (b.method === 'PUT') {
@@ -167,7 +181,7 @@ export class Account {
         profile = merge(profile, b.profile || {});
         await st.put('profile', profile);
       }
-      return json({ ok: true, user: (await st.get('user')) || b.user, profile });
+      return json({ ok: true, user: (await st.get('user')) || b.user, profile, admin: !!b.admin });
     }
     return json({ error: 'not-found' }, 404);
   }

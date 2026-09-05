@@ -200,6 +200,10 @@
   .acc-box .who{font-family:var(--display);font-style:italic;font-size:28px;color:var(--yellow);text-shadow:0 3px 0 rgba(0,0,0,0.4)}
   .acc-box .sum{font-size:13px;color:rgba(255,255,255,0.8)}
   .acc-box .sync{font-size:12px;color:var(--cyan)}
+  .acc-box .admin{margin-top:8px;font-size:13px;color:var(--yellow);background:rgba(255,230,0,0.12);border:1px solid rgba(255,230,0,0.4);border-radius:8px;padding:6px 10px;display:inline-block}
+  .acc-box .pwbox{margin-top:10px;font-size:13px;color:rgba(255,255,255,0.75)}
+  .acc-box .pwbox summary{cursor:pointer;letter-spacing:0.1em}
+  .acc-box .pwbox input{width:auto;flex:1;min-width:150px;font-size:15px;padding:7px 12px}
 
   /* XP box on results */
   .xpbox{background:var(--panel);border:2px solid rgba(255,230,0,0.35);border-radius:16px;padding:12px 16px;flex:1 1 320px;max-width:420px;text-align:left;backdrop-filter:blur(12px);font-size:13px;display:flex;flex-direction:column;gap:4px}
@@ -437,7 +441,11 @@
         <div class="who" id="accName">-</div>
         <div class="sum" id="accSummary"></div>
         <div class="sync" id="accSyncState"></div>
+        <div class="admin hidden" id="accAdmin">👑 관리자 계정 — 모든 스킨 해금 · 최대 레벨</div>
         <div class="row" style="margin-top:10px"><button id="btnAccSync" class="btn small">지금 동기화</button><button id="btnAccLogout" class="btn small">로그아웃</button></div>
+        <details class="pwbox"><summary>비밀번호 변경</summary>
+          <div class="row" style="margin-top:8px"><input id="accPwOld" type="password" placeholder="현재 비밀번호" autocomplete="current-password"><input id="accPwNew" type="password" placeholder="새 비밀번호 (4자 이상)" autocomplete="new-password"><button id="btnAccPw" class="btn small">변경</button></div>
+        </details>
       </div>
       <div id="accStatus" class="status"></div>
       <div class="help">XP·레벨·해금한 스킨·트랙별 <b>개인 기록</b>이 계정에 저장돼요. 다른 PC나 폰에서 로그인하면 기록이 <b>합쳐져서</b> 이어집니다. 이메일 없이 아이디와 비밀번호만 있으면 돼요. (비밀번호를 잊으면 찾을 수 없으니 기억해 두세요)</div>
