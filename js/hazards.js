@@ -100,7 +100,7 @@
         for (var k = 0; k < lk.length; k++) {
           var kt = lk[k]; if (kt.remote || kt.invulnTime > 0) continue;
           var dx = kt.pos.x - rk.mesh.position.x, dz = kt.pos.z - rk.mesh.position.z;
-          if (dx * dx + dz * dz < (rk.r + 1.2) * (rk.r + 1.2) && rk.mesh.position.y - rk.r < kt.pos.y + 1.8 && rk.mesh.position.y > kt.pos.y - 1) { kt.spinOut('rock'); kt.invulnTime = 1.2; if (kt.isPlayer) this.emit('crushed'); }
+          if (dx * dx + dz * dz < (rk.r + 1.2) * (rk.r + 1.2) && rk.mesh.position.y - rk.r < kt.pos.y + 1.8 && rk.mesh.position.y > kt.pos.y - 1) { kt.vel.multiplyScalar(0.55); kt.invulnTime = 1.2; kt.events.push({ type: 'wall', impact: 8, side: 1 }); if (kt.isPlayer) fx.addShake(0.5); }
         }
         if (rk.mesh.position.y - rk.r <= rk.impact.y) {
           rk.mesh.position.y = rk.impact.y + rk.r;
@@ -298,7 +298,7 @@
   };
   Hazards.prototype._startEruption = function () {
     var E = this.erupt; E.state = 'erupting'; E.t = 0;
-    this.fx.addShake(1.2); this.audio.explode();
+    this.fx.addShake(0.45); this.audio.explode();
     this._burst(E.crater, 260);
     this.emit('eruption', { crater: E.crater });
   };
@@ -311,7 +311,7 @@
     }
     E.t += dt; var T = E.t;
     this.light = Math.min(1, T / 3);
-    if (T < 8) this.fx.addShake(dt * (T < 1.5 ? 1.4 : 0.35));
+    if (T < 8) this.fx.addShake(dt * (T < 1.5 ? 0.5 : 0.18));
     E.fountainT -= dt; if (E.fountainT <= 0) { E.fountainT = T < 10 ? 0.08 : 0.35; this._bomb(E.crater, (Math.random() - 0.5) * 40, 55 + Math.random() * 45, (Math.random() - 0.5) * 40, false); }
     for (i = 0; i < E.cloud.length; i++) {
       var c = E.cloud[i], f = Math.min(1, T / 10), ang = i / E.cloud.length * 6.28; c.visible = true;
@@ -380,7 +380,7 @@
         if (vn < 0) {
           kt.vel.x -= nx * vn * 1.5; kt.vel.z -= nz * vn * 1.5;
           var imp = -vn;
-          if (imp > 3 && kt.hitCooldown <= 0) { kt.hitCooldown = 0.3; kt.vel.multiplyScalar(1 - U.clamp(imp / 24, 0.1, 0.5)); kt.events.push({ type: 'wall', impact: imp, side: 1 }); if (imp > 15 && kt.spinTime <= 0) kt.spinOut('rock'); }
+          if (imp > 3 && kt.hitCooldown <= 0) { kt.hitCooldown = 0.3; kt.vel.multiplyScalar(1 - U.clamp(imp / 30, 0.08, 0.35)); kt.events.push({ type: 'wall', impact: imp * 0.6, side: 1 }); }
         }
       }
     }

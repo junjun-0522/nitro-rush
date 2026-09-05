@@ -644,10 +644,10 @@
   // ---------------------------------------------------------------- hazards: events, eruption lighting, cinematic camera
   function onHazardEvent(name, data) {
     switch (name) {
-      case 'eruption': showMsg('ERUPTION!', 'pink'); flash('rgba(255,80,20,0.6)'); camEvent = { t: 0, dur: 3.6, target: data.crater.clone() }; break;
+      case 'eruption': showMsg('ERUPTION!', 'pink'); flash('rgba(255,80,20,0.45)'); break;   // no camera swing: the player keeps full view of the road
       case 'newroute': showMsg('ROAD COLLAPSED · NEW ROUTE →', 'yellow'); flash('rgba(255,120,40,0.35)'); break;
       case 'rockwarn': if (msgCool <= 0) { showMsg('⚠ ROCKFALL!', 'yellow'); msgCool = 3; } break;
-      case 'crushed': showMsg('CRUSHED!', 'pink'); flash('rgba(120,80,60,0.6)'); break;
+      case 'crushed': break;
       case 'cracks': showMsg('THE ROAD IS BREAKING!', 'yellow'); break;
       case 'cliff': showMsg('CLIFF COLLAPSE!', 'pink'); break;
     }
@@ -833,7 +833,7 @@
             break;
           case 'spin':
             if (near) { fx.explosion(k.pos, false); }
-            if (isP) { audio.spin(); flash(x.source === 'lava' ? 'rgba(255,120,20,0.6)' : 'rgba(255,80,80,0.5)'); fx.addShake(1); showMsg(x.source === 'lava' ? 'LAVA!' : x.source === 'rock' ? 'ROCK HIT!' : 'SPIN OUT!', 'pink'); } else if (near) audio.spin();
+            if (isP) { audio.spin(); flash(x.source === 'lava' ? 'rgba(255,120,20,0.6)' : 'rgba(255,80,80,0.5)'); fx.addShake(1); showMsg(x.source === 'lava' ? 'LAVA!' : 'SPIN OUT!', 'pink'); } else if (near) audio.spin();
             break;
           case 'lava':
             if (isP) { audio.explode(); flash('rgba(255,90,10,0.75)'); fx.addShake(0.8); showMsg('FELL INTO LAVA!', 'pink'); cam.init = false; }
