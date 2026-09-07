@@ -97,6 +97,41 @@
         }
       });
     },
+    lava: function (g, w, h, c1, c2) {
+      g.fillStyle = c1; g.fillRect(0, 0, w, h);
+      var rng = U.rng(61); g.lineCap = 'round';
+      for (var i = 0; i < 12; i++) { var x = rng() * w, y = rng() * h, ln = [[x, y]]; for (var k = 0; k < 5; k++) { x += rng.range(-22, 22); y += rng.range(-22, 22); ln.push([x, y]); }
+        [[c2, 5, 0.55], ['#ffe27a', 1.6, 1]].forEach(function (st) { g.strokeStyle = st[0]; g.globalAlpha = st[2]; g.lineWidth = st[1]; g.beginPath(); ln.forEach(function (p, j) { if (j) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.stroke(); }); }
+      g.globalAlpha = 1;
+    },
+    bolt: function (g, w, h, c1, c2) {
+      g.fillStyle = c1; g.fillRect(0, 0, w, h);
+      var rng = U.rng(67); g.lineCap = 'round'; g.lineJoin = 'round';
+      for (var i = 0; i < 7; i++) { var x = rng() * w, y = 0, pts = [[x, 0]]; while (y < h) { y += rng.range(8, 18); x += rng.range(-12, 12); pts.push([x, y]); }
+        [[c2, 4, 0.5], ['#ffffff', 1.4, 1]].forEach(function (st) { g.strokeStyle = st[0]; g.globalAlpha = st[2]; g.lineWidth = st[1]; g.beginPath(); pts.forEach(function (p, j) { if (j) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.stroke(); }); }
+      g.globalAlpha = 1;
+    },
+    checker: function (g, w, h, c1, c2) {
+      var s = 16; for (var y = 0; y < h; y += s) for (var x = 0; x < w; x += s) { g.fillStyle = ((x + y) / s) % 2 ? c1 : c2; g.fillRect(x, y, s, s); }
+    },
+    holo: function (g, w, h, c1, c2) {
+      var grd = g.createLinearGradient(0, 0, w, h);
+      ['#ff5f8a', '#ffb347', '#fff36b', '#6bff9a', '#5fd8ff', '#9b7bff', '#ff5f8a'].forEach(function (c, i, a) { grd.addColorStop(i / (a.length - 1), c); });
+      g.fillStyle = grd; g.fillRect(0, 0, w, h);
+      g.fillStyle = c1; g.globalAlpha = 0.45; g.fillRect(0, 0, w, h); g.globalAlpha = 1;
+      g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1; for (var i = -h; i < w + h; i += 9) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); }
+    },
+    circuit: function (g, w, h, c1, c2) {
+      g.fillStyle = c1; g.fillRect(0, 0, w, h);
+      var rng = U.rng(73); g.strokeStyle = c2; g.lineWidth = 2; g.fillStyle = c2;
+      for (var i = 0; i < 22; i++) { var x = Math.round(rng() * w / 8) * 8, y = Math.round(rng() * h / 8) * 8, len = rng.range(16, 48), vert = rng() < 0.5;
+        g.beginPath(); g.moveTo(x, y); g.lineTo(vert ? x : x + len, vert ? y + len : y); g.stroke(); g.beginPath(); g.arc(x, y, 2.5, 0, 7); g.fill(); }
+    },
+    scales: function (g, w, h, c1, c2) {
+      g.fillStyle = c1; g.fillRect(0, 0, w, h);
+      var r = 9; g.lineWidth = 1.2;
+      for (var row = 0; row < h / r + 2; row++) for (var col = -1; col < w / (r * 2) + 1; col++) { var x = col * r * 2 + (row % 2 ? r : 0), y = row * r; g.fillStyle = row % 2 ? c2 : c1; g.strokeStyle = 'rgba(0,0,0,0.45)'; g.beginPath(); g.arc(x, y, r, 0, Math.PI); g.closePath(); g.fill(); g.stroke(); }
+    },
     hex: function (g, w, h, c1, c2) {
       g.fillStyle = c1; g.fillRect(0, 0, w, h);
       g.strokeStyle = c2; g.lineWidth = 1.5;
@@ -125,7 +160,23 @@
     { id: 'veteran', name: 'VETERAN', kr: '베테랑', desc: '50레이스 완주. 헥사곤 아머 플레이트.', color: 0x6b6f3a, accent: 0xffa030, pattern: 'hex', unlock: { races: 50 } },
     { id: 'taeguk', name: 'TAEGUK', kr: '태극', desc: '모든 트랙에서 포디움에 오른 챔피언의 도색.', color: 0xf8f8f8, accent: 0xcd2e3a, pattern: 'taeguk', stripes: false, unlock: { podiumAll: true } },
     { id: 'gold', name: 'GOLD', kr: '골드', desc: '순금 도금. 레벨 20의 상징.', color: 0xffc23d, accent: 0x5a3a00, metal: 0.55, rough: 0.25, emissive: 0x4a3000, emissiveI: 0.25, glow: 0xffd66b, unlock: { level: 20 } },
-    { id: 'chrome', name: 'CHROME', kr: '크롬', desc: '거울처럼 빛나는 은빛. 레벨 30.', color: 0xdfe4ee, accent: 0x2fe0ff, metal: 0.7, rough: 0.15, emissive: 0x303844, emissiveI: 0.3, glow: 0xffffff, unlock: { level: 30 } }
+    { id: 'chrome', name: 'CHROME', kr: '크롬', desc: '거울처럼 빛나는 은빛. 레벨 30.', color: 0xdfe4ee, accent: 0x2fe0ff, metal: 0.7, rough: 0.15, emissive: 0x303844, emissiveI: 0.3, glow: 0xffffff, unlock: { level: 30 } },
+    { id: 'checker', name: 'CHECKER', kr: '체커', desc: '결승선 무늬. 레벨 25.', color: 0x111111, accent: 0xf4f4f4, pattern: 'checker', stripes: false, unlock: { level: 25 } },
+    { id: 'lab', name: 'CIRCUIT', kr: '서킷 보드', desc: 'NITRO LAB 우승. 회로가 흐르는 기판 도색.', color: 0x0a2a1a, accent: 0x3dff8a, pattern: 'circuit', emissive: 0x0a4a2a, emissiveI: 0.3, glow: 0x3dff8a, unlock: { trackWin: 'lab' } },
+    { id: 'orbit', name: 'ORBITAL', kr: '오비탈', desc: 'ORBITAL RUN 우승. 심우주 에너지 도색.', color: 0x0a1030, accent: 0x35e6ff, pattern: 'neon', emissive: 0x102a6a, emissiveI: 0.35, glow: 0x35e6ff, unlock: { trackWin: 'orbit' } },
+    { id: 'skyfrost', name: 'SKY FROST', kr: '스카이 프로스트', desc: 'SKY CRYSTAL 우승. 얼음 수정 홀로그램.', color: 0xbfe9ff, accent: 0x66d9ff, pattern: 'holo', metal: 0.3, rough: 0.2, glow: 0x9fe3ff, unlock: { trackWin: 'sky' } },
+    { id: 'inferno', name: 'INFERNO', kr: '인페르노', desc: 'VOLCANIC INFERNO 탈출 성공(우승). 식지 않은 용암 균열.', color: 0x120a0a, accent: 0xff5a14, pattern: 'lava', emissive: 0x5a1a00, emissiveI: 0.5, glow: 0xff6a1a, unlock: { trackWin: 'volcano' } },
+    { id: 'bolt', name: 'THUNDER', kr: '썬더', desc: 'MAX CHARGE 드리프트 300회. 번개가 차체를 가른다.', color: 0x14162a, accent: 0xfff176, pattern: 'bolt', emissive: 0x2a2a6a, emissiveI: 0.3, glow: 0xfff176, unlock: { maxDrifts: 300 } },
+    { id: 'squad', name: 'SQUAD', kr: '스쿼드', desc: '온라인 레이스 30회. 친구들과 달린 증표.', color: 0xff8c42, accent: 0x2fe0ff, pattern: 'stripes', unlock: { online: 30 } },
+    { id: 'holo', name: 'HOLOGRAM', kr: '홀로그램', desc: '보는 각도마다 색이 바뀌는 무지개 코팅. 레벨 40.', color: 0x333333, accent: 0xffffff, pattern: 'holo', metal: 0.5, rough: 0.2, glow: 0xffffff, unlock: { level: 40 } },
+    { id: 'dragon', name: 'DRAGON', kr: '드래곤', desc: '50승. 붉은 용의 비늘.', color: 0x8a1020, accent: 0xffb347, pattern: 'scales', metal: 0.35, rough: 0.35, glow: 0xff6a1a, unlock: { wins: 50 } },
+    { id: 'obsidian', name: 'OBSIDIAN', kr: '옵시디언', desc: '흑요석 유리 도색. 레벨 50 MASTER.', color: 0x0b0b10, accent: 0x9b6bff, metal: 0.8, rough: 0.1, emissive: 0x1a0a30, emissiveI: 0.3, glow: 0x9b6bff, unlock: { level: 50 } },
+    { id: 'phantom', name: 'PHANTOM', kr: '팬텀', desc: '200레이스 완주. 밤안개 같은 보랏빛.', color: 0x1e0a3a, accent: 0xb388ff, pattern: 'galaxy', emissive: 0x3a1a6a, emissiveI: 0.35, glow: 0xb388ff, unlock: { races: 200 } },
+    { id: 'platinum', name: 'PLATINUM', kr: '플래티넘', desc: '백금 도금. 레벨 60 ELITE.', color: 0xe8ecf4, accent: 0x8fb4d8, metal: 0.85, rough: 0.12, emissive: 0x2a3040, emissiveI: 0.3, glow: 0xdff6ff, unlock: { level: 60 } },
+    { id: 'titan', name: 'TITAN', kr: '타이탄', desc: '레벨 70 TITAN. 청동 장갑판.', color: 0x8a5a2a, accent: 0xffc23d, pattern: 'hex', metal: 0.6, rough: 0.3, glow: 0xffc23d, unlock: { level: 70 } },
+    { id: 'diamond', name: 'DIAMOND', kr: '다이아몬드', desc: '레벨 80 MYTHIC. 빛을 부수는 다이아 코팅.', color: 0xf4fbff, accent: 0x66ccff, pattern: 'holo', metal: 0.9, rough: 0.05, emissive: 0x2a4a6a, emissiveI: 0.3, glow: 0xffffff, unlock: { level: 80 } },
+    { id: 'immortal', name: 'IMMORTAL', kr: '이모탈', desc: '레벨 90 IMMORTAL. 황금 불꽃.', color: 0xffc23d, accent: 0xff2e2e, pattern: 'flames', metal: 0.5, rough: 0.25, emissive: 0x4a2000, emissiveI: 0.35, glow: 0xffd66b, unlock: { level: 90 } },
+    { id: 'infinity', name: 'INFINITY', kr: '인피니티', desc: '레벨 100. 이 게임의 끝을 본 자의 도색.', color: 0x05050a, accent: 0xffffff, pattern: 'holo', metal: 0.9, rough: 0.08, emissive: 0x2a2a44, emissiveI: 0.5, glow: 0xffffff, unlock: { level: 100 } }
   ];
 
   function findSkin(id) { for (var i = 0; i < SKINS.length; i++) if (SKINS[i].id === id) return SKINS[i]; return SKINS[0]; }

@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY = 'nitroRush.profile.v1';
-  var MAX_LEVEL = 50;
+  var MAX_LEVEL = 100;
 
   function fresh() {
     return { v: 1, xp: 0, races: 0, finishes: 0, wins: 0, podiums: 0, online: 0, maxDrifts: 0, laps: 0,
@@ -60,7 +60,7 @@
   };
   Progress.title = function (L) {
     if (global.Account && Account.admin) return 'ADMIN';
-    return L >= 40 ? 'LEGEND' : L >= 30 ? 'CHAMPION' : L >= 20 ? 'PRO' : L >= 10 ? 'RACER' : L >= 5 ? 'ROOKIE' : 'NEWBIE';
+    return L >= 100 ? 'INFINITY' : L >= 90 ? 'IMMORTAL' : L >= 80 ? 'MYTHIC' : L >= 70 ? 'TITAN' : L >= 60 ? 'ELITE' : L >= 50 ? 'MASTER' : L >= 40 ? 'LEGEND' : L >= 30 ? 'CHAMPION' : L >= 20 ? 'PRO' : L >= 10 ? 'RACER' : L >= 5 ? 'ROOKIE' : 'NEWBIE';
   };
 
   // ---------------------------------------------------------------- records
