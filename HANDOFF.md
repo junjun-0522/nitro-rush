@@ -23,6 +23,7 @@
 - `js/karts.js`: `hull(profile, width, bevel)`(ExtrudeGeometry 측면 프로필 → 베벨 차체), `wing/lamps/canopy` 헬퍼. 새 카트 10종(RALLY GT, BLADE, COTTON PUFF, BEAST, SHADOW KNIGHT, SONIC WAVE, NEON BURST, PHANTOM X, DRAGONFIRE, PARAGON) + 기존 6종 = 16종. `tier`(common/rare/epic/legend)와 `unlock`(스킨과 같은 스키마: level/wins/races/maxDrifts) 추가, `Progress.kartUnlocked(k)`(관리자는 전부), 잠긴 카트를 골라두면 `myKart()` 가 nitro 로 대체. 가라지 카트 카드에 등급 태그·자물쇠·해금 조건.
 - `js/kart.js`: 페인트/포인트 재질을 MeshPhysicalMaterial(clearcoat 1.0) 로, 크롬 metalness 1.0 + envMapIntensity. `game.js buildEnvironment(theme)`: 트랙 하늘색 + 스튜디오 패널로 PMREM 환경맵 생성 → `scene.environment`(모든 StandardMaterial 반사). `U.anisotropy` = 렌더러 최대값. 품질 옵션 `ultra`(픽셀비 3, 그림자 4096).
 - 모바일 터치: `index.html #touch`(◀ ▶ 조향, BRAKE, DRIFT, BOOST, ITEM, ↻ 복귀, ❚❚ 일시정지), `game.js bindTouch()`(pointer 이벤트, 조향 버튼 사이 슬라이드, 멀티터치), 터치 모드면 자동 가속. 설정 `Touch Controls` auto/on/off(auto = 터치 기기 + 모바일 UA), URL `?touch` 강제 / `?notouch`. `body.touchmode` 로 HUD 재배치(미니맵 우상단, 속도계 중앙).
+- 2026-09-08 ROYAL TALON(17번째, 전설 Lv60): 사용자가 보낸 보라+금 장식 카트 사진을 따라 제작. `def.paint/accent`(카트 고유 색, 스킨을 고르면 스킨 우선), `def.goldWheels`(금 3스포크 휠+빨간 림), 재질 gold/orb/redEm 추가, `hull()` 이 얇은 칼날(0.02m)도 뽑을 수 있음.
 - 확인: 헤드리스 레이스(카트 paragon) 정상, 터치 모드 자동 가속 확인, 가라지 16장 카드·잠금 표시, 카트 정적 스크린샷(tools/track_view.html?kart=paragon).
 
 ## 2026-09-06 추가: VOLCANIC INFERNO (10번째, 포인트-투-포인트 4.6km, EXPERT)

@@ -29,7 +29,8 @@
   function buildKartMesh(color, accent, isPlayer, variant, charId, kartId, skinId) {
     var def = findKart(kartId);
     var skin = skinId ? findSkin(skinId) : null;
-    if (skin) { color = skin.color; accent = skin.accent; }
+    if (def.paint) { color = def.paint; accent = def.accent; }
+    if (skin && (!def.paint || skin.id !== 'classic')) { color = skin.color; accent = skin.accent; }
     var root = new THREE.Group();
     var body = new THREE.Group(); root.add(body);
     var PaintMat = THREE.MeshPhysicalMaterial || THREE.MeshStandardMaterial;
@@ -55,6 +56,9 @@
     var mats = {
       paint: paint, acc: acc, dark: dark, chrome: chrome, rubber: rubber, skin: skin, glass: glass, lamp: lampMat, tail: tailMat,
       glow: new THREE.MeshStandardMaterial({ color: glowColor, emissive: glowColor, emissiveIntensity: 0.9, roughness: 0.3 }),
+      gold: new THREE.MeshStandardMaterial({ color: 0xf2c452, roughness: 0.3, metalness: 0.65, emissive: 0x6a4200, emissiveIntensity: 0.35, envMapIntensity: 1.5 }),
+      orb: new THREE.MeshStandardMaterial({ color: 0xc050ff, emissive: 0xa020ff, emissiveIntensity: 1.3, roughness: 0.15, metalness: 0.2 }),
+      redEm: new THREE.MeshStandardMaterial({ color: 0xff2040, emissive: 0xff1030, emissiveIntensity: 0.9, roughness: 0.3 }),
       wood: new THREE.MeshStandardMaterial({ color: 0x8a5a2b, roughness: 0.85 }),
       green: new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: 0.6, metalness: 0.2 }),
       red: new THREE.MeshStandardMaterial({ color: 0xb5342c, roughness: 0.6 }),
@@ -102,7 +106,8 @@
       var piv = new THREE.Group(); piv.position.set(p[0], wd.r, p[1]); root.add(piv); pivots.push(piv);
       if (wd.hidden) return;
       var w = new THREE.Mesh(wheelGeo, rubber); w.castShadow = true; piv.add(w);
-      var hub = new THREE.Mesh(hubGeo, isPlayer ? new THREE.MeshStandardMaterial({ color: accent, roughness: 0.3, metalness: 0.6 }) : chrome); w.add(hub);
+      var hub = new THREE.Mesh(hubGeo, def.goldWheels ? mats.gold : (isPlayer ? new THREE.MeshStandardMaterial({ color: accent, roughness: 0.3, metalness: 0.6 }) : chrome)); w.add(hub);
+      if (def.goldWheels) { for (var sp = 0; sp < 3; sp++) { var spoke = new THREE.Mesh(G('spoke' + wd.r, function () { return new THREE.BoxGeometry(wd.w + 0.06, wd.r * 1.7, 0.09); }), mats.gold); spoke.rotation.x = sp * Math.PI / 3; w.add(spoke); } var rim = new THREE.Mesh(G('rim' + wd.r, function () { return new THREE.TorusGeometry(wd.r * 0.82, 0.04, 6, 18).rotateY(Math.PI / 2); }), mats.redEm); w.add(rim); }
       wheels.push(w);
     });
 
