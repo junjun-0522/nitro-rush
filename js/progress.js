@@ -115,6 +115,8 @@
     if (changed) Progress.save(true);
     return changed;
   };
+  /** karts carry the same unlock schema as skins (tiered garage); admins have everything */
+  Progress.kartUnlocked = function (k) { return !k || !k.unlock || !!(global.Account && Account.admin) || Progress.unlockInfo(k).done; };
   Progress.setSkin = function (id) {
     if (!Progress.isUnlocked(id)) return false;
     Progress.p.skin = id; Progress.save(); return true;

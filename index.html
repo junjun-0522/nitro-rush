@@ -202,6 +202,9 @@
   .gcard.skin .gname{font-size:13px}
   .gcard.skin .gdesc b{color:var(--yellow);font-weight:600}
   .gcard.shake{animation:shake .3s}
+  .gcard.kart.locked{opacity:0.72;cursor:not-allowed}
+  .gcard .tier{font-family:var(--body);font-style:normal;font-size:9px;letter-spacing:0.15em;padding:2px 6px;border-radius:5px;margin-left:auto;color:#fff}
+  .gcard .tier.common{background:#5a6270} .gcard .tier.rare{background:#2f6fd6} .gcard .tier.epic{background:#8f5cff} .gcard .tier.legend{background:linear-gradient(135deg,#ffb347,#ff2f6d)}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
   /* profile bar (main menu) + account screen */
@@ -300,6 +303,29 @@
   .hud-item .ikey{position:absolute;top:-12px;right:-10px;background:var(--pink);font-family:var(--body);font-weight:700;font-size:12px;border-radius:8px;padding:2px 8px;border:2px solid #fff}
 
   #minimap{position:absolute;left:24px;bottom:24px;width:clamp(140px,16vw,210px);height:clamp(140px,16vw,210px);border-radius:16px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(6px)}
+  /* touch controls */
+  #touch{position:absolute;inset:0;pointer-events:none;touch-action:none;-webkit-user-select:none;user-select:none}
+  #touch .tc{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));display:flex;align-items:flex-end;gap:10px;pointer-events:none}
+  #touch .tc.left{left:calc(14px + env(safe-area-inset-left))} #touch .tc.right{right:calc(14px + env(safe-area-inset-right));flex-direction:row-reverse}
+  #touch .tbtn{pointer-events:auto;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-style:italic;color:#fff;background:rgba(8,12,24,0.55);border:2px solid rgba(255,255,255,0.35);border-radius:50%;box-shadow:0 4px 18px rgba(0,0,0,0.4);touch-action:none;-webkit-tap-highlight-color:transparent}
+  #touch .tbtn.on{background:rgba(47,224,255,0.55);border-color:#fff;transform:scale(0.94)}
+  #touch .steer{width:clamp(68px,13vmin,110px);height:clamp(68px,13vmin,110px);font-size:clamp(26px,5vmin,40px);border-radius:24px}
+  #touch .drift{width:clamp(84px,17vmin,130px);height:clamp(84px,17vmin,130px);font-size:clamp(15px,3vmin,24px);background:rgba(255,47,109,0.5);border-color:#ffb0c6}
+  #touch .drift.on{background:rgba(255,47,109,0.9)}
+  #touch .boost{width:clamp(58px,11vmin,84px);height:clamp(58px,11vmin,84px);font-size:clamp(11px,2.2vmin,16px);background:rgba(255,230,0,0.45);border-color:#ffe600;color:#fff;margin-bottom:clamp(60px,12vmin,100px)}
+  #touch .boost.on{background:rgba(255,230,0,0.9);color:#000}
+  #touch .item{width:clamp(58px,11vmin,84px);height:clamp(58px,11vmin,84px);font-size:clamp(11px,2.2vmin,16px);background:rgba(143,92,255,0.5);border-color:#c9b3ff}
+  #touch .small{width:clamp(44px,8vmin,64px);height:clamp(44px,8vmin,64px);font-size:clamp(10px,1.8vmin,13px);border-radius:14px;margin-bottom:clamp(60px,12vmin,100px)}
+  #touch .small.brake{margin-bottom:0;margin-left:6px}
+  #touch .pause{position:absolute;top:calc(10px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));margin:0;width:44px;height:36px;font-size:12px;border-radius:10px}
+  body.touchmode #minimap{left:auto;right:24px;bottom:auto;top:calc(16px + clamp(60px,8vw,80px) + 32px);width:120px;height:120px}
+  body.touchmode .hud-speed{right:auto;left:50%;transform:translateX(-50%);bottom:calc(20px + clamp(84px,17vmin,130px) + 30px);width:clamp(120px,16vw,170px)}
+  body.touchmode .hud-boost{bottom:calc(20px + clamp(84px,17vmin,130px) + 8px);width:min(300px,42vw)}
+  body.touchmode .hud-item{right:auto;left:50%;transform:translateX(calc(-50% + clamp(120px,18vw,180px)));bottom:calc(20px + clamp(84px,17vmin,130px) + 40px);width:clamp(60px,8vw,84px)}
+  body.touchmode .hint,body.touchmode #tutorial{display:none}
+  body.touchmode .hud-board{top:auto;bottom:calc(20px + clamp(84px,17vmin,130px) + 44px);right:24px;min-width:130px;font-size:11px}
+  @media (max-width:760px){ body.touchmode .hud-board{display:none} }
+  body.touchmode .hud-time{top:12px} body.touchmode .hud-pos .n{font-size:clamp(44px,7vw,70px)}
 
   #wrongWay{position:absolute;top:28%;left:50%;transform:translateX(-50%);font-size:clamp(28px,5vw,56px);font-style:italic;color:var(--pink);text-shadow:0 0 30px var(--pink),0 4px 0 rgba(0,0,0,0.5);animation:blink .5s infinite;letter-spacing:0.1em}
 
@@ -414,7 +440,9 @@
       <label>Difficulty<small>AI 코너 속도 · 러버밴딩</small></label>
       <select id="optDifficulty"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select>
       <label>Graphics<small>그림자 · 해상도</small></label>
-      <select id="optQuality"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+      <select id="optQuality"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra (4K 그림자 · 고해상도)</option></select>
+      <label>Touch Controls<small>화면 버튼 조작 (모바일)</small></label>
+      <select id="optTouch"><option value="auto">Auto (터치 기기면 켬)</option><option value="on">On</option><option value="off">Off</option></select>
       <label>SFX Volume</label>
       <input id="optVolume" type="range" min="0" max="1" step="0.05">
       <label>Music<small>Web Audio 생성 BGM</small></label>
@@ -457,6 +485,20 @@
     <canvas id="minimap" width="220" height="220"></canvas>
     <div id="wrongWay" class="hidden">WRONG WAY!</div>
   </div>
+  <!-- TOUCH CONTROLS (mobile) -->
+  <div id="touch" class="hidden">
+    <div class="tc left">
+      <div class="tbtn steer" id="tLeft">◀</div><div class="tbtn steer" id="tRight">▶</div>
+      <div class="tbtn small brake" id="tBrake">BRAKE</div>
+    </div>
+    <div class="tc right">
+      <div class="tbtn drift" id="tDrift">DRIFT</div>
+      <div class="tbtn boost" id="tBoost">BOOST</div>
+      <div class="tbtn item" id="tItem">ITEM</div>
+      <div class="tbtn small" id="tRespawn">↻</div>
+    </div>
+    <div class="tbtn small pause" id="tPause">❚❚</div>
+  </div>
   <div id="msg"></div>
   <div id="countdown" class="hidden"></div>
   <div id="finishBanner" class="hidden">FINISH!<small id="finishSub"></small></div>
@@ -468,7 +510,7 @@
       <div class="glv" id="garageLv">LV 1</div>
       <div class="gsec">SKIN · INVENTORY <small id="garageSkinCount">보유 1 / 30</small></div>
       <div id="garageSkins" class="gcards skins"></div>
-      <div class="gsec">KART <small>차체마다 성능이 달라요</small></div>
+      <div class="gsec">KART <small id="garageKartCount">보유 4 / 16</small></div>
       <div id="garageKarts" class="gcards"></div>
       <div class="gsec">CHARACTER</div>
       <div id="garageChars" class="gcards"></div>

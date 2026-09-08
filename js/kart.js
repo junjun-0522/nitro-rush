@@ -32,8 +32,11 @@
     if (skin) { color = skin.color; accent = skin.accent; }
     var root = new THREE.Group();
     var body = new THREE.Group(); root.add(body);
-    var paint = new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.25 });
-    var acc = new THREE.MeshStandardMaterial({ color: accent, roughness: 0.4, metalness: 0.2 });
+    var PaintMat = THREE.MeshPhysicalMaterial || THREE.MeshStandardMaterial;
+    var paint = new PaintMat({ color: color, roughness: 0.3, metalness: 0.3, envMapIntensity: 1.2 });
+    if (paint.clearcoat !== undefined) { paint.clearcoat = 1.0; paint.clearcoatRoughness = 0.12; }
+    var acc = new PaintMat({ color: accent, roughness: 0.35, metalness: 0.25, envMapIntensity: 1.1 });
+    if (acc.clearcoat !== undefined) { acc.clearcoat = 0.8; acc.clearcoatRoughness = 0.2; }
     if (skin) {
       var tex = skinTexture(skin);
       if (tex) { paint.map = tex; paint.color.setHex(0xffffff); }
@@ -43,7 +46,7 @@
     }
     var glowColor = skin && skin.glow ? skin.glow : accent;
     var dark = new THREE.MeshStandardMaterial({ color: 0x1d1f26, roughness: 0.7, metalness: 0.3 });
-    var chrome = new THREE.MeshStandardMaterial({ color: 0xd9dde6, roughness: 0.2, metalness: 0.9 });
+    var chrome = new THREE.MeshStandardMaterial({ color: 0xd9dde6, roughness: 0.15, metalness: 1.0, envMapIntensity: 1.4 });
     var rubber = new THREE.MeshStandardMaterial({ color: 0x15161a, roughness: 0.95 });
     var skin = new THREE.MeshStandardMaterial({ color: 0xffd9b3, roughness: 0.8 });
     var glass = new THREE.MeshStandardMaterial({ color: 0x66e0ff, roughness: 0.1, metalness: 0.6, emissive: 0x1a5fff, emissiveIntensity: 0.3, transparent: true, opacity: 0.75 });

@@ -50,7 +50,7 @@
     t.wrapS = t.wrapT = opts.clamp ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping;
     if (opts.repeat) t.repeat.set(opts.repeat[0], opts.repeat[1]);
     if (THREE.SRGBColorSpace && !opts.linear) t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 4;
+    t.anisotropy = U.anisotropy || 4;
     if (opts.nearest) { t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestMipMapLinearFilter; }
     texCache[key] = t;
     return t;

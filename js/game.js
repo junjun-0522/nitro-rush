@@ -7,7 +7,7 @@
   function $(id) { return document.getElementById(id); }
 
   var SETTINGS_KEY = 'nitroRush.settings.v1';
-  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark', kart: 'nitro', team: false };
+  var settings = { racers: 8, difficulty: 'normal', quality: 'high', volume: 0.8, music: true, track: 0, mode: 'mixed', char: 'volt', pet: 'spark', kart: 'nitro', team: false, touch: 'auto' };
   var MODES = {
     mixed: { label: 'ITEM + SPEED', desc: '아이템 + 드리프트 부스터 (부스터 1개 저장)', items: true, gauge: true, stock: 1, gaugeMul: 1 },
     speed: { label: 'SPEED RACE', desc: '아이템 없음 · 드리프트로 부스터 충전 · 부스터 2개 저장', items: false, gauge: true, stock: 2, gaugeMul: 1.5 },
@@ -69,6 +69,7 @@
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    try { U.anisotropy = renderer.capabilities.getMaxAnisotropy(); } catch (e) { U.anisotropy = 4; }
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.3, 7000);
     hemi = new THREE.HemisphereLight(0xbfe9ff, 0x6c8f4a, 0.75); scene.add(hemi);
@@ -82,7 +83,7 @@
     audio = new AudioSys();
     audio.volume = settings.volume; audio.musicOn = settings.music;
 
-    bindUI(); bindInput(); applyQuality();
+    bindUI(); bindInput(); bindTouch(); applyQuality();
     window.addEventListener('resize', resize); resize();
     loadTrack(trackIndex);
     Progress.onChange(function () { refreshProfileUI(); Account.push(); });
@@ -140,11 +141,11 @@
 
   function applyQuality() {
     var q = settings.quality;
-    var pr = q === 'low' ? 1 : (q === 'medium' ? Math.min(window.devicePixelRatio || 1, 1.5) : Math.min(window.devicePixelRatio || 1, 2));
+    var pr = q === 'low' ? 1 : (q === 'medium' ? Math.min(window.devicePixelRatio || 1, 1.5) : q === 'ultra' ? Math.min(window.devicePixelRatio || 1, 3) : Math.min(window.devicePixelRatio || 1, 2));
     renderer.setPixelRatio(pr);
     renderer.shadowMap.enabled = q !== 'low';
     sun.castShadow = q !== 'low';
-    var size = q === 'high' ? 2048 : 1024;
+    var size = q === 'ultra' ? 4096 : q === 'high' ? 2048 : 1024;
     if (sun.shadow.map && sun.shadow.mapSize.x !== size) { sun.shadow.map.dispose(); sun.shadow.map = null; }
     sun.shadow.mapSize.set(size, size);
     scene.traverse(function (o) { if (o.material) o.material.needsUpdate = true; });
@@ -171,10 +172,60 @@
     hemi.color.setHex(th.hemi[0]); hemi.groundColor.setHex(th.hemi[1]); hemi.intensity = th.hemiInt;
     sunDir.set(th.sunDir[0], th.sunDir[1], th.sunDir[2]).normalize();
     renderer.toneMappingExposure = th.exposure;
+    buildEnvironment(th);
     buildMinimap();
     $('menuTrackName').textContent = TRACKS[i].name;
     fx.clear();
   }
+
+  // ---------------------------------------------------------------- environment reflections (per track sky)
+  var pmrem = null, envTex = null;
+  function buildEnvironment(th) {
+    try {
+      if (!pmrem) pmrem = new THREE.PMREMGenerator(renderer);
+      if (envTex) { envTex.dispose(); envTex = null; }
+      var es = new THREE.Scene(), c = document.createElement('canvas'); c.width = 32; c.height = 256;
+      var g = c.getContext('2d'), grd = g.createLinearGradient(0, 0, 0, 256);
+      var top = '#' + th.sky[0].toString(16).padStart(6, '0'), bot = '#' + th.sky[1].toString(16).padStart(6, '0'), sunC = '#' + th.sun.toString(16).padStart(6, '0');
+      grd.addColorStop(0, top); grd.addColorStop(0.42, bot); grd.addColorStop(0.5, '#ffffff'); grd.addColorStop(0.56, bot); grd.addColorStop(0.62, '#3a3a40'); grd.addColorStop(1, '#101014');
+      g.fillStyle = grd; g.fillRect(0, 0, 32, 256);
+      var t = new THREE.CanvasTexture(c); if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
+      es.add(new THREE.Mesh(new THREE.SphereGeometry(50, 24, 12), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide })));
+      // a few bright studio panels so glossy paint picks up crisp highlights
+      [[0, 30, 0, 26, 26, 0xffffff], [30, 12, 20, 14, 10, sunC], [-30, 10, -20, 14, 10, 0xbfdfff]].forEach(function (p) { var pl = new THREE.Mesh(new THREE.PlaneGeometry(p[3], p[4]), new THREE.MeshBasicMaterial({ color: p[5], side: THREE.DoubleSide })); pl.position.set(p[0], p[1], p[2]); pl.lookAt(0, 0, 0); es.add(pl); });
+      envTex = pmrem.fromScene(es, 0.04).texture; scene.environment = envTex; t.dispose();
+    } catch (e) { console.warn('environment map failed', e); }
+  }
+
+  // ---------------------------------------------------------------- touch controls (mobile)
+  var touch = { on: false, ptr: {} };
+  function touchWanted() {
+    var t = settings.touch || 'auto', qs = location.search;
+    if (/[?&]touch(&|$)/.test(qs)) return true; if (/[?&]notouch/.test(qs)) return false;
+    return t === 'on' || (t === 'auto' && ((navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window) && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent));
+  }
+  function bindTouch() {
+    var map = { tLeft: 'left', tRight: 'right', tBrake: 'down', tDrift: 'drift', tBoost: 'boost', tItem: 'item', tRespawn: 'respawn' };
+    var el = $('touch');
+    function press(a, on) { if (on && !keys[a]) edges[a] = true; keys[a] = on; var b = el.querySelector('[data-act="' + a + '"]'); if (b) b.classList.toggle('on', on); }
+    el.querySelectorAll('.tbtn').forEach(function (b) { if (map[b.id]) b.setAttribute('data-act', map[b.id]); });
+    function actAt(x, y) { var e = document.elementFromPoint(x, y); while (e && e !== el) { if (e.getAttribute && e.getAttribute('data-act')) return e.getAttribute('data-act'); e = e.parentNode; } return null; }
+    el.addEventListener('pointerdown', function (e) {
+      if (e.target.id === 'tPause') { e.preventDefault(); audio.init(); pauseRace(); return; }
+      var a = actAt(e.clientX, e.clientY); if (!a) return;
+      e.preventDefault(); audio.init(); touch.ptr[e.pointerId] = a; press(a, true);
+    });
+    el.addEventListener('pointermove', function (e) {
+      var cur = touch.ptr[e.pointerId]; if (!cur || (cur !== 'left' && cur !== 'right')) return;
+      var a = actAt(e.clientX, e.clientY);
+      if (a && a !== cur && (a === 'left' || a === 'right')) { press(cur, false); touch.ptr[e.pointerId] = a; press(a, true); }
+    });
+    function release(e) { var a = touch.ptr[e.pointerId]; if (!a) return; delete touch.ptr[e.pointerId]; var still = false; for (var k in touch.ptr) if (touch.ptr[k] === a) still = true; if (!still) press(a, false); }
+    window.addEventListener('pointerup', release); window.addEventListener('pointercancel', release);
+    el.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    touch.on = touchWanted(); document.body.classList.toggle('touchmode', touch.on);
+  }
+  function applyTouchMode() { touch.on = touchWanted(); document.body.classList.toggle('touchmode', touch.on); $('touch').classList.toggle('hidden', !(touch.on && (state === 'racing' || state === 'countdown' || state === 'finished'))); }
 
   // ---------------------------------------------------------------- UI
   function showScreen(name) {
@@ -184,6 +235,7 @@
     refreshProfileUI();
     $('hud').classList.toggle('hidden', !(name === null));
     $('vignette').classList.toggle('hidden', !(name === null));
+    $('touch').classList.toggle('hidden', !(name === null && touch.on));
     if (name) state = name === 'trackSelect' ? 'trackselect' : name;
     $('menuRacers').textContent = settings.racers;
     $('menuMode').textContent = modeInfo(settings.mode).label;
@@ -268,6 +320,7 @@
     $('optRacers').addEventListener('change', function () { settings.racers = parseInt(this.value, 10); saveSettings(); $('menuRacers').textContent = settings.racers; });
     $('optDifficulty').addEventListener('change', function () { settings.difficulty = this.value; saveSettings(); });
     $('optQuality').addEventListener('change', function () { settings.quality = this.value; saveSettings(); applyQuality(); });
+    $('optTouch').addEventListener('change', function () { settings.touch = this.value; saveSettings(); applyTouchMode(); });
     $('optVolume').addEventListener('input', function () { settings.volume = parseFloat(this.value); audio.setVolume(settings.volume); saveSettings(); });
     $('optMusic').addEventListener('change', function () { settings.music = this.checked; saveSettings(); audio.setMusicOn(settings.music, state === 'racing' ? track.def.mood : null); });
     document.addEventListener('visibilitychange', function () { if (document.hidden && !window.__autotest && (state === 'racing' || state === 'countdown')) pauseRace(); });
@@ -277,6 +330,7 @@
     $('optRacers').value = String(settings.racers);
     $('optDifficulty').value = settings.difficulty;
     $('optQuality').value = settings.quality;
+    $('optTouch').value = settings.touch || 'auto';
     $('optVolume').value = settings.volume;
     $('optMusic').checked = settings.music;
   }
@@ -364,6 +418,8 @@
   }
 
   function aiName(i) { return AI_NAMES[i % AI_NAMES.length] + (i >= AI_NAMES.length ? ' ' + (Math.floor(i / AI_NAMES.length) + 1) : ''); }
+  /** the chosen kart, or the starter if it is still locked */
+  function myKart() { var k = findKart(settings.kart); return (k.id === settings.kart && Progress.kartUnlocked(k)) ? settings.kart : 'nitro'; }
   function addKart(k) {
     scene.add(k.root); if (k.petRoot) scene.add(k.petRoot);
     if (k.team >= 0) { k.accent = TEAMS[k.team].color; if (!k.isPlayer && !k.marker) k.marker = makeTeamMarker(k.team); }
@@ -449,7 +505,7 @@
     var band = settings.difficulty === 'easy' ? 0.6 : (settings.difficulty === 'hard' ? 1.25 : 1);
     var list = [], i, kt;
     if (!isOnline) {
-      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin, team: teamOn ? 0 : -1 });
+      player = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: myKart(), skin: Progress.p.skin, team: teamOn ? 0 : -1 });
       for (i = 1; i < n; i++) {
         var lk = aiLook(rng);
         kt = new Kart({ name: aiName(i - 1), isPlayer: false, color: AI_COLORS[(i - 1) % AI_COLORS.length], accent: AI_ACCENTS[(i * 7) % AI_ACCENTS.length], index: i, char: lk.char, pet: lk.pet, kart: lk.kart, skin: lk.skin, team: teamOn ? (i % 2) : -1 });
@@ -701,7 +757,7 @@
       var rate = target !== 0 ? 7 : 14;
       if (inp.steer < target) inp.steer = Math.min(target, inp.steer + rate * dt);
       else if (inp.steer > target) inp.steer = Math.max(target, inp.steer - rate * dt);
-      inp.throttle = keys.up ? 1 : 0; inp.brake = keys.down ? 1 : 0;
+      inp.throttle = (keys.up || (touch.on && !keys.down)) ? 1 : 0; inp.brake = keys.down ? 1 : 0;   // touch mode accelerates automatically
       inp.drift = !!keys.drift;
       inp.boost = edge('boost');
       inp.respawn = edge('respawn');
@@ -1061,7 +1117,7 @@
     if (/network|server|socket|browser-incompatible|ssl/.test(t)) return '접속 서버(PeerJS)에 연결할 수 없어요. 인터넷/방화벽을 확인하세요. (' + t + ')';
     return '연결 실패: ' + t;
   }
-  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin }; }
+  function profile() { return { name: nickName(), char: settings.char, pet: settings.pet, kart: myKart(), skin: Progress.p.skin }; }
   function bindNet(net) {
     net.on('players', function () { renderRoom(); });
     net.on('lobby', function (lobby) { if (online) { online.lobby = lobby; renderRoom(); } });
@@ -1247,7 +1303,7 @@
   }
   function rebuildGaragePreview() {
     destroyGaragePreview();
-    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: settings.kart, skin: Progress.p.skin });
+    var k = new Kart({ name: 'YOU', isPlayer: true, color: 0xffd60a, accent: 0xff2e7e, index: 0, char: settings.char, pet: settings.pet, kart: myKart(), skin: Progress.p.skin });
     k.placeAt(track.path, 12, 0);
     addKart(k); garage.kart = k;
   }
@@ -1267,10 +1323,13 @@
         (un ? '' : '<div class="sb"><span>진행</span><i><b style="width:' + Math.round(info.pct * 100) + '%"></b></i></div>') + '</div>';
     });
     $('garageSkinCount').textContent = '보유 ' + nUn + ' / ' + SKINS.length + ' · 레이스로 XP를 모아 해금';
+    var TIER_KR = { common: '일반', rare: '희귀', epic: '영웅', legend: '전설' }, nK = 0;
     KARTS.forEach(function (k) {
-      kt += '<div class="gcard kart' + (k.id === settings.kart ? ' sel' : '') + '" data-kart="' + k.id + '"><div class="gname">' + k.name + ' <small>' + k.kr + '</small></div><div class="gdesc">' + k.desc + '</div>' +
-        statBar('속도', k.stat.speed) + statBar('가속', k.stat.accel) + statBar('조향', k.stat.handling) + statBar('무게', 0.9 + (k.mass - 0.85) / 0.65 * 0.2) + '</div>';
+      var un = Progress.kartUnlocked(k), info = k.unlock ? Progress.unlockInfo(k) : null; if (un) nK++;
+      kt += '<div class="gcard kart' + (k.id === settings.kart ? ' sel' : '') + (un ? '' : ' locked') + '" data-kart="' + k.id + '"><div class="gname">' + k.name + ' <small>' + k.kr + '</small><span class="tier ' + (k.tier || 'common') + '">' + (TIER_KR[k.tier] || '일반') + '</span>' + (un ? '' : ' 🔒') + '</div><div class="gdesc">' + (un ? k.desc : '해금 조건: ' + info.text + (info.cur ? ' <b>(' + info.cur + ')</b>' : '')) + '</div>' +
+        statBar('속도', k.stat.speed) + statBar('가속', k.stat.accel) + statBar('조향', k.stat.handling) + statBar('게이지', k.stat.gauge) + '</div>';
     });
+    $('garageKartCount').textContent = '보유 ' + nK + ' / ' + KARTS.length;
     CHARS.forEach(function (c) {
       ch += '<div class="gcard' + (c.id === settings.char ? ' sel' : '') + '" data-char="' + c.id + '"><div class="gname"><i style="background:#' + c.body.toString(16).padStart(6, '0') + '"></i>' + c.name + ' <small>' + c.kr + '</small></div><div class="gdesc">' + c.desc + '</div>' +
         statBar('속도', c.stat.speed) + statBar('가속', c.stat.accel) + statBar('조향', c.stat.handling) + statBar('게이지', c.stat.gauge) + '</div>';
@@ -1289,7 +1348,11 @@
       });
     });
     $('garageKarts').querySelectorAll('.gcard').forEach(function (el) {
-      el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.kart = el.getAttribute('data-kart'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
+      el.addEventListener('click', function () {
+        audio.init(); var id = el.getAttribute('data-kart');
+        if (!Progress.kartUnlocked(findKart(id))) { audio.ui('back'); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); return; }
+        audio.ui('click'); settings.kart = id; saveSettings(); buildGarageCards(); rebuildGaragePreview();
+      });
     });
     $('garageChars').querySelectorAll('.gcard').forEach(function (el) {
       el.addEventListener('click', function () { audio.init(); audio.ui('click'); settings.char = el.getAttribute('data-char'); saveSettings(); buildGarageCards(); rebuildGaragePreview(); });
