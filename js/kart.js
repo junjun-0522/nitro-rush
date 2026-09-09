@@ -80,8 +80,7 @@
     var head = driver.group;
     add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, dp[0] - 0.28, dp[1] - 0.25, dp[2] + 0.35);
     add(G('arm', function () { return new THREE.BoxGeometry(0.12, 0.12, 0.5); }), skin, dp[0] + 0.28, dp[1] - 0.25, dp[2] + 0.35);
-    var wheelRing = add(G('swheel', function () { return new THREE.TorusGeometry(0.17, 0.035, 6, 14); }), dark, dp[0], dp[1] - 0.2, dp[2] + 0.63);
-    wheelRing.rotation.x = -1.1;
+    if (!def.bike) { var wheelRing = add(G('swheel', function () { return new THREE.TorusGeometry(0.17, 0.035, 6, 14); }), dark, dp[0], dp[1] - 0.2, dp[2] + 0.63); wheelRing.rotation.x = -1.1; }
     // stripes for the player / decoration for AI (standard tub only); every player kart gets the flag antenna
     if (isPlayer) {
       if (def.stripes && !(skin && (skin.stripes === false || skin.pattern))) {
@@ -104,7 +103,7 @@
     var hubGeo = wd.hidden ? null : G('hub' + wd.r, function () { return new THREE.CylinderGeometry(wd.r * 0.6, wd.r * 0.6, wd.w + 0.02, 8).rotateZ(Math.PI / 2); });
     wd.pos.forEach(function (p) {
       var piv = new THREE.Group(); piv.position.set(p[0], wd.r, p[1]); root.add(piv); pivots.push(piv);
-      if (wd.hidden) return;
+      if (wd.hidden || p[2]) { wheels.push(null); return; }   // p[2] = pivot only (two-wheelers keep 4 pivots for skids)
       var w = new THREE.Mesh(wheelGeo, rubber); w.castShadow = true; piv.add(w);
       var hub = new THREE.Mesh(hubGeo, def.goldWheels ? mats.gold : (isPlayer ? new THREE.MeshStandardMaterial({ color: accent, roughness: 0.3, metalness: 0.6 }) : chrome)); w.add(hub);
       if (def.goldWheels) { for (var sp = 0; sp < 3; sp++) { var spoke = new THREE.Mesh(G('spoke' + wd.r, function () { return new THREE.BoxGeometry(wd.w + 0.06, wd.r * 1.7, 0.09); }), mats.gold); spoke.rotation.x = sp * Math.PI / 3; w.add(spoke); } var rim = new THREE.Mesh(G('rim' + wd.r, function () { return new THREE.TorusGeometry(wd.r * 0.82, 0.04, 6, 18).rotateY(Math.PI / 2); }), mats.redEm); w.add(rim); }
@@ -597,7 +596,8 @@
 
     // body lean / pitch / bounce
     var latAcc = this.yawRate * this.vf;
-    var roll = U.clamp(latAcc * 0.0045, -0.16, 0.16) + (this.drifting ? this.driftDir * 0.05 : 0);
+    var lean = m.def.lean || 0;   // two-wheelers lean into the corner instead of rolling outward
+    var roll = lean ? U.clamp(-latAcc * 0.0045 * lean, -0.5, 0.5) - (this.drifting ? this.driftDir * 0.18 : 0) : U.clamp(latAcc * 0.0045, -0.16, 0.16) + (this.drifting ? this.driftDir * 0.05 : 0);
     var pitch = U.clamp(-this.accVis * 0.006, -0.08, 0.1);
     if (this.airborne) pitch += U.clamp(-this.vy * 0.02, -0.25, 0.25);
     if (this.flying) { roll += -this.input.steer * 0.42; pitch += -0.06 + Math.sin(t * 1.7 + this.index) * 0.03; }

@@ -407,6 +407,52 @@
       add(G('taTail', function () { return box(1.3, 0.06, 0.05); }), m.redEm, 0, 0.74, -1.67);
     }
   });
+  // ---- two-wheelers: 4 pivots (skid marks / physics) but only front + rear wheel meshes, lean into corners
+  KARTS.push(
+    {
+      id: 'wind', name: 'WIND RIDER', kr: '윈드 라이더', desc: '풀 페어링 스포츠 바이크. 코너에서 몸을 눕히며 가장 날렵하게 파고든다.', tier: 'epic', unlock: { level: 30 }, bike: true, lean: 2.6,
+      stat: { speed: 1.05, accel: 1.05, handling: 1.08, gauge: 1.05 }, mass: 0.8,
+      wheel: { r: 0.42, w: 0.24, pos: [[0, 1.08], [0, 1.08, true], [0, -1.02], [0, -1.02, true]] }, driver: [0, 1.42, -0.15], stripes: false,
+      exhausts: [[0.28, 0.62, -1.35], [-0.28, 0.62, -1.35]],
+      build: function (c) {
+        var m = c.m, add = c.add, G = c.G;
+        add(G('wrBody', function () { return hull([[-1.25, 0.55], [-1.35, 0.8], [-0.95, 0.98], [-0.3, 1.1], [0.35, 1.05], [0.95, 0.85], [1.15, 0.62], [1.0, 0.45], [-0.6, 0.42]], 0.52, 0.08); }), m.paint, 0, 0, 0);
+        add(G('wrFair', function () { return hull([[0.2, 0.42], [0.35, 0.95], [0.75, 1.05], [1.35, 0.75], [1.45, 0.5], [1.2, 0.35]], 0.7, 0.08); }), m.acc, 0, 0, 0);
+        add(G('wrScreen', function () { return box(0.5, 0.3, 0.04); }), m.glass, 0, 1.2, 0.85).rotation.x = -0.5;
+        add(G('wrTank', function () { return new THREE.SphereGeometry(0.3, 12, 8); }), m.paint, 0, 1.08, 0.2).scale.set(1, 0.6, 1.4);
+        add(G('wrBars', function () { return new THREE.CylinderGeometry(0.03, 0.03, 0.85, 6).rotateZ(Math.PI / 2); }), m.chrome, 0, 1.22, 0.7);
+        add(G('wrFork', function () { return new THREE.CylinderGeometry(0.04, 0.04, 0.9, 6); }), m.chrome, -0.13, 0.8, 1.02).rotation.x = -0.35;
+        add(G('wrFork', function () { return new THREE.CylinderGeometry(0.04, 0.04, 0.9, 6); }), m.chrome, 0.13, 0.8, 1.02).rotation.x = -0.35;
+        add(G('wrSwing', function () { return box(0.12, 0.1, 0.9); }), m.dark, -0.17, 0.42, -0.6); add(G('wrSwing', function () { return box(0.12, 0.1, 0.9); }), m.dark, 0.17, 0.42, -0.6);
+        add(G('wrEngine', function () { return box(0.46, 0.4, 0.6); }), m.dark, 0, 0.62, 0.05);
+        add(G('wrPeg', function () { return box(0.5, 0.04, 0.12); }), m.chrome, 0, 0.5, -0.25);
+        add(G('wrLamp', function () { return box(0.26, 0.12, 0.06); }), m.lamp, 0, 0.72, 1.45);
+        add(G('wrTail', function () { return box(0.3, 0.06, 0.05); }), m.tail, 0, 0.9, -1.36);
+      }
+    },
+    {
+      id: 'hog', name: 'THUNDER HOG', kr: '썬더 호그', desc: '긴 포크와 크롬 파이프의 크루저 바이크. 묵직한 최고속형.', tier: 'rare', unlock: { level: 18 }, bike: true, lean: 1.8,
+      stat: { speed: 1.04, accel: 0.99, handling: 1.0, gauge: 1.0 }, mass: 0.95,
+      wheel: { r: 0.44, w: 0.3, pos: [[0, 1.45], [0, 1.45, true], [0, -0.95], [0, -0.95, true]] }, driver: [0, 1.35, -0.25], stripes: false,
+      exhausts: [[0.3, 0.5, -1.4], [0.3, 0.6, -1.3]],
+      build: function (c) {
+        var m = c.m, add = c.add, G = c.G;
+        add(G('hgFrame', function () { return hull([[-1.3, 0.5], [-1.4, 0.8], [-0.9, 0.9], [-0.1, 0.95], [0.6, 0.85], [1.0, 0.6], [0.8, 0.45], [-0.7, 0.42]], 0.5, 0.07); }), m.paint, 0, 0, 0);
+        add(G('hgTank', function () { return new THREE.SphereGeometry(0.34, 12, 8); }), m.paint, 0, 1.05, 0.35).scale.set(1.1, 0.65, 1.3);
+        add(G('hgFender', function () { return new THREE.TorusGeometry(0.5, 0.12, 8, 18, Math.PI).rotateY(Math.PI / 2); }), m.acc, 0, 0.44, -0.95);
+        add(G('hgFender', function () { return new THREE.TorusGeometry(0.5, 0.12, 8, 18, Math.PI).rotateY(Math.PI / 2); }), m.acc, 0, 0.44, 1.45);
+        add(G('hgFork', function () { return new THREE.CylinderGeometry(0.045, 0.045, 1.5, 6); }), m.chrome, -0.16, 0.95, 1.05).rotation.x = -0.6;
+        add(G('hgFork', function () { return new THREE.CylinderGeometry(0.045, 0.045, 1.5, 6); }), m.chrome, 0.16, 0.95, 1.05).rotation.x = -0.6;
+        add(G('hgBars', function () { return new THREE.CylinderGeometry(0.03, 0.03, 1.1, 6).rotateZ(Math.PI / 2); }), m.chrome, 0, 1.45, 0.75);
+        add(G('hgLamp', function () { return new THREE.SphereGeometry(0.16, 10, 8); }), m.lamp, 0, 1.15, 0.95);
+        add(G('hgEngine', function () { return box(0.5, 0.45, 0.6); }), m.chrome, 0, 0.62, 0.15);
+        add(G('hgPipe', function () { return new THREE.CylinderGeometry(0.06, 0.07, 1.6, 8).rotateX(Math.PI / 2); }), m.chrome, 0.3, 0.5, -0.6);
+        add(G('hgPipe2', function () { return new THREE.CylinderGeometry(0.06, 0.07, 1.4, 8).rotateX(Math.PI / 2); }), m.chrome, 0.3, 0.6, -0.55);
+        add(G('hgSeat', function () { return box(0.45, 0.12, 0.8); }), m.dark, 0, 0.98, -0.45);
+        add(G('hgTail', function () { return box(0.3, 0.08, 0.05); }), m.tail, 0, 0.85, -1.42);
+      }
+    }
+  );
   KARTS.forEach(function (k) { if (!k.tier) k.tier = 'common'; });
   findKart('hover').tier = 'rare'; findKart('hover').unlock = { level: 5 };
   findKart('geobukseon').tier = 'rare'; findKart('geobukseon').unlock = { level: 8 };
