@@ -399,6 +399,39 @@
         });
       }, { clamp: true });
     },
+    parquet: function () {   // giant wooden floor planks (bug-scale mansion)
+      return U.canvasTexture('parquet', 256, function (g, w, h) {
+        var rng = U.rng(401);
+        g.fillStyle = '#a8703c'; g.fillRect(0, 0, w, h);
+        for (var row = 0; row < 4; row++) { for (var col = 0; col < 2; col++) { var x = col * 128 + (row % 2 ? 64 : 0) - 64, y = row * 64; var c = ['#b8804a', '#a26a36', '#c08a52', '#9a6232'][rng.int(0, 3)]; g.fillStyle = c; g.fillRect(x, y, 128, 64); g.fillStyle = 'rgba(60,30,10,0.5)'; g.fillRect(x, y, 128, 2); g.fillRect(x, y, 2, 64); g.strokeStyle = 'rgba(80,45,20,0.25)'; g.lineWidth = 1; for (var k = 0; k < 6; k++) { g.beginPath(); var yy = y + 8 + k * 9 + rng.range(-2, 2); g.moveTo(x, yy); g.bezierCurveTo(x + 40, yy + rng.range(-4, 4), x + 90, yy + rng.range(-4, 4), x + 128, yy); g.stroke(); } } }
+        grain(g, w, h, rng, 2500, 0.12);
+      });
+    },
+    carpet: function () {   // red carpet with a gold border pattern (u across)
+      return U.canvasTexture('carpet', 256, function (g, w, h) {
+        var rng = U.rng(407);
+        g.fillStyle = '#9a1c2a'; g.fillRect(0, 0, w, h);
+        grain(g, w, h, rng, 4000, 0.18);
+        g.fillStyle = '#d9a73a'; g.fillRect(10, 0, 6, h); g.fillRect(w - 16, 0, 6, h); g.fillRect(22, 0, 2, h); g.fillRect(w - 24, 0, 2, h);
+        g.fillStyle = 'rgba(217,167,58,0.35)'; for (var y = 0; y < h; y += 32) { g.beginPath(); g.moveTo(w / 2, y + 4); g.lineTo(w / 2 + 12, y + 16); g.lineTo(w / 2, y + 28); g.lineTo(w / 2 - 12, y + 16); g.closePath(); g.fill(); }
+      });
+    },
+    books: function () {   // rows of book spines for the giant shelves
+      return U.canvasTexture('books', 256, function (g, w, h) {
+        var rng = U.rng(409), cols = ['#7a2e2e', '#2e4a7a', '#3a6a3a', '#8a6a2a', '#5a2a6a', '#a04a2a', '#2a5a5a', '#c8b890'];
+        g.fillStyle = '#3a2416'; g.fillRect(0, 0, w, h);
+        for (var row = 0; row < 2; row++) { var x = 0; while (x < w) { var bw = rng.range(10, 22), bh = rng.range(90, 118), c = cols[rng.int(0, cols.length - 1)]; g.fillStyle = c; g.fillRect(x, row * 128 + 128 - bh, bw - 2, bh); g.fillStyle = 'rgba(255,220,120,0.5)'; g.fillRect(x + 2, row * 128 + 128 - bh + 12, bw - 6, 2); g.fillRect(x + 2, row * 128 + 110, bw - 6, 2); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(x + bw - 3, row * 128 + 128 - bh, 2, bh); x += bw; } g.fillStyle = '#5a3a20'; g.fillRect(0, row * 128 + 122, w, 6); }
+      });
+    },
+    wallpaper: function () {   // cream panelled wallpaper with a soft damask stripe
+      return U.canvasTexture('wallpaper', 256, function (g, w, h) {
+        var rng = U.rng(411);
+        g.fillStyle = '#efe6d2'; g.fillRect(0, 0, w, h);
+        g.fillStyle = 'rgba(200,180,140,0.35)'; for (var x = 0; x < w; x += 32) g.fillRect(x, 0, 10, h);
+        g.fillStyle = 'rgba(180,150,100,0.25)'; for (var i = 0; i < 40; i++) { g.beginPath(); g.ellipse(rng() * w, rng() * h, 6, 10, rng() * 3, 0, 7); g.fill(); }
+        grain(g, w, h, rng, 1500, 0.08);
+      });
+    },
     label: function (key, text, color, bg) {
       return U.canvasTexture('label' + key, 256, function (g, w, h) {
         g.fillStyle = bg || 'rgba(0,0,0,0)'; g.fillRect(0, 0, w, h);

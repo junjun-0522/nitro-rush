@@ -120,6 +120,21 @@ const DESIGNS = {
     closeStraight: 0,
     profile: [[0.04, 0.08, 0, 14], [0.13, 0.17, 14, -10], [0.17, 0.22, -10, 6], [0.23, 0.26, 6, 0], [0.30, 0.33, 0, 4], [0.36, 0.42, 4, -18], [0.42, 0.47, -18, 12], [0.47, 0.52, 12, 0], [0.56, 0.58, 0, 5], [0.62, 0.64, 5, 0], [0.70, 0.75, 0, 22], [0.75, 0.82, 22, -8], [0.82, 0.86, -8, 10], [0.88, 0.93, 10, 0]]
   },
+  mansion: {   // GRAND MANSION: circuit through a giant house at bug scale. grand hall rotunda → carpet corridor → library S → book ramp onto the reading table → hairpin round the candlestick → jump onto the sofa → dining room under the table → fireplace → back to the hall
+    width: 20,
+    segs: [
+      ['S', 150], ['A', 70, 120],                     // grand hall: start straight, sweep around the rotunda balustrade
+      ['S', 140], ['A', 50, -60], ['A', 50, 60],      // carpet corridor → library S between the bookshelves
+      ['S', 120],                                      // book ramp: climb onto the reading table (y 0 → 22)
+      ['A', 30, 150], ['S', 80],                       // hairpin round the candlestick, across the tabletop
+      ['S', 40], ['S', 60],                            // jump off the table edge (ramp) → land on the sofa (y 8)
+      ['A', 60, -90], ['S', 180], ['A', 60, -90],      // down to the floor, dining room under the long table
+      ['S', 100], ['A', 45, 90],                       // fireplace wall
+      ['S', 120], ['A', 60, 60]                        // gallery back toward the hall
+    ],
+    closeStraight: 80,
+    profile: [[0.232, 0.283, 0, 22], [0.368, 0.394, 22, 8], [0.42, 0.45, 8, 0]]
+  },
   volcano: {   // VOLCANIC INFERNO: point-to-point escape. wasteland → canyon (split routes) → lava falls → rockfall path → volcano climb → eruption (route change) → lava bridge (gaps) → final jump → plateau FINISH
     open: true, width: 20,
     segs: [

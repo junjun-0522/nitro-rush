@@ -60,6 +60,7 @@
     var hits = rc.intersectObject(track.group, true).filter(function (h) { return h.object.visible; });
     return hits.slice(0, 3).map(function (h) { var o = h.object; return o.type + ' ' + (o.geometry ? o.geometry.type + JSON.stringify(o.geometry.parameters || {}).slice(0, 60) : '') + ' d=' + h.distance.toFixed(0) + ' col=' + (o.material && o.material.color ? o.material.color.getHexString() : '') + ' pos=' + o.position.x.toFixed(0) + ',' + o.position.y.toFixed(0) + ',' + o.position.z.toFixed(0) + ' parentPos=' + (o.parent ? o.parent.position.x.toFixed(0) + ',' + o.parent.position.y.toFixed(0) + ',' + o.parent.position.z.toFixed(0) : ''); }).join(' || ');
   };
+  window.__cam = camera; window.__track = track;
   window.__ready = true;
 })();
 </script></body></html>
